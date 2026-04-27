@@ -21,7 +21,7 @@
     font-size: 10px; font-weight: bold; color: #88aacc; letter-spacing: 0.5px;
   }
 
-  .main { display: flex; height: 420px; gap: 0; padding: 10px 16px 0; }
+  .main { display: flex; height: 360px; gap: 0; padding: 10px 16px 0; }
 
   .rotor-panel {
     width: 340px; flex-shrink: 0;
@@ -45,40 +45,38 @@
     width: 34px; height: 80px; background: #f0f4f8; border: 1px solid #c8d8e8;
     border-radius: 4px; overflow: hidden; display: flex; align-items: flex-end;
   }
-  .bar-fill { width: 100%; border-radius: 3px 3px 0 0; transition: height 1.1s ease; }
-  .bar-pmech { background: #002060; }
-  .bar-pelec { background: #cc3d00; }
-  .bar-imbalance { background: #cc8800; }
+  .bar-fill { width: 100%; border-radius: 3px 3px 0 0; }
+  .bar-pmech { background: #002060; transition: height 2.8s linear; }
+  .bar-pelec { background: #cc3d00; transition: height 0.35s ease-out; }
+  .bar-imbalance { background: #cc8800; transition: height 0.4s linear; }
 
   .mid-panel { width: 278px; flex-shrink: 0; margin: 0 10px; display: flex; flex-direction: column; gap: 8px; }
-  .equation-box { background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; padding: 12px 14px; }
+  .equation-box { background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; padding: 12px 14px; flex: 1; }
   .eq-title { font-size: 10px; font-weight: bold; color: #1a3660; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
   .eq-formula { font-size: 15px; font-weight: bold; color: #002060; text-align: center; margin: 6px 0 10px; }
   .eq-terms { font-size: 9px; color: #334466; line-height: 1.7; }
   .eq-terms span { color: #002060; font-weight: bold; }
 
-  .fact-box { background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; padding: 10px 14px; }
+  .fact-box { background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; padding: 10px 14px; flex: 1; }
   .fact-title { font-size: 10px; font-weight: bold; color: #1a3660; letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; }
   .fact-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 7px; font-size: 10px; color: #334466; line-height: 1.4; }
   .fact-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
 
-  .callout-box { background: #fff4ee; border: 1px solid #e8c0a8; border-radius: 7px; padding: 10px 14px; border-left: 4px solid #cc3d00; flex: 1; }
+  .callout-box { display: none; }
   .callout-label { font-size: 10px; font-weight: bold; color: #8b2000; margin-bottom: 4px; }
   .callout-text { font-size: 10px; color: #334466; line-height: 1.5; }
 
   .meter-panel { flex: 1; background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 10px 8px; }
   .meter-svg { width: 100%; flex: 1; }
 
-  .needle { transform-origin: 192px 195px; transition: transform 1.2s cubic-bezier(.4,0,.2,1); }
-
-  .bottom-callout {
+  .needle { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 1.2s linear; }
+  .key-concept-bar {
     margin: 8px 16px 0;
     background: #fff4ee; border: 1px solid #e8c0a8; border-radius: 7px;
-    padding: 8px 14px 8px 18px; border-left: 4px solid #cc3d00;
-    display: flex; gap: 16px; align-items: flex-start;
+    padding: 10px 18px 10px 22px; border-left: 4px solid #cc3d00;
   }
-  .bc-head { font-size: 11px; font-weight: bold; color: #8b2000; white-space: nowrap; padding-top: 2px; }
-  .bc-text { font-size: 10px; color: #334466; line-height: 1.6; }
+  .key-concept-head { font-size: 11px; font-weight: bold; color: #8b2000; margin-bottom: 4px; }
+  .key-concept-text { font-size: 10px; color: #334466; line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -90,6 +88,7 @@
 
 <div class="main">
 
+  <!-- LEFT: ROTOR -->
   <div class="rotor-panel">
     <div class="panel-title">Rotor Power Balance</div>
     <svg class="rotor-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
@@ -137,6 +136,7 @@
     </div>
   </div>
 
+  <!-- MIDDLE -->
   <div class="mid-panel">
     <div class="equation-box">
       <div class="eq-title">The Swing Equation</div>
@@ -156,60 +156,96 @@
       <div class="fact-row"><div class="fact-dot" style="background:#002060"></div><div>Low H = frequency changes <strong>faster</strong> for the same imbalance</div></div>
       <div class="fact-row"><div class="fact-dot" style="background:#cc3d00"></div><div>10% load step &rarr; <strong>1&ndash;2 Hz excursion</strong> in first second</div></div>
     </div>
-    <div class="callout-box">
-      <div class="callout-label">Key Callout</div>
-      <div class="callout-text">
-        Small inertia = fast frequency response <em>required</em>.<br/>
-        The governor must act within <strong>1&ndash;2 seconds</strong> or UFLS trips will cascade.<br/>
-        This is the central challenge of island mode.
-      </div>
-    </div>
   </div>
 
+  <!-- RIGHT: FREQUENCY METER -->
   <div class="meter-panel">
     <div class="panel-title">Frequency Meter &mdash; Bus Response</div>
+    <!--
+      Meter geometry: center=(192,210), radius=148
+      Scale: 60 Hz = 0deg (top/up), each Hz = 25deg
+        57 Hz = -75deg  58 Hz = -50deg  59 Hz = -25deg
+        60 Hz =   0deg  61 Hz = +25deg  62 Hz = +50deg
+      Negative CSS rotation = counter-clockwise = LEFT = LOWER Hz = FREQUENCY DIP
+    -->
     <svg class="meter-svg" viewBox="0 0 384 310" xmlns="http://www.w3.org/2000/svg">
-      <path d="M 44 210 A 148 148 0 0 1 340 210" fill="#f0f5fa" stroke="#c8d8e8" stroke-width="2"/>
-      <path d="M 192 210 L 320 115 A 148 148 0 0 1 340 210 Z" fill="#ffe8e0" opacity="0.6"/>
-      <path d="M 192 210 L 64 115 A 148 148 0 0 0 44 210 Z" fill="#e8f5e0" opacity="0.6"/>
-      <line x1="83" y1="145" x2="97" y2="158" stroke="#cc3d00" stroke-width="2"/>
-      <line x1="65" y1="183" x2="81" y2="187" stroke="#cc7700" stroke-width="2"/>
-      <line x1="68" y1="225" x2="84" y2="221" stroke="#334466" stroke-width="1.5"/>
+
+      <!-- Arc background fill -->
+      <path d="M 44 210 A 148 148 0 0 1 340 210" fill="#f8fafb" stroke="none"/>
+
+      <!-- DANGER zone: LEFT side = LOW Hz = 57-59 Hz = -75deg to -25deg -->
+      <!-- Arc from (49,172)[-75deg] clockwise to (129,76)[-25deg] -->
+      <path d="M 192 210 L 49 172 A 148 148 0 0 1 129 76 Z" fill="#ffe8e0" opacity="0.75"/>
+
+      <!-- NORMAL zone: CENTER = 59-61 Hz = -25deg to +25deg -->
+      <!-- Arc from (129,76)[-25deg] clockwise to (255,76)[+25deg] -->
+      <path d="M 192 210 L 129 76 A 148 148 0 0 1 255 76 Z" fill="#e8f5e0" opacity="0.75"/>
+
+      <!-- Neutral right zone: 61-63 Hz = light fill -->
+      <path d="M 192 210 L 255 76 A 148 148 0 0 1 335 172 Z" fill="#f0f4f8" opacity="0.5"/>
+
+      <!-- Tick marks — outer arc at r=148, inner at r=130 -->
+      <!-- 57 Hz: -75deg outer=(49,172) inner=(66,176) -->
+      <line x1="49" y1="172" x2="66" y2="176" stroke="#cc3d00" stroke-width="2.5"/>
+      <!-- 58 Hz: -50deg outer=(79,115) inner=(93,126) -->
+      <line x1="79" y1="115" x2="93" y2="126" stroke="#cc3d00" stroke-width="2"/>
+      <!-- 59 Hz: -25deg outer=(129,76) inner=(137,92) -->
+      <line x1="129" y1="76" x2="137" y2="92" stroke="#556677" stroke-width="1.5"/>
+      <!-- 60 Hz: 0deg outer=(192,62) inner=(192,80) -->
       <line x1="192" y1="62" x2="192" y2="80" stroke="#2a7a20" stroke-width="3"/>
-      <line x1="316" y1="225" x2="300" y2="221" stroke="#334466" stroke-width="1.5"/>
-      <line x1="319" y1="183" x2="303" y2="187" stroke="#334466" stroke-width="1.5"/>
-      <text x="68" y="140" font-family="Arial,sans-serif" font-size="11" fill="#cc3d00" font-weight="bold">57</text>
-      <text x="46" y="186" font-family="Arial,sans-serif" font-size="11" fill="#cc7700">58</text>
-      <text x="50" y="228" font-family="Arial,sans-serif" font-size="11" fill="#334466">59</text>
-      <text x="181" y="52" font-family="Arial,sans-serif" font-size="11" fill="#2a7a20" font-weight="bold">60</text>
-      <text x="305" y="228" font-family="Arial,sans-serif" font-size="11" fill="#334466">61</text>
-      <text x="305" y="186" font-family="Arial,sans-serif" font-size="11" fill="#334466">62</text>
-      <text x="192" y="175" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="bold" fill="#1a3660">Hz</text>
-      <text x="130" y="200" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#2a7a20">Normal</text>
-      <text x="258" y="200" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">Danger</text>
-      <line x1="192" y1="210" x2="93" y2="143" stroke="#cc3d00" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
-      <text x="78" y="132" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">UFLS trip</text>
+      <!-- 61 Hz: +25deg outer=(255,76) inner=(247,92) -->
+      <line x1="255" y1="76" x2="247" y2="92" stroke="#556677" stroke-width="1.5"/>
+      <!-- 62 Hz: +50deg outer=(305,115) inner=(292,126) -->
+      <line x1="305" y1="115" x2="292" y2="126" stroke="#556677" stroke-width="1.5"/>
+
+      <!-- Scale labels -->
+      <text x="33"  y="176" font-family="Arial,sans-serif" font-size="10" fill="#cc3d00" font-weight="bold">57</text>
+      <text x="58"  y="118" font-family="Arial,sans-serif" font-size="10" fill="#cc3d00">58</text>
+      <text x="110" y="78"  font-family="Arial,sans-serif" font-size="10" fill="#556677">59</text>
+      <text x="181" y="52"  font-family="Arial,sans-serif" font-size="11" fill="#2a7a20" font-weight="bold">60</text>
+      <text x="242" y="78"  font-family="Arial,sans-serif" font-size="10" fill="#556677">61</text>
+      <text x="278" y="118" font-family="Arial,sans-serif" font-size="10" fill="#556677">62</text>
+
+      <!-- Zone labels -->
+      <text x="88"  y="188" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#cc3d00">Danger</text>
+      <text x="192" y="158" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#2a7a20">Normal</text>
+
+      <!-- Hz unit label -->
+      <text x="192" y="178" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="bold" fill="#1a3660">Hz</text>
+
+      <!-- UFLS Trip dashed line: at ~58.5 Hz = -37.5deg → (102,93) -->
+      <line x1="192" y1="210" x2="102" y2="93" stroke="#cc3d00" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+      <text x="86" y="83" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">UFLS trip</text>
+
+      <!-- Needle (pivots at 192,210; 0deg = straight up = 60 Hz; negative = left = dip) -->
       <g class="needle" id="needle">
         <line x1="192" y1="210" x2="192" y2="78" stroke="#002060" stroke-width="3.5" stroke-linecap="round"/>
         <polygon points="192,70 186,88 198,88" fill="#002060"/>
       </g>
       <circle cx="192" cy="210" r="9" fill="#002060"/>
       <circle cx="192" cy="210" r="4" fill="#3d7fbd"/>
+
+      <!-- Digital readout -->
       <rect x="139" y="222" width="106" height="34" rx="5" fill="#f8fafb" stroke="#c8d8e8" stroke-width="1.5"/>
       <text x="192" y="235" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#667788">Bus Frequency</text>
       <text x="192" y="250" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="bold" fill="#2a7a20" id="freqDisplay">60.0 Hz</text>
+
+      <!-- Arc outer border -->
       <path d="M 44 210 A 148 148 0 0 1 340 210" fill="none" stroke="#334466" stroke-width="2.5"/>
-      <text x="192" y="300" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#667788" id="meterCaption">Balanced - Pmech = Pelec</text>
+
+      <!-- Caption -->
+      <text x="192" y="300" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="bold" fill="#334466" id="meterCaption">Balanced - Pmech = Pelec</text>
     </svg>
   </div>
 
 </div>
 
-<div class="bottom-callout">
-  <div class="bc-head">KEY CONCEPT</div>
-  <div class="bc-text">
-    Frequency deviation is governed by the power imbalance between mechanical input and electrical load &mdash; divided by twice the inertia constant.
-    Gas turbines have low inertia (H = 3&ndash;6 s). A 10% load step causes a 1&ndash;2 Hz drop within the first second. The governor must respond immediately.
+<div class="key-concept-bar">
+  <div class="key-concept-head">Key Concept</div>
+  <div class="key-concept-text">
+    Frequency deviation is governed by the power imbalance between mechanical input and electrical load, divided by twice the inertia constant.
+    Gas turbines have low inertia (H = 3&ndash;6 s). A 10% load step causes a 1&ndash;2 Hz drop within the first second &mdash; the governor must respond immediately or UFLS trips will cascade.
+    <strong>This is the central challenge of island mode operation.</strong>
   </div>
 </div>
 
@@ -222,7 +258,8 @@ var imbB    = document.getElementById('barImb');
 var freqEl  = document.getElementById('freqDisplay');
 var capEl   = document.getElementById('meterCaption');
 
-// needle: 0deg = 60Hz (straight up), positive clockwise = lower Hz (danger side)
+// needle: 0deg = 60 Hz (straight up)
+// NEGATIVE rotation = counter-clockwise = LEFT = LOWER Hz = FREQUENCY DIP
 function applyPhase(pmech, pelec, imb, needleDeg, freqText, freqColor, rotorSec, cap) {
   pmechB.style.height = pmech + '%';
   pelecB.style.height = pelec + '%';
@@ -235,12 +272,15 @@ function applyPhase(pmech, pelec, imb, needleDeg, freqText, freqColor, rotorSec,
 }
 
 // [pmech%, pelec%, imb%, needleDeg, freqText, freqColor, rotorSec, caption, holdMs]
+// Negative needleDeg = needle swings LEFT = frequency DIP
 var phases = [
-  [60, 60,  2,   0, '60.0 Hz', '#2a7a20', 2.0, 'Balanced - Pmech = Pelec',           2500],
-  [60, 90, 38,   0, '60.0 Hz', '#cc7700', 2.0, 'Load step applied - Pelec jumps',      700],
-  [60, 90, 38,  25, '58.3 Hz', '#cc3d00', 3.8, 'Rotor decelerates - frequency drops', 1800],
-  [80, 90, 13,  13, '59.1 Hz', '#cc7700', 2.8, 'Governor responds - Pmech rising',    1800],
-  [90, 90,  2,   0, '60.0 Hz', '#2a7a20', 2.1, 'Rebalanced - new steady state',       2200]
+  [60, 60,  2,   0,  '60.0 Hz', '#2a7a20', 2.0, 'Balanced - Pmech = Pelec',              3500],
+  [60, 90, 38,   0,  '60.0 Hz', '#cc7700', 2.0, 'Load step - Pelec jumps',               1500],
+  [60, 90, 38, -40,  '58.4 Hz', '#cc3d00', 3.8, 'Frequency drops - rotor decelerates',   3500],
+  [90, 90,  2,   0,  '60.0 Hz', '#2a7a20', 2.1, 'Governor responds - frequency recovers', 5000],
+  [90, 60, 38,   0,  '60.0 Hz', '#cc7700', 2.1, 'Load drops - Pelec falls',               1500],
+  [90, 60, 38, +38,  '61.5 Hz', '#cc7700', 1.4, 'Frequency rises - rotor accelerates',   3500],
+  [60, 60,  2,   0,  '60.0 Hz', '#2a7a20', 2.0, 'Governor responds - frequency recovers', 5000]
 ];
 
 var idx = 0;
