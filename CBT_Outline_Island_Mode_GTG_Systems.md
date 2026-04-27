@@ -1,3 +1,5 @@
+![Kirby logo](kirbyflag_imagefile.png)
+
 # CBT Outline: Island Mode Operation for Gas Turbine Generator Systems
 ### Designed for Generator Packaging Engineers | Est. Duration: 45 Minutes
 
@@ -15,6 +17,7 @@
 | Narration | Synthesized voice-over (primary); human narrator track supported |
 | Tone | Professional, technical, educational |
 | Source Document | *Industry Standard Practices for Protecting Island Mode Gas Turbine Generators from Overload and Flameout*, April 2026 |
+| Developed By | Kirby Industrial Resources — ![Kirby logo](kirbyflag_imagefile.png) |
 
 ---
 
@@ -55,16 +58,18 @@ Total instruction: ~45 min | Total with exam: ~53 min
 
 ## Introduction
 **Estimated Duration: 3 minutes | Screens: ~4**
+**Production File:** [`CBT_Introduction.html`](CBT_Introduction.html) — Interactive HTML module (INT-1 through INT-4). Voice: Google UK English Female (en-GB). Branding: Kirby Corporation navy/orange palette.
 
 ### Screen INT-1: Title Card
-- **Visuals**: Course title over a background image of a data center floor with visible generator sets or a turbine package. Company logo placement TBD.
+- **Visuals**: Course title over a background image of a data center floor with visible generator sets or a turbine package. Kirby logo (`kirbyflag_imagefile.png`) positioned lower-right corner, consistent size and placement across all title/section intro screens.
 - **On-Screen Text**: *Island Mode Operation: Design Principles for GTG Packaging Engineers*
-- **VO Script**: "Welcome to this course on island mode operation for gas turbine generator systems. This course is designed for engineers who package generators — integrating a gas turbine, an alternator, and auxiliary systems into a complete, deliverable product."
+- **VO Script**: "Welcome to this course on island mode operation for gas turbine generator systems. This course is designed to give generator packagers a clear understanding of the challenges associated with operating gas turbine generators in an island installation."
 
 ---
 
 ### Screen INT-2: Who This Course Is For
-- **Visuals**: Simple infographic — gas turbine + alternator + auxiliary systems = packaged GTG product.
+- **Visuals**: ![INT-2: Who This Course Is For](INT-2_Who_This_Course_Is_For.svg)
+  *Production file: `INT-2_Who_This_Course_Is_For.svg` — Gas turbine + alternator + auxiliary systems = packaged GTG product.*
 - **On-Screen Text**:
   - This course supports engineers, technical sales staff, and support personnel involved with gas turbine generator packages.
   - Applications focus on critical, grid-independent power systems — including large-scale data centers.
@@ -73,7 +78,8 @@ Total instruction: ~45 min | Total with exam: ~53 min
 ---
 
 ### Screen INT-3: Course Application
-- **Visuals**: Simplified single-line diagram — multiple GTGs in parallel feeding a data center bus, with no utility connection shown.
+- **Visuals**: ![INT-3: Course Application](INT-3_Course_Application.svg)
+  *Production file: `INT-3_Course_Application.svg` — Simplified single-line diagram showing four GTGs in parallel feeding a data center bus, with no utility connection shown.*
 - **On-Screen Text**:
   - **Application focus**: Multi-unit paralleled GTG power systems for data centers
   - **Supplier examples used**: Kawasaki Heavy Industries (KHI) turbines, Jeumont Electric alternators
@@ -83,15 +89,69 @@ Total instruction: ~45 min | Total with exam: ~53 min
 ---
 
 ### Screen INT-4: Learning Objectives
-- **Visuals**: Numbered list, each item revealed with a click or timed animation.
-- **On-Screen Text**:
-  1. Explain why island mode requires different operating limits than grid-parallel operation.
-  2. Define the island mode derate and the incremental reserve margin, and apply them to a representative 18 MW class turbine system.
-  3. Describe the governor and excitation control functions required for stable island mode operation.
-  4. Identify the protection systems — UFLS, ROCOF, OEL/UEL — and explain their coordination.
-  5. Explain how DLE combustion constraints affect step-load limits.
-  6. Describe the coordination requirements for multi-unit parallel operation in a data center power plant.
-- **VO Script**: "By the end of this course, you will be able to achieve all of the learning objectives shown on this screen. `[PAUSE]` These objectives reflect the knowledge you need to understand island mode operation, ask the right questions of turbine and generator suppliers, and clearly communicate system constraints and requirements across project teams and to customers."
+- **Visuals**: Numbered list — each item animates in (reveal on click or timed) as the corresponding VO line plays.
+
+---
+
+#### Synchronized VO + On-Screen Text
+
+> **[Screen appears — intro line plays; list is blank]**
+>
+> **VO:** "By the end of this course, you will be able to achieve the following six learning objectives."
+
+---
+
+> **[Item 1 reveals]**
+>
+> **On-Screen Text — 1.** Explain why island mode requires different operating limits than grid-parallel operation.
+>
+> **VO:** "One — explain why island mode requires different operating limits than grid-parallel operation."
+
+---
+
+> **[Item 2 reveals]**
+>
+> **On-Screen Text — 2.** Define the island mode derate and the incremental reserve margin, and apply them to a representative 18 MW class turbine system.
+>
+> **VO:** "Two — define the island mode derate and the incremental reserve margin, and apply them to a representative eighteen megawatt class turbine system."
+
+---
+
+> **[Item 3 reveals]**
+>
+> **On-Screen Text — 3.** Describe the governor and excitation control functions required for stable island mode operation.
+>
+> **VO:** "Three — describe the governor and excitation control functions required for stable island mode operation."
+
+---
+
+> **[Item 4 reveals]**
+>
+> **On-Screen Text — 4.** Identify the protection systems — UFLS, ROCOF, OEL/UEL — and explain their coordination.
+>
+> **VO:** "Four — identify the protection systems — underfrequency load shedding, rate-of-change-of-frequency, and excitation limiting — and explain how they must be coordinated."
+
+---
+
+> **[Item 5 reveals]**
+>
+> **On-Screen Text — 5.** Explain how DLE combustion constraints affect step-load limits.
+>
+> **VO:** "Five — explain how Dry Low Emissions combustion constraints affect step-load limits."
+
+---
+
+> **[Item 6 reveals]**
+>
+> **On-Screen Text — 6.** Describe the coordination requirements for multi-unit parallel operation in a data center power plant.
+>
+> **VO:** "Six — describe the coordination requirements for multi-unit parallel operation in a data center power plant."
+
+---
+
+> **[All 6 items remain visible]**
+>
+> **VO:** "`[PAUSE]` These objectives reflect the knowledge needed to understand island mode operation, ask the right questions of turbine and generator suppliers, and clearly communicate system constraints and requirements across project teams and to customers."
 
 ---
 
@@ -99,7 +159,8 @@ Total instruction: ~45 min | Total with exam: ~53 min
 **Estimated Duration: 7 minutes | Screens: ~7 | Followed by Section Quiz 1**
 
 ### Section Intro: S1-0
-- **Visuals**: Split-screen — left side shows a GT connected to a large grid; right side shows the same GT alone on a bus.
+- **Visuals**: ![S1-0: Section 1 Intro](S1-0_Section_Intro.svg)
+  *Production file: `S1-0_Section_Intro.svg` — Split-screen: left side shows the GTG connected to the utility grid (infinite bus); right side shows the same GTG alone on an island bus with no utility connection.*
 - **VO Script**: "Section one. Before we discuss limits and protection systems, we need to establish a clear picture of what changes when a generator goes from grid-connected to island mode — and why those changes matter to you as a packaging engineer."
 
 ---
@@ -975,3 +1036,7 @@ A packaging engineer is reviewing a customer's request to operate the island mod
 ---
 
 *End of Outline — Version 1.0 Draft | April 27, 2026*
+
+---
+
+*Developed by Kirby Industrial Resources* ![Kirby logo](kirbyflag_imagefile.png)

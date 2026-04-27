@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1040 510" width="1040" height="510"
+     font-family="Arial, Helvetica, sans-serif">
+
+  <defs>
+    <marker id="arr-blue" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0,0 9,3.5 0,7" fill="#3d7fbd"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0,0 9,3.5 0,7" fill="#cc3d00"/>
+    </marker>
+  </defs>
+
+  <!-- BACKGROUND -->
+  <rect x="0" y="0" width="1040" height="510" fill="#f0f4f9"/>
+  <rect x="0" y="0" width="1040" height="4" fill="#1a3660"/>
+  <rect x="0" y="506" width="1040" height="4" fill="#1a3660"/>
+
+  <!-- PANELS -->
+  <rect x="8" y="8" width="502" height="494" rx="8" fill="#ffffff" stroke="#c8d8e8" stroke-width="1.2"/>
+  <rect x="530" y="8" width="502" height="494" rx="8" fill="#ffffff" stroke="#c8d8e8" stroke-width="1.2"/>
+
+  <!-- LEFT HEADER -->
+  <rect x="8" y="8" width="502" height="46" rx="8" fill="#1a3660"/>
+  <rect x="8" y="30" width="502" height="24" fill="#1a3660"/>
+  <text x="259" y="36" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff" letter-spacing="1.2">GRID-CONNECTED OPERATION</text>
+
+  <!-- RIGHT HEADER -->
+  <rect x="530" y="8" width="502" height="46" rx="8" fill="#1a3660"/>
+  <rect x="530" y="30" width="502" height="24" fill="#1a3660"/>
+  <text x="781" y="36" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff" letter-spacing="1.2">ISLAND MODE OPERATION</text>
+
+  <!-- VS BADGE -->
+  <circle cx="520" cy="255" r="20" fill="#1a3660" stroke="#f0f4f9" stroke-width="3"/>
+  <text x="520" y="260" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">VS</text>
+
+  <!-- ============ LEFT SIDE ============ -->
+
+  <!-- Load step block -->
+  <rect x="28" y="66" width="120" height="52" rx="6" fill="#edf3fa" stroke="#3d7fbd" stroke-width="1.5"/>
+  <text x="88" y="87" text-anchor="middle" font-size="11" font-weight="bold" fill="#1a3660">LOAD STEP</text>
+  <text x="88" y="103" text-anchor="middle" font-size="13" font-weight="bold" fill="#3d7fbd">+5 MW</text>
+
+  <!-- Dashed arrow: load step curves to grid, bypassing GTG -->
+  <path d="M148,93 Q320,78 380,228" fill="none" stroke="#3d7fbd" stroke-width="2"
+        stroke-dasharray="6,3" marker-end="url(#arr-blue)"/>
+
+  <!-- GTG circle -->
+  <circle cx="200" cy="182" r="40" fill="#f5f8fc" stroke="#1a3660" stroke-width="2"/>
+  <path d="M179,182 Q187,168 195,182 Q203,196 211,182 Q219,168 221,182"
+        fill="none" stroke="#1a3660" stroke-width="2.2" stroke-linecap="round"/>
+  <text x="200" y="240" text-anchor="middle" font-size="11" font-weight="bold" fill="#1a3660">GTG</text>
+
+  <!-- Feeder -->
+  <line x1="200" y1="222" x2="200" y2="278" stroke="#1a3660" stroke-width="2"/>
+  <rect x="193" y="278" width="14" height="14" rx="2" fill="#1a3660"/>
+  <line x1="200" y1="292" x2="200" y2="300" stroke="#1a3660" stroke-width="2"/>
+
+  <!-- Bus -->
+  <line x1="60" y1="300" x2="440" y2="300" stroke="#1a3660" stroke-width="4.5" stroke-linecap="square"/>
+  <text x="130" y="291" font-size="9" font-weight="bold" fill="#6a7d94">BUS</text>
+
+  <!-- Load feeder -->
+  <line x1="200" y1="300" x2="200" y2="342" stroke="#1a3660" stroke-width="2"/>
+  <rect x="193" y="342" width="14" height="14" rx="2" fill="#3d7fbd"/>
+  <line x1="200" y1="356" x2="200" y2="366" stroke="#1a3660" stroke-width="2"/>
+  <rect x="138" y="366" width="124" height="44" rx="6" fill="#edf3fa" stroke="#3d7fbd" stroke-width="1.5"/>
+  <text x="200" y="385" text-anchor="middle" font-size="10" font-weight="bold" fill="#1a3660">DATA CENTRE</text>
+
+  <!-- Grid connection line -->
+  <line x1="440" y1="300" x2="440" y2="252" stroke="#1a3660" stroke-width="2"/>
+  <line x1="440" y1="252" x2="458" y2="252" stroke="#1a3660" stroke-width="2"/>
+
+  <!-- Utility grid symbol -->
+  <line x1="458" y1="220" x2="458" y2="278" stroke="#1a3660" stroke-width="2.2"/>
+  <line x1="458" y1="224" x2="496" y2="224" stroke="#1a3660" stroke-width="2.2"/>
+  <line x1="458" y1="240" x2="490" y2="240" stroke="#1a3660" stroke-width="2"/>
+  <line x1="458" y1="256" x2="480" y2="256" stroke="#1a3660" stroke-width="1.8"/>
+  <line x1="458" y1="272" x2="470" y2="272" stroke="#1a3660" stroke-width="1.5"/>
+  <line x1="458" y1="278" x2="458" y2="284" stroke="#1a3660" stroke-width="2.2"/>
+  <line x1="451" y1="284" x2="465" y2="284" stroke="#1a3660" stroke-width="1.8"/>
+  <text x="480" y="210" text-anchor="middle" font-size="10" font-weight="bold" fill="#1a3660">UTILITY GRID</text>
+
+  <!-- Infinite bus pill -->
+  <rect x="416" y="306" width="90" height="20" rx="10" fill="#dce7f5" stroke="#3d7fbd" stroke-width="1"/>
+  <text x="461" y="320" text-anchor="middle" font-size="10" font-weight="bold" fill="#1a3660">inf.  Infinite Bus</text>
+
+  <!-- Left callout bar -->
+  <rect x="18" y="428" width="482" height="66" rx="7" fill="#edf3fa" stroke="#c2d4e8" stroke-width="1"/>
+  <rect x="18" y="428" width="4" height="66" rx="3" fill="#3d7fbd"/>
+  <text x="32" y="449" font-size="11" font-weight="bold" fill="#1a3660">Load step absorbed by the utility grid - GTG output barely changes</text>
+  <text x="32" y="465" font-size="11" fill="#3a5270">Grid holds frequency and voltage. Supplies reactive power. GTG sees only a fraction.</text>
+  <text x="32" y="481" font-size="11" fill="#3a5270">Governor response time: minutes. DLE combustion: low transient risk.</text>
+
+  <!-- ============ RIGHT SIDE ============ -->
+
+  <!-- Load step block (same scenario) -->
+  <rect x="550" y="66" width="120" height="52" rx="6" fill="#fff4ee" stroke="#cc3d00" stroke-width="1.5"/>
+  <text x="610" y="87" text-anchor="middle" font-size="11" font-weight="bold" fill="#8b2000">LOAD STEP</text>
+  <text x="610" y="103" text-anchor="middle" font-size="13" font-weight="bold" fill="#cc3d00">+5 MW</text>
+
+  <!-- Arrow: load step lands directly on GTG -->
+  <line x1="672" y1="93" x2="710" y2="145" stroke="#cc3d00" stroke-width="2" marker-end="url(#arr-orange)"/>
+
+  <!-- GTG circle -->
+  <circle cx="722" cy="182" r="40" fill="#fff8f5" stroke="#cc3d00" stroke-width="2.2"/>
+  <path d="M701,182 Q709,168 717,182 Q725,196 733,182 Q741,168 743,182"
+        fill="none" stroke="#cc3d00" stroke-width="2.2" stroke-linecap="round"/>
+  <text x="722" y="240" text-anchor="middle" font-size="11" font-weight="bold" fill="#cc3d00">GTG</text>
+
+  <!-- Feeder -->
+  <line x1="722" y1="222" x2="722" y2="278" stroke="#cc3d00" stroke-width="2.2"/>
+  <rect x="715" y="278" width="14" height="14" rx="2" fill="#cc3d00"/>
+  <line x1="722" y1="292" x2="722" y2="300" stroke="#cc3d00" stroke-width="2.2"/>
+
+  <!-- Island bus -->
+  <line x1="582" y1="300" x2="858" y2="300" stroke="#cc3d00" stroke-width="4.5" stroke-linecap="square"/>
+  <text x="652" y="291" font-size="9" font-weight="bold" fill="#cc3d00">ISLAND BUS</text>
+
+  <!-- Open circuit at right end - no grid -->
+  <line x1="858" y1="300" x2="888" y2="300" stroke="#bbb" stroke-width="1.8" stroke-dasharray="4,3"/>
+  <circle cx="858" cy="300" r="4" fill="white" stroke="#bbb" stroke-width="1.5"/>
+  <line x1="858" y1="300" x2="871" y2="288" stroke="#bbb" stroke-width="1.8" stroke-linecap="round"/>
+  <text x="895" y="296" font-size="9" fill="#999">utility</text>
+  <text x="895" y="310" font-size="9" fill="#cc3d00">disconnected</text>
+
+  <!-- Load feeder -->
+  <line x1="722" y1="300" x2="722" y2="342" stroke="#cc3d00" stroke-width="2"/>
+  <rect x="715" y="342" width="14" height="14" rx="2" fill="#3d7fbd"/>
+  <line x1="722" y1="356" x2="722" y2="366" stroke="#1a3660" stroke-width="2"/>
+  <rect x="660" y="366" width="124" height="44" rx="6" fill="#fff4ee" stroke="#cc3d00" stroke-width="1.5"/>
+  <text x="722" y="385" text-anchor="middle" font-size="10" font-weight="bold" fill="#8b2000">DATA CENTRE</text>
+
+  <!-- Right callout bar -->
+  <rect x="540" y="428" width="482" height="66" rx="7" fill="#fff4ee" stroke="#e8c0a8" stroke-width="1"/>
+  <rect x="540" y="428" width="4" height="66" rx="3" fill="#cc3d00"/>
+  <text x="554" y="449" font-size="11" fill="#6b3020">Frequency deviation is immediate. Governor must respond within 1-2 seconds.</text>
+  <text x="554" y="465" font-size="11" fill="#6b3020">No reactive power buffer. DLE combustion system must survive the transient.</text>
+
+  <!-- SECTION TAG -->
+  <rect x="454" y="10" width="132" height="24" rx="12" fill="#f0f4f9" stroke="#c8d8e8" stroke-width="1"/>
+  <text x="520" y="26" text-anchor="middle" font-size="10" font-weight="bold" fill="#1a3660">SECTION 1  -  INTRO</text>
+
+  <!-- BRANDING (text only - no external image reference) -->
+  <text x="990" y="500" text-anchor="end" font-size="8" fill="#aaa">Kirby Industrial Resources</text>
+
+</svg>

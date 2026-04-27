@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="510" viewBox="0 0 1040 510">
+  <defs>
+    <marker id="arrNavy" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#002060"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1040" height="510" fill="#f8fafb"/>
+
+  <!-- Header bar -->
+  <rect x="0" y="0" width="1040" height="50" fill="#002060"/>
+  <text x="24" y="31" font-family="Arial,sans-serif" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="1">S1-1  ·  THE GRID-CONNECTED SCENARIO</text>
+  <rect x="870" y="13" width="154" height="24" rx="12" fill="#1a3660" stroke="#3d7fbd" stroke-width="1"/>
+  <text x="947" y="29" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#88aacc" letter-spacing="0.5">SECTION 1  ·  INTRO</text>
+
+  <!-- LEFT DIAGRAM PANEL -->
+  <rect x="16" y="58" width="614" height="372" rx="8" fill="#ffffff" stroke="#c8d8e8" stroke-width="1.5"/>
+  <text x="323" y="82" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#1a3660" letter-spacing="0.5">SINGLE-LINE DIAGRAM  ·  GRID-CONNECTED OPERATION</text>
+
+  <!-- UTILITY GRID / INFINITE BUS block -->
+  <rect x="408" y="90" width="190" height="112" rx="6" fill="#e8f2fc" stroke="#2060a0" stroke-width="2"/>
+  <text x="503" y="117" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="bold" fill="#002060">UTILITY GRID</text>
+  <text x="503" y="135" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#1a3660">Infinite Bus</text>
+  <!-- IEEE-style triple-bar infinite-bus symbol -->
+  <line x1="463" y1="152" x2="543" y2="152" stroke="#2060a0" stroke-width="4" stroke-linecap="round"/>
+  <line x1="471" y1="163" x2="535" y2="163" stroke="#2060a0" stroke-width="3" stroke-linecap="round"/>
+  <line x1="479" y1="172" x2="527" y2="172" stroke="#2060a0" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Stub from grid block bottom to bus -->
+  <line x1="503" y1="202" x2="503" y2="228" stroke="#002060" stroke-width="3"/>
+  <!-- SURGE ABSORBED badge -->
+  <rect x="516" y="204" width="88" height="20" rx="4" fill="#fff4dd" stroke="#cc8800" stroke-width="1"/>
+  <text x="560" y="217" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#8b4010">SURGE ABSORBED</text>
+
+  <!-- BUS BAR -->
+  <line x1="58" y1="228" x2="596" y2="228" stroke="#002060" stroke-width="6" stroke-linecap="square"/>
+  <text x="232" y="218" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#8899aa" letter-spacing="1">13.8 kV BUS</text>
+
+  <!-- Stable frequency badge near grid connection -->
+  <rect x="414" y="214" width="82" height="20" rx="10" fill="#d8eef8" stroke="#5090c0" stroke-width="1"/>
+  <text x="455" y="227" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#002060">f = 60 Hz  stable</text>
+
+  <!-- GTG connector: upward arrow showing steady power delivery to bus -->
+  <line x1="130" y1="264" x2="130" y2="232" stroke="#002060" stroke-width="3.5" marker-end="url(#arrNavy)"/>
+  <!-- Steady output badge -->
+  <rect x="36" y="233" width="84" height="20" rx="4" fill="#e8f2e8" stroke="#4a8040" stroke-width="1"/>
+  <text x="78" y="246" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#244424">Steady output</text>
+
+  <!-- GTG GENERATOR circle -->
+  <circle cx="130" cy="312" r="48" fill="#f0f5fa" stroke="#002060" stroke-width="2.5"/>
+  <!-- Sine wave symbol -->
+  <path d="M 104 312 Q 113 293, 122 312 Q 131 331, 140 312 Q 149 293, 158 312" fill="none" stroke="#002060" stroke-width="2" stroke-linecap="round"/>
+  <text x="130" y="372" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#1a3660">GAS TURBINE GENERATOR</text>
+
+  <!-- MINI MW vs. TIME CHART -->
+  <rect x="210" y="265" width="402" height="119" rx="6" fill="#f8fafb" stroke="#c8d8e8" stroke-width="1.5"/>
+  <text x="411" y="281" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#1a3660">MW OUTPUT vs. TIME  ·  Grid Surge Event</text>
+
+  <!-- Chart inner area -->
+  <rect x="228" y="287" width="366" height="72" fill="#ffffff" stroke="#dde8f2" stroke-width="1"/>
+
+  <!-- Surge event vertical marker -->
+  <line x1="382" y1="287" x2="382" y2="359" stroke="#cc7700" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <!-- GTG trace: perfectly flat (steady power) -->
+  <line x1="228" y1="315" x2="594" y2="315" stroke="#002060" stroke-width="2.5"/>
+
+  <!-- Grid power flow trace: flat with surge spike then recovery -->
+  <path d="M 228 343 L 376 343 L 381 298 L 387 352 L 396 343 L 594 343" fill="none" stroke="#cc7700" stroke-width="2.5"/>
+
+  <!-- Chart legend -->
+  <rect x="230" y="364" width="8" height="8" fill="#002060"/>
+  <text x="242" y="372" font-family="Arial,sans-serif" font-size="8" fill="#002060">GTG output  —  constant throughout</text>
+  <rect x="396" y="364" width="8" height="8" fill="#cc7700"/>
+  <text x="408" y="372" font-family="Arial,sans-serif" font-size="8" fill="#cc7700">Grid power flow  —  absorbs surge</text>
+
+  <!-- RIGHT INFO PANEL -->
+  <rect x="640" y="58" width="384" height="372" rx="8" fill="#f4f8fc" stroke="#c8d8e8" stroke-width="1.5"/>
+  <text x="832" y="86" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#1a3660" letter-spacing="0.5">KEY CHARACTERISTICS</text>
+
+  <!-- Card 1: Infinite Bus -->
+  <rect x="658" y="96" width="348" height="70" rx="6" fill="#ffffff" stroke="#dde8f2" stroke-width="1"/>
+  <rect x="658" y="96" width="4" height="70" rx="2" fill="#002060"/>
+  <text x="674" y="116" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#002060">Infinite Bus</text>
+  <text x="674" y="132" font-family="Arial,sans-serif" font-size="10" fill="#334466">Grid holds voltage and frequency essentially</text>
+  <text x="674" y="147" font-family="Arial,sans-serif" font-size="10" fill="#334466">constant, regardless of connected load.</text>
+  <text x="674" y="160" font-family="Arial,sans-serif" font-size="9" fill="#3d7fbd">Voltage and frequency are grid-controlled.</text>
+
+  <!-- Card 2: Absorbs Power Swings -->
+  <rect x="658" y="176" width="348" height="70" rx="6" fill="#ffffff" stroke="#dde8f2" stroke-width="1"/>
+  <rect x="658" y="176" width="4" height="70" rx="2" fill="#3d7fbd"/>
+  <text x="674" y="196" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#002060">Absorbs Power Swings</text>
+  <text x="674" y="212" font-family="Arial,sans-serif" font-size="10" fill="#334466">Load steps shared across thousands of</text>
+  <text x="674" y="227" font-family="Arial,sans-serif" font-size="10" fill="#334466">generators on the grid simultaneously.</text>
+  <text x="674" y="240" font-family="Arial,sans-serif" font-size="9" fill="#3d7fbd">Individual GTG impact is near zero.</text>
+
+  <!-- Card 3: Unlimited Reactive Power -->
+  <rect x="658" y="256" width="348" height="70" rx="6" fill="#ffffff" stroke="#dde8f2" stroke-width="1"/>
+  <rect x="658" y="256" width="4" height="70" rx="2" fill="#3d7fbd"/>
+  <text x="674" y="276" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#002060">Unlimited Reactive Power (VARs)</text>
+  <text x="674" y="292" font-family="Arial,sans-serif" font-size="10" fill="#334466">Grid supplies all reactive demands from</text>
+  <text x="674" y="307" font-family="Arial,sans-serif" font-size="10" fill="#334466">motor starts, PF correction, and voltage.</text>
+  <text x="674" y="320" font-family="Arial,sans-serif" font-size="9" fill="#3d7fbd">Alternator reactive loading is not a constraint.</text>
+
+  <!-- Card 4: Generator Protected -->
+  <rect x="658" y="336" width="348" height="70" rx="6" fill="#ffffff" stroke="#dde8f2" stroke-width="1"/>
+  <rect x="658" y="336" width="4" height="70" rx="2" fill="#002060"/>
+  <text x="674" y="356" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#002060">Generator is Fully Protected</text>
+  <text x="674" y="372" font-family="Arial,sans-serif" font-size="10" fill="#334466">Transient events do not threaten combustion</text>
+  <text x="674" y="387" font-family="Arial,sans-serif" font-size="10" fill="#334466">stability. Governor response time is relaxed.</text>
+  <text x="674" y="400" font-family="Arial,sans-serif" font-size="9" fill="#3d7fbd">This changes completely in island mode.</text>
+
+  <!-- BOTTOM CALLOUT -->
+  <rect x="16" y="438" width="1008" height="62" rx="7" fill="#e8f2fc" stroke="#b0cce4" stroke-width="1"/>
+  <rect x="16" y="438" width="4" height="62" rx="2" fill="#3d7fbd"/>
+  <text x="34" y="463" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#1a3660">KEY CONCEPT</text>
+  <text x="34" y="479" font-family="Arial,sans-serif" font-size="11" fill="#334466">In grid-connected operation, the utility acts as an infinite reservoir of voltage and frequency stability.</text>
+  <text x="34" y="494" font-family="Arial,sans-serif" font-size="11" fill="#334466">The GTG operates in a fully buffered environment — transient events are distributed across the entire grid.</text>
+
+  <!-- Branding -->
+  <text x="1024" y="504" text-anchor="end" font-family="Arial,sans-serif" font-size="8" fill="#aaa">Kirby Industrial Resources</text>
+</svg>

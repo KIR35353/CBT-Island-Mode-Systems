@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>S1-3 The Swing Equation</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f8fafb; font-family: Arial, sans-serif; width: 1040px; min-height: 510px; overflow: hidden; }
+
+  .header {
+    background: #002060; color: #fff;
+    height: 50px; display: flex; align-items: center; padding: 0 24px;
+    justify-content: space-between;
+  }
+  .header-title { font-size: 14px; font-weight: bold; letter-spacing: 1px; }
+  .header-tag {
+    background: #1a3660; border: 1px solid #3d7fbd;
+    border-radius: 12px; padding: 4px 16px;
+    font-size: 10px; font-weight: bold; color: #88aacc; letter-spacing: 0.5px;
+  }
+
+  .main { display: flex; height: 420px; gap: 0; padding: 10px 16px 0; }
+
+  .rotor-panel {
+    width: 340px; flex-shrink: 0;
+    background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 10px 8px; position: relative;
+  }
+  .panel-title {
+    font-size: 10px; font-weight: bold; color: #1a3660; letter-spacing: 0.5px;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .rotor-svg { width: 240px; height: 240px; }
+
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .rotor-body { transform-origin: 120px 120px; animation: spin 2s linear infinite; }
+
+  .power-bars { width: 100%; display: flex; gap: 8px; margin-top: 6px; justify-content: center; }
+  .bar-group { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .bar-label { font-size: 9px; color: #334466; text-align: center; line-height: 1.2; }
+  .bar-track {
+    width: 34px; height: 80px; background: #f0f4f8; border: 1px solid #c8d8e8;
+    border-radius: 4px; overflow: hidden; display: flex; align-items: flex-end;
+  }
+  .bar-fill { width: 100%; border-radius: 3px 3px 0 0; transition: height 1.1s ease; }
+  .bar-pmech { background: #002060; }
+  .bar-pelec { background: #cc3d00; }
+  .bar-imbalance { background: #cc8800; }
+
+  .mid-panel { width: 278px; flex-shrink: 0; margin: 0 10px; display: flex; flex-direction: column; gap: 8px; }
+  .equation-box { background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; padding: 12px 14px; }
+  .eq-title { font-size: 10px; font-weight: bold; color: #1a3660; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
+  .eq-formula { font-size: 15px; font-weight: bold; color: #002060; text-align: center; margin: 6px 0 10px; }
+  .eq-terms { font-size: 9px; color: #334466; line-height: 1.7; }
+  .eq-terms span { color: #002060; font-weight: bold; }
+
+  .fact-box { background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; padding: 10px 14px; }
+  .fact-title { font-size: 10px; font-weight: bold; color: #1a3660; letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; }
+  .fact-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 7px; font-size: 10px; color: #334466; line-height: 1.4; }
+  .fact-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+
+  .callout-box { background: #fff4ee; border: 1px solid #e8c0a8; border-radius: 7px; padding: 10px 14px; border-left: 4px solid #cc3d00; flex: 1; }
+  .callout-label { font-size: 10px; font-weight: bold; color: #8b2000; margin-bottom: 4px; }
+  .callout-text { font-size: 10px; color: #334466; line-height: 1.5; }
+
+  .meter-panel { flex: 1; background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 10px 8px; }
+  .meter-svg { width: 100%; flex: 1; }
+
+  .needle { transform-origin: 192px 195px; transition: transform 1.2s cubic-bezier(.4,0,.2,1); }
+
+  .bottom-callout {
+    margin: 8px 16px 0;
+    background: #fff4ee; border: 1px solid #e8c0a8; border-radius: 7px;
+    padding: 8px 14px 8px 18px; border-left: 4px solid #cc3d00;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .bc-head { font-size: 11px; font-weight: bold; color: #8b2000; white-space: nowrap; padding-top: 2px; }
+  .bc-text { font-size: 10px; color: #334466; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">S1-3 &middot; THE SWING EQUATION &mdash; FREQUENCY IS NOT FREE</div>
+  <div class="header-tag">SECTION 1 &middot; INTRO</div>
+</div>
+
+<div class="main">
+
+  <div class="rotor-panel">
+    <div class="panel-title">Rotor Power Balance</div>
+    <svg class="rotor-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="120" cy="120" r="88" fill="#f0f5fa" stroke="#c8d8e8" stroke-width="3"/>
+      <circle cx="120" cy="120" r="88" fill="none" stroke="#dde8f2" stroke-width="10" stroke-dasharray="8 6"/>
+      <g class="rotor-body" id="rotorBody">
+        <circle cx="120" cy="120" r="54" fill="#e8f0f8" stroke="#002060" stroke-width="2.5"/>
+        <rect x="108" y="66" width="24" height="54" rx="4" fill="#002060"/>
+        <rect x="108" y="120" width="24" height="54" rx="4" fill="#1a3660"/>
+        <rect x="66" y="108" width="54" height="24" rx="4" fill="#002060"/>
+        <rect x="120" y="108" width="54" height="24" rx="4" fill="#1a3660"/>
+        <circle cx="120" cy="120" r="14" fill="#002060"/>
+        <circle cx="120" cy="120" r="7" fill="#3d7fbd"/>
+      </g>
+      <defs>
+        <marker id="aGreen" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+          <polygon points="0 0,9 3.5,0 7" fill="#2a7a20"/>
+        </marker>
+        <marker id="aRed" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+          <polygon points="0 0,9 3.5,0 7" fill="#cc3d00"/>
+        </marker>
+      </defs>
+      <line x1="8" y1="120" x2="28" y2="120" stroke="#2a7a20" stroke-width="4" marker-end="url(#aGreen)"/>
+      <text x="5" y="110" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#2a7a20">P</text>
+      <text x="5" y="122" font-family="Arial,sans-serif" font-size="7" fill="#2a7a20">mech</text>
+      <text x="5" y="132" font-family="Arial,sans-serif" font-size="8" fill="#2a7a20">(turbine)</text>
+      <line x1="212" y1="120" x2="232" y2="120" stroke="#cc3d00" stroke-width="4" marker-end="url(#aRed)"/>
+      <text x="215" y="110" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#cc3d00">P</text>
+      <text x="215" y="122" font-family="Arial,sans-serif" font-size="7" fill="#cc3d00">elec</text>
+      <text x="212" y="132" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">(load)</text>
+    </svg>
+    <div class="power-bars">
+      <div class="bar-group">
+        <div class="bar-track"><div class="bar-fill bar-pmech" id="barPmech" style="height:60%"></div></div>
+        <div class="bar-label">P<sub>mech</sub><br/>turbine</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-track"><div class="bar-fill bar-pelec" id="barPelec" style="height:60%"></div></div>
+        <div class="bar-label">P<sub>elec</sub><br/>load</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-track"><div class="bar-fill bar-imbalance" id="barImb" style="height:2%"></div></div>
+        <div class="bar-label">Imbal-<br/>ance</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mid-panel">
+    <div class="equation-box">
+      <div class="eq-title">The Swing Equation</div>
+      <div class="eq-formula">df/dt = (P<sub>mech</sub> &minus; P<sub>elec</sub>) / (2 &times; H)</div>
+      <div class="eq-terms">
+        <span>df/dt</span> &mdash; rate of frequency change (Hz/s)<br/>
+        <span>P<sub>mech</sub></span> &mdash; mechanical power from turbine<br/>
+        <span>P<sub>elec</sub></span> &mdash; electrical load demand<br/>
+        <span>H</span> &mdash; inertia constant (MWs/MVA)<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gas turbines: typically <span>3&ndash;6 s</span>
+      </div>
+    </div>
+    <div class="fact-box">
+      <div class="fact-title">What This Means</div>
+      <div class="fact-row"><div class="fact-dot" style="background:#cc3d00"></div><div>P<sub>elec</sub> &gt; P<sub>mech</sub> &rarr; rotor decelerates &rarr; <strong>frequency drops</strong></div></div>
+      <div class="fact-row"><div class="fact-dot" style="background:#2a7a20"></div><div>P<sub>mech</sub> &gt; P<sub>elec</sub> &rarr; rotor accelerates &rarr; <strong>frequency rises</strong></div></div>
+      <div class="fact-row"><div class="fact-dot" style="background:#002060"></div><div>Low H = frequency changes <strong>faster</strong> for the same imbalance</div></div>
+      <div class="fact-row"><div class="fact-dot" style="background:#cc3d00"></div><div>10% load step &rarr; <strong>1&ndash;2 Hz excursion</strong> in first second</div></div>
+    </div>
+    <div class="callout-box">
+      <div class="callout-label">Key Callout</div>
+      <div class="callout-text">
+        Small inertia = fast frequency response <em>required</em>.<br/>
+        The governor must act within <strong>1&ndash;2 seconds</strong> or UFLS trips will cascade.<br/>
+        This is the central challenge of island mode.
+      </div>
+    </div>
+  </div>
+
+  <div class="meter-panel">
+    <div class="panel-title">Frequency Meter &mdash; Bus Response</div>
+    <svg class="meter-svg" viewBox="0 0 384 310" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 44 210 A 148 148 0 0 1 340 210" fill="#f0f5fa" stroke="#c8d8e8" stroke-width="2"/>
+      <path d="M 192 210 L 320 115 A 148 148 0 0 1 340 210 Z" fill="#ffe8e0" opacity="0.6"/>
+      <path d="M 192 210 L 64 115 A 148 148 0 0 0 44 210 Z" fill="#e8f5e0" opacity="0.6"/>
+      <line x1="83" y1="145" x2="97" y2="158" stroke="#cc3d00" stroke-width="2"/>
+      <line x1="65" y1="183" x2="81" y2="187" stroke="#cc7700" stroke-width="2"/>
+      <line x1="68" y1="225" x2="84" y2="221" stroke="#334466" stroke-width="1.5"/>
+      <line x1="192" y1="62" x2="192" y2="80" stroke="#2a7a20" stroke-width="3"/>
+      <line x1="316" y1="225" x2="300" y2="221" stroke="#334466" stroke-width="1.5"/>
+      <line x1="319" y1="183" x2="303" y2="187" stroke="#334466" stroke-width="1.5"/>
+      <text x="68" y="140" font-family="Arial,sans-serif" font-size="11" fill="#cc3d00" font-weight="bold">57</text>
+      <text x="46" y="186" font-family="Arial,sans-serif" font-size="11" fill="#cc7700">58</text>
+      <text x="50" y="228" font-family="Arial,sans-serif" font-size="11" fill="#334466">59</text>
+      <text x="181" y="52" font-family="Arial,sans-serif" font-size="11" fill="#2a7a20" font-weight="bold">60</text>
+      <text x="305" y="228" font-family="Arial,sans-serif" font-size="11" fill="#334466">61</text>
+      <text x="305" y="186" font-family="Arial,sans-serif" font-size="11" fill="#334466">62</text>
+      <text x="192" y="175" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="bold" fill="#1a3660">Hz</text>
+      <text x="130" y="200" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#2a7a20">Normal</text>
+      <text x="258" y="200" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">Danger</text>
+      <line x1="192" y1="210" x2="93" y2="143" stroke="#cc3d00" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+      <text x="78" y="132" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">UFLS trip</text>
+      <g class="needle" id="needle">
+        <line x1="192" y1="210" x2="192" y2="78" stroke="#002060" stroke-width="3.5" stroke-linecap="round"/>
+        <polygon points="192,70 186,88 198,88" fill="#002060"/>
+      </g>
+      <circle cx="192" cy="210" r="9" fill="#002060"/>
+      <circle cx="192" cy="210" r="4" fill="#3d7fbd"/>
+      <rect x="139" y="222" width="106" height="34" rx="5" fill="#f8fafb" stroke="#c8d8e8" stroke-width="1.5"/>
+      <text x="192" y="235" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#667788">Bus Frequency</text>
+      <text x="192" y="250" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="bold" fill="#2a7a20" id="freqDisplay">60.0 Hz</text>
+      <path d="M 44 210 A 148 148 0 0 1 340 210" fill="none" stroke="#334466" stroke-width="2.5"/>
+      <text x="192" y="300" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#667788" id="meterCaption">Balanced - Pmech = Pelec</text>
+    </svg>
+  </div>
+
+</div>
+
+<div class="bottom-callout">
+  <div class="bc-head">KEY CONCEPT</div>
+  <div class="bc-text">
+    Frequency deviation is governed by the power imbalance between mechanical input and electrical load &mdash; divided by twice the inertia constant.
+    Gas turbines have low inertia (H = 3&ndash;6 s). A 10% load step causes a 1&ndash;2 Hz drop within the first second. The governor must respond immediately.
+  </div>
+</div>
+
+<script>
+var rotor   = document.getElementById('rotorBody');
+var needle  = document.getElementById('needle');
+var pmechB  = document.getElementById('barPmech');
+var pelecB  = document.getElementById('barPelec');
+var imbB    = document.getElementById('barImb');
+var freqEl  = document.getElementById('freqDisplay');
+var capEl   = document.getElementById('meterCaption');
+
+// needle: 0deg = 60Hz (straight up), positive clockwise = lower Hz (danger side)
+function applyPhase(pmech, pelec, imb, needleDeg, freqText, freqColor, rotorSec, cap) {
+  pmechB.style.height = pmech + '%';
+  pelecB.style.height = pelec + '%';
+  imbB.style.height   = imb + '%';
+  needle.style.transform = 'rotate(' + needleDeg + 'deg)';
+  freqEl.textContent  = freqText;
+  freqEl.style.color  = freqColor;
+  rotor.style.animationDuration = rotorSec + 's';
+  capEl.textContent   = cap;
+}
+
+// [pmech%, pelec%, imb%, needleDeg, freqText, freqColor, rotorSec, caption, holdMs]
+var phases = [
+  [60, 60,  2,   0, '60.0 Hz', '#2a7a20', 2.0, 'Balanced - Pmech = Pelec',           2500],
+  [60, 90, 38,   0, '60.0 Hz', '#cc7700', 2.0, 'Load step applied - Pelec jumps',      700],
+  [60, 90, 38,  25, '58.3 Hz', '#cc3d00', 3.8, 'Rotor decelerates - frequency drops', 1800],
+  [80, 90, 13,  13, '59.1 Hz', '#cc7700', 2.8, 'Governor responds - Pmech rising',    1800],
+  [90, 90,  2,   0, '60.0 Hz', '#2a7a20', 2.1, 'Rebalanced - new steady state',       2200]
+];
+
+var idx = 0;
+function tick() {
+  var p = phases[idx];
+  applyPhase(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
+  idx = (idx + 1) % phases.length;
+  setTimeout(tick, p[8]);
+}
+tick();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Island Mode GTG Systems — Introduction | Kirby Corporation</title>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   KIRBY CORPORATION BRAND PALETTE
+   Source: kirbycorp.com — deep navy / orange / white
+═══════════════════════════════════════════════════════ */
+:root {
+  --k-navy:         #002060;
+  --k-navy-mid:     #1a3a6e;
+  --k-navy-light:   #274d8a;
+  --k-blue:         #1d5fa8;
+  --k-steel:        #3d7fbd;
+  --k-steel-lt:     #80b4dc;
+  --k-orange:       #cc3d00;
+  --k-orange-lt:    #e06828;
+  --k-orange-glow:  rgba(204,61,0,0.28);
+  --k-white:        #ffffff;
+  --k-offwhite:     #f3f6fb;
+  --k-mid:          #dce7f5;
+  --k-text-dark:    #0d1d33;
+  --k-muted:        #6a7d94;
+  --k-border:       rgba(255,255,255,0.13);
+  --r:              10px;
+  --t:              0.38s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--k-navy);
+}
+
+body {
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  color: var(--k-white);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ─────────────────────────────────────────────────────
+   HEADER
+───────────────────────────────────────────────────── */
+header {
+  flex-shrink: 0;
+  background: #001245;
+  border-bottom: 3px solid var(--k-orange);
+  padding: 9px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hdr-left { display: flex; align-items: center; gap: 14px; }
+
+.hdr-logo { height: 36px; opacity: 0.93; }
+
+.hdr-titles { line-height: 1.3; }
+
+.hdr-id {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--k-orange-lt);
+}
+
+.hdr-course {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--k-white);
+}
+
+/* Progress dots */
+.hdr-right { display: flex; align-items: center; gap: 12px; }
+
+.dots { display: flex; gap: 9px; }
+
+.dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--k-steel);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--t), border-color var(--t), transform 0.2s;
+}
+.dot:hover { border-color: var(--k-steel-lt); }
+.dot.visited { background: var(--k-steel); border-color: var(--k-steel-lt); }
+.dot.active  { background: var(--k-orange); border-color: var(--k-orange-lt); transform: scale(1.3); }
+
+.dot-counter {
+  font-size: 11px;
+  color: var(--k-muted);
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────────────
+   MAIN SCREEN AREA
+───────────────────────────────────────────────────── */
+.stage {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  padding: 22px 44px 18px;
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.screen.active { display: flex; }
+.screen.visible { opacity: 1; }
+
+.scrn-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--k-orange-lt);
+  opacity: 0.85;
+}
+
+.scrn-h1 {
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--k-white);
+}
+
+.rule { width: 72px; height: 3px; background: var(--k-orange); border-radius: 2px; margin-top: 5px; }
+
+/* ═══════════════════════════════════════════════════════
+   INT-1  TITLE CARD
+═══════════════════════════════════════════════════════ */
+#s-int1 {
+  background: radial-gradient(ellipse at 30% 40%, #0a2860 0%, #001245 55%, #000c2a 100%);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.int1-pre {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--k-orange-lt);
+  opacity: 0.8;
+}
+
+.int1-title {
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1.12;
+  color: var(--k-white);
+  max-width: 700px;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.5);
+}
+
+.int1-divider {
+  width: 64px; height: 4px;
+  background: var(--k-orange);
+  border-radius: 3px;
+  margin: 2px auto;
+}
+
+.int1-sub {
+  font-size: 16px;
+  color: var(--k-steel-lt);
+  max-width: 540px;
+  line-height: 1.5;
+}
+
+.int1-badges {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.badge {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-size: 11.5px;
+  color: var(--k-steel-lt);
+}
+
+.int1-logo-br {
+  position: absolute;
+  bottom: 72px;
+  right: 44px;
+  height: 44px;
+  opacity: 0.45;
+}
+
+.int1-play-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--k-orange);
+  color: var(--k-white);
+  border: none;
+  border-radius: 50px;
+  padding: 13px 32px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 0 0 var(--k-orange-glow);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  animation: playPulse 2.2s ease-in-out infinite;
+  position: relative;
+}
+.int1-play-btn:hover  { background: var(--k-orange-lt); transform: scale(1.04); animation: none; }
+.int1-play-btn:active { transform: scale(0.97); }
+.int1-play-btn.played {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: var(--k-steel-lt);
+  font-size: 13px;
+  padding: 9px 22px;
+  animation: none;
+  box-shadow: none;
+}
+.int1-play-btn.played:hover { background: rgba(255,255,255,0.18); }
+@keyframes playPulse {
+  0%,100% { box-shadow: 0 0 0 0   rgba(204,61,0,0.5); }
+  50%      { box-shadow: 0 0 0 12px rgba(204,61,0,0);   }
+}
+
+.int1-nav-hint {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  padding: 14px 24px;
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 12px;
+  max-width: 560px;
+}
+
+.nhint {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  white-space: nowrap;
+}
+
+.nhint-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--k-steel-lt);
+  letter-spacing: 0.3px;
+  min-width: 28px;
+}
+
+/* star-field texture */
+#s-int1::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,0.18) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 75%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 85%, rgba(255,255,255,0.2) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   INT-2  WHO THIS IS FOR
+═══════════════════════════════════════════════════════ */
+#s-int2 { background: linear-gradient(160deg, #001a4a 0%, var(--k-navy) 100%); }
+
+.two-col { display: flex; gap: 22px; flex: 1; min-height: 0; }
+
+.svg-pane {
+  flex: 1.65;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--r);
+  background: var(--k-offwhite);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.svg-pane img { width: 100%; height: 100%; object-fit: contain; }
+
+.info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  min-width: 0;
+}
+
+.card {
+  background: rgba(255,255,255,0.055);
+  border: 1px solid var(--k-border);
+  border-left: 4px solid var(--k-orange);
+  border-radius: var(--r);
+  padding: 13px 15px;
+  font-size: 13px;
+  color: var(--k-steel-lt);
+  line-height: 1.6;
+}
+.card strong { color: var(--k-white); }
+
+/* ═══════════════════════════════════════════════════════
+   INT-3  COURSE APPLICATION
+═══════════════════════════════════════════════════════ */
+#s-int3 { background: linear-gradient(160deg, #001a4a 0%, var(--k-navy) 100%); }
+
+#s-int3 .svg-pane { flex: 1.7; }
+
+.kp-list { display: flex; flex-direction: column; gap: 10px; }
+
+.kp {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.kp-dot {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+.kp-dot.bl { background: var(--k-blue); }
+.kp-dot.or { background: var(--k-orange); }
+
+.kp-body { font-size: 13px; color: var(--k-steel-lt); line-height: 1.6; }
+.kp-body strong { color: var(--k-white); }
+.kp-body em { font-size: 11px; opacity: 0.7; }
+
+.no-grid {
+  background: var(--k-orange-glow);
+  border: 1px solid var(--k-orange);
+  border-radius: var(--r);
+  padding: 11px 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffaa7a;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   INT-4  LEARNING OBJECTIVES
+═══════════════════════════════════════════════════════ */
+#s-int4 { background: linear-gradient(160deg, #001a4a 0%, var(--k-navy) 100%); }
+
+.obj-prog-wrap { height: 4px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+.obj-prog-fill { height: 100%; width: 0%; background: var(--k-orange); border-radius: 3px; transition: width 0.5s ease; }
+
+.obj-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px 22px;
+  align-content: start;
+  min-height: 0;
+}
+
+.obj {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.obj.show { opacity: 1; transform: translateY(0); }
+
+.obj-n {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--k-orange);
+  color: var(--k-white);
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: box-shadow 0.3s;
+}
+.obj-n.pulse { animation: npulse 0.65s ease; }
+@keyframes npulse {
+  0%,100% { box-shadow: none; transform: scale(1); }
+  50%      { box-shadow: 0 0 0 5px var(--k-orange-glow); transform: scale(1.15); }
+}
+
+.obj-body { font-size: 13px; color: var(--k-steel-lt); line-height: 1.55; padding-top: 6px; }
+.obj-tag  { font-size: 10px; font-weight: 700; color: var(--k-orange-lt); letter-spacing: 0.4px; opacity: 0.8; margin-bottom: 2px; }
+
+/* ─────────────────────────────────────────────────────
+   VO BAR
+───────────────────────────────────────────────────── */
+.vo-bar {
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.38);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 9px 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 54px;
+}
+
+.vo-mic {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--k-navy-mid);
+  border: 2px solid var(--k-steel);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.25s, background 0.25s;
+}
+.vo-mic svg { width: 17px; height: 17px; fill: var(--k-steel-lt); transition: fill 0.25s; }
+
+.vo-bar.live .vo-mic { background: var(--k-orange-glow); border-color: var(--k-orange-lt); }
+.vo-bar.live .vo-mic svg { fill: var(--k-orange-lt); }
+
+.vo-text { flex: 1; overflow: hidden; }
+.vo-label-tag { font-size: 9px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--k-muted); margin-bottom: 2px; }
+.vo-caption { font-size: 12px; color: var(--k-muted); line-height: 1.45; font-style: italic; transition: color 0.25s; }
+.vo-bar.live .vo-caption { color: var(--k-white); }
+
+/* Wave animation */
+.wave { display: flex; gap: 2px; align-items: center; height: 18px; opacity: 0; transition: opacity 0.25s; }
+.vo-bar.live .wave { opacity: 1; }
+.wave span {
+  display: block; width: 3px; border-radius: 2px;
+  background: var(--k-orange-lt);
+  animation: wv 0.75s ease-in-out infinite;
+}
+.wave span:nth-child(1) { height: 5px;  animation-delay: 0s;    }
+.wave span:nth-child(2) { height: 13px; animation-delay: 0.15s; }
+.wave span:nth-child(3) { height: 8px;  animation-delay: 0.05s; }
+.wave span:nth-child(4) { height: 16px; animation-delay: 0.2s;  }
+.wave span:nth-child(5) { height: 6px;  animation-delay: 0.1s;  }
+@keyframes wv {
+  0%,100% { transform: scaleY(1); }
+  50%      { transform: scaleY(0.3); }
+}
+
+/* ─────────────────────────────────────────────────────
+   FOOTER NAV
+───────────────────────────────────────────────────── */
+footer {
+  flex-shrink: 0;
+  background: #001245;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn {
+  border: none;
+  border-radius: 7px;
+  padding: 7px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+.btn:disabled { opacity: 0.32; cursor: default; }
+
+.btn-back {
+  background: rgba(255,255,255,0.07);
+  color: var(--k-steel-lt);
+}
+.btn-back:hover:not(:disabled) { background: rgba(255,255,255,0.14); }
+
+.btn-next {
+  background: var(--k-orange);
+  color: var(--k-white);
+}
+.btn-next:hover:not(:disabled) { background: var(--k-orange-lt); }
+
+.btn-replay {
+  background: transparent;
+  color: var(--k-muted);
+  font-size: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 7px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-replay:hover { color: var(--k-white); border-color: var(--k-steel); }
+
+.ftr-centre { font-size: 11px; color: var(--k-muted); }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ════════════════════════════════════════════════ -->
+<header>
+  <div class="hdr-left">
+    <img src="kirbyflag_imagefile.png" alt="Kirby Corporation" class="hdr-logo">
+    <div class="hdr-titles">
+      <div class="hdr-id">KIR-GTG-001 &nbsp;·&nbsp; Introduction</div>
+      <div class="hdr-course">Island Mode Operation: Design Principles for GTG Packaging Engineers</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="dots" id="dots" role="tablist" aria-label="Course screens"></div>
+    <span class="dot-counter" id="dotCounter">Screen 1 of 4</span>
+  </div>
+</header>
+
+<!-- ═══ STAGE ═════════════════════════════════════════════════ -->
+<div class="stage">
+
+  <!-- ── INT-1: TITLE CARD ───────────────────────────────── -->
+  <div class="screen active" id="s-int1" role="tabpanel" aria-label="INT-1 Title Card">
+
+    <div class="int1-pre">Introduction</div>
+    <div class="int1-title">Island Mode<br>Operation</div>
+    <div class="int1-divider"></div>
+    <div class="int1-sub">Design Principles for Gas Turbine Generator Packaging Engineers</div>
+    <div class="int1-badges">
+      <span class="badge">⏱ 45-minute course</span>
+      <span class="badge">6 Sections + Final Exam</span>
+      <span class="badge">Data Centre Power Systems</span>
+    </div>
+
+    <button class="int1-play-btn" id="int1PlayBtn" aria-label="Play introduction narration">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      Play Introduction
+    </button>
+
+    <div class="int1-nav-hint" role="note" aria-label="Navigation instructions">
+      <div class="nhint"><span class="nhint-key">→</span> Next screen</div>
+      <div class="nhint"><span class="nhint-key">←</span> Previous screen</div>
+      <div class="nhint"><span class="nhint-key">Space</span> Replay narration</div>
+      <div class="nhint"><span class="nhint-key">●</span> Jump to any screen</div>
+    </div>
+
+    <img src="kirbyflag_imagefile.png" alt="Kirby Industrial Resources" class="int1-logo-br">
+  </div>
+
+  <!-- ── INT-2: WHO THIS COURSE IS FOR ───────────────────── -->
+  <div class="screen" id="s-int2" role="tabpanel" aria-label="INT-2 Who This Course Is For">
+
+    <span class="scrn-eyebrow">Introduction &middot; Screen 2 of 4</span>
+    <div>
+      <div class="scrn-h1">Who This Course Is For</div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="two-col">
+      <div class="svg-pane">
+        <img src="INT-2_Who_This_Course_Is_For.svg"
+             alt="Infographic: gas turbine + alternator + auxiliary systems equals packaged GTG product">
+      </div>
+      <div class="info-col">
+        <div class="card">
+          This course supports <strong>engineers, technical sales staff,</strong> and <strong>support personnel</strong> involved with gas turbine generator packages.
+        </div>
+        <div class="card">
+          Applications focus on <strong>critical, grid-independent power systems</strong> — including large-scale data centres.
+        </div>
+        <div class="card" style="border-left-color:var(--k-steel);">
+          Understanding island mode enables <strong>sound design decisions</strong> and <strong>effective communication</strong> across project teams and with customers — from specification through commissioning and field support.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INT-3: COURSE APPLICATION ───────────────────────── -->
+  <div class="screen" id="s-int3" role="tabpanel" aria-label="INT-3 Course Application">
+
+    <span class="scrn-eyebrow">Introduction &middot; Screen 3 of 4</span>
+    <div>
+      <div class="scrn-h1">Course Application</div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="two-col">
+      <div class="svg-pane">
+        <img src="INT-3_Course_Application.svg"
+             alt="Single-line diagram: four GTGs in parallel feeding a data centre bus, no utility grid connection">
+      </div>
+      <div class="info-col">
+        <div class="kp-list">
+          <div class="kp">
+            <div class="kp-dot bl">◉</div>
+            <div class="kp-body"><strong>Application focus:</strong><br>Multi-unit paralleled GTG power systems for data centres.</div>
+          </div>
+          <div class="kp">
+            <div class="kp-dot bl">◉</div>
+            <div class="kp-body">
+              <strong>Supplier examples used:</strong><br>
+              Kawasaki Heavy Industries (KHI) turbines &middot; Jeumont Electric alternators<br>
+              <em>Principles apply broadly across the industry.</em>
+            </div>
+          </div>
+          <div class="no-grid">
+            ⚡ No utility grid connection —<br>the GTGs <em>are</em> the grid.
+          </div>
+          <div class="kp" style="margin-top:6px;">
+            <div class="kp-dot or">!</div>
+            <div class="kp-body">Every load change, every motor start, every fault — lands entirely on the packaged GTG system. There is nothing else.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INT-4: LEARNING OBJECTIVES ──────────────────────── -->
+  <div class="screen" id="s-int4" role="tabpanel" aria-label="INT-4 Learning Objectives">
+
+    <span class="scrn-eyebrow">Introduction &middot; Screen 4 of 4</span>
+    <div>
+      <div class="scrn-h1">Learning Objectives</div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="obj-prog-wrap">
+      <div class="obj-prog-fill" id="objFill"></div>
+    </div>
+
+    <div class="obj-grid">
+      <div class="obj" id="obj-1">
+        <div class="obj-n" id="on-1">1</div>
+        <div>
+          <div class="obj-tag">Section 1</div>
+          <div class="obj-body">Explain why island mode requires different operating limits than grid-parallel operation.</div>
+        </div>
+      </div>
+      <div class="obj" id="obj-2">
+        <div class="obj-n" id="on-2">2</div>
+        <div>
+          <div class="obj-tag">Section 2</div>
+          <div class="obj-body">Define the island mode derate and the incremental reserve margin, and apply them to a representative 18 MW class turbine system.</div>
+        </div>
+      </div>
+      <div class="obj" id="obj-3">
+        <div class="obj-n" id="on-3">3</div>
+        <div>
+          <div class="obj-tag">Section 3</div>
+          <div class="obj-body">Describe the governor and excitation control functions required for stable island mode operation.</div>
+        </div>
+      </div>
+      <div class="obj" id="obj-4">
+        <div class="obj-n" id="on-4">4</div>
+        <div>
+          <div class="obj-tag">Section 4</div>
+          <div class="obj-body">Identify the protection systems — underfrequency load shedding, rate-of-change-of-frequency, and excitation limiting — and explain their coordination.</div>
+        </div>
+      </div>
+      <div class="obj" id="obj-5">
+        <div class="obj-n" id="on-5">5</div>
+        <div>
+          <div class="obj-tag">Section 5</div>
+          <div class="obj-body">Explain how Dry Low Emissions combustion constraints affect step-load limits.</div>
+        </div>
+      </div>
+      <div class="obj" id="obj-6">
+        <div class="obj-n" id="on-6">6</div>
+        <div>
+          <div class="obj-tag">Section 6</div>
+          <div class="obj-body">Describe the coordination requirements for multi-unit parallel operation in a data centre power plant.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+<!-- ═══ VO BAR ════════════════════════════════════════════════ -->
+<div class="vo-bar" id="voBar">
+  <div class="vo-mic" id="voMic">
+    <!-- microphone icon -->
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4zm-1.5 14.93A8.001 8.001 0 0120 10.5a.75.75 0 011.5 0 8 8 0 01-7.25 7.95V21h2.5a.75.75 0 010 1.5h-6.5a.75.75 0 010-1.5H12.75v-2.57A8.001 8.001 0 014 10.5a.75.75 0 011.5 0 6.5 6.5 0 005 6.34V18a2 2 0 002 0v-1.07z"/>
+    </svg>
+  </div>
+  <div class="vo-text">
+    <div class="vo-label-tag">Narration &nbsp;&middot;&nbsp; Google UK English Female</div>
+    <div class="vo-caption" id="voCaption">Click Play to start narration, or press the Space bar.</div>
+  </div>
+  <div class="wave" id="wave" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- ═══ FOOTER NAV ════════════════════════════════════════════ -->
+<footer>
+  <button class="btn btn-back" id="btnBack" disabled>&#8592; Back</button>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button class="btn-replay" id="btnReplay" aria-label="Replay narration">&#8635; Replay VO</button>
+    <span class="ftr-centre" id="ftrLabel">Introduction &nbsp;&middot;&nbsp; 3 minutes</span>
+  </div>
+  <button class="btn btn-next" id="btnNext">Begin Course &#9658;</button>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════ -->
+<script>
+/* ───────────────────────────────────────────────────────────
+   SCREEN DEFINITIONS
+   vo[] = array of utterances played in sequence for this screen.
+   For INT-4, revealAt[i] = objective number to reveal BEFORE
+   speaking vo[i] (null = no reveal).
+─────────────────────────────────────────────────────────── */
+const SCREENS = [
+  {
+    id: 's-int1',
+    label: 'Title Card',
+    vo: [
+      "Welcome to this course on island mode operation for gas turbine generator systems. " +
+      "This course is designed to give generator packagers a clear understanding of the " +
+      "challenges associated with operating gas turbine generators in an island installation. " +
+      "Use the arrow keys, or the Back and Next buttons, to move between screens. " +
+      "Press the Space bar at any time to replay the narration for the current screen. " +
+      "Use the progress dots at the top right to jump directly to any screen. " +
+      "Click Begin Course to get started."
+    ]
+  },
+  {
+    id: 's-int2',
+    label: 'Who This Course Is For',
+    vo: [
+      "Whether your role is in engineering, technical sales, or customer support, " +
+      "understanding how island mode changes the behaviour and limits of a gas turbine " +
+      "generator system is essential. It enables sound design decisions and effective " +
+      "communication across project teams and with customers — from initial specification " +
+      "through commissioning and field support."
+    ]
+  },
+  {
+    id: 's-int3',
+    label: 'Course Application',
+    vo: [
+      "Throughout this course, our reference application is a data centre powered entirely " +
+      "by multiple, paralleled gas turbine generators. There is no utility grid connection. " +
+      "The gas turbines and alternators in these packages are the only source of electrical " +
+      "power for the facility. Kawasaki Heavy Industries and Jeumont Electric are used as " +
+      "supplier examples, but the principles apply broadly across the industry."
+    ]
+  },
+  {
+    id: 's-int4',
+    label: 'Learning Objectives',
+    vo: [
+      /* 0 — intro; no reveal */
+      "By the end of this course, you will be able to achieve the following six learning objectives.",
+      /* 1 — reveal obj 1 then speak */
+      "One. Explain why island mode requires different operating limits than grid-parallel operation.",
+      /* 2 */
+      "Two. Define the island mode derate and the incremental reserve margin, and apply them to a " +
+      "representative eighteen megawatt class turbine system.",
+      /* 3 */
+      "Three. Describe the governor and excitation control functions required for stable island mode operation.",
+      /* 4 */
+      "Four. Identify the protection systems — underfrequency load shedding, rate-of-change-of-frequency, " +
+      "and excitation limiting — and explain how they must be coordinated.",
+      /* 5 */
+      "Five. Explain how Dry Low Emissions combustion constraints affect step-load limits.",
+      /* 6 */
+      "Six. Describe the coordination requirements for multi-unit parallel operation in a data centre power plant.",
+      /* 7 — closing; no reveal */
+      "These objectives reflect the knowledge needed to understand island mode operation, ask the right " +
+      "questions of turbine and generator suppliers, and clearly communicate system constraints and " +
+      "requirements across project teams and to customers."
+    ],
+    /* index in vo[] → objective number to reveal before speaking (null = no reveal) */
+    revealAt: [ null, 1, 2, 3, 4, 5, 6, null ]
+  }
+];
+
+/* ───────────────────────────────────────────────────────────
+   STATE
+─────────────────────────────────────────────────────────── */
+let cur        = 0;
+let voiceUK    = null;
+let speaking   = false;
+let voSeqIdx   = 0;       // INT-4 sequence pointer
+let voSeqAbort = false;   // flag to stop a running sequence
+let hasGestured = false;  // true once user has interacted (needed to unlock speechSynthesis)
+
+const synth = window.speechSynthesis;
+
+/* ───────────────────────────────────────────────────────────
+   VOICE LOADING — prefer "Google UK English Female"
+─────────────────────────────────────────────────────────── */
+function loadVoice() {
+  const v = synth.getVoices();
+  voiceUK =
+    v.find(x => x.name === 'Google UK English Female') ||
+    v.find(x => x.lang === 'en-GB' && /female/i.test(x.name)) ||
+    v.find(x => x.lang === 'en-GB') ||
+    v.find(x => /en.gb/i.test(x.lang)) ||
+    v.find(x => x.lang.startsWith('en'));
+}
+loadVoice();
+if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = loadVoice;
+}
+
+/* ───────────────────────────────────────────────────────────
+   LOW-LEVEL SPEAK
+─────────────────────────────────────────────────────────── */
+function speakOne(text, onEnd) {
+  const u = new SpeechSynthesisUtterance(text);
+  if (voiceUK) u.voice = voiceUK;
+  u.lang   = 'en-GB';
+  u.rate   = 0.93;
+  u.pitch  = 1.0;
+  u.volume = 1.0;
+  u.onstart = () => setLive(true, text);
+  u.onend   = () => { setLive(false); if (onEnd) onEnd(); };
+  u.onerror = () => { setLive(false); if (onEnd) onEnd(); };
+  synth.speak(u);
+}
+
+function setLive(on, text) {
+  speaking = on;
+  const bar = document.getElementById('voBar');
+  const cap = document.getElementById('voCaption');
+  if (on) {
+    bar.classList.add('live');
+    cap.textContent = text || '…';
+  } else {
+    bar.classList.remove('live');
+  }
+}
+
+/* ───────────────────────────────────────────────────────────
+   PLAY VO FOR A SCREEN
+─────────────────────────────────────────────────────────── */
+function playVO(screenIdx, isReplay) {
+  voSeqAbort = true;           // abort any running sequence
+  synth.cancel();
+  speaking = false;
+
+  const scr = SCREENS[screenIdx];
+
+  if (screenIdx !== 3) {
+    // Simple single-utterance screens
+    setTimeout(() => {
+      voSeqAbort = false;
+      speakOne(scr.vo[0]);
+    }, 60);
+  } else {
+    // INT-4 sequential reveal
+    if (isReplay) resetObjectives();
+    voSeqIdx   = 0;
+    voSeqAbort = false;
+    setTimeout(() => runInt4Seq(scr), 60);
+  }
+}
+
+function runInt4Seq(scr) {
+  if (voSeqAbort || voSeqIdx >= scr.vo.length) return;
+
+  const idx      = voSeqIdx;
+  const text     = scr.vo[idx];
+  const revealN  = scr.revealAt[idx];
+
+  // Reveal objective item BEFORE speaking its line
+  if (revealN !== null && revealN !== undefined) {
+    revealObjective(revealN);
+    updateProgress(revealN);
+  }
+
+  speakOne(text, () => {
+    if (voSeqAbort) return;
+    voSeqIdx++;
+    // 300 ms breathing room between items
+    setTimeout(() => runInt4Seq(scr), 300);
+  });
+}
+
+/* ───────────────────────────────────────────────────────────
+   OBJECTIVE REVEAL HELPERS
+─────────────────────────────────────────────────────────── */
+function revealObjective(n) {
+  const el = document.getElementById('obj-' + n);
+  const nn = document.getElementById('on-'  + n);
+  if (!el) return;
+  el.classList.add('show');
+  if (nn) {
+    nn.classList.add('pulse');
+    setTimeout(() => nn.classList.remove('pulse'), 700);
+  }
+}
+
+function resetObjectives() {
+  for (let i = 1; i <= 6; i++) {
+    const el = document.getElementById('obj-' + i);
+    if (el) el.classList.remove('show');
+  }
+  updateProgress(0);
+}
+
+function updateProgress(n) {
+  const f = document.getElementById('objFill');
+  if (f) f.style.width = (n / 6 * 100) + '%';
+}
+
+/* ───────────────────────────────────────────────────────────
+   SCREEN NAVIGATION
+─────────────────────────────────────────────────────────── */
+function buildDots() {
+  const c = document.getElementById('dots');
+  c.innerHTML = '';
+  SCREENS.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'dot' + (i === 0 ? ' active' : '');
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-label', 'Screen ' + (i + 1) + ': ' + s.label);
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.addEventListener('click', () => goTo(i));
+    c.appendChild(b);
+  });
+}
+
+function goTo(idx) {
+  if (idx === cur) return;
+  voSeqAbort = true;
+  synth.cancel();
+
+  const outEl = document.getElementById(SCREENS[cur].id);
+  const inEl  = document.getElementById(SCREENS[idx].id);
+
+  outEl.classList.remove('visible');
+  setTimeout(() => {
+    outEl.classList.remove('active');
+    outEl.style.display = '';
+    inEl.classList.add('active');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { inEl.classList.add('visible'); });
+    });
+  }, 200);
+
+  cur = idx;
+  refreshNav();
+
+  // Reset INT-4 when leaving
+  if (idx !== 3) resetObjectives();
+
+  // Auto-play VO — only after the initial user gesture has unlocked speechSynthesis
+  if (hasGestured) setTimeout(() => playVO(idx, false), 550);
+}
+
+function refreshNav() {
+  const dots = document.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot';
+    d.setAttribute('aria-selected', 'false');
+    if (i < cur) { d.classList.add('visited'); }
+    if (i === cur) { d.classList.add('active'); d.setAttribute('aria-selected', 'true'); }
+  });
+  document.getElementById('btnBack').disabled = (cur === 0);
+  document.getElementById('btnNext').disabled = (cur === SCREENS.length - 1);
+  document.getElementById('btnNext').textContent = cur === 0 ? 'Begin Course ►' : (cur === SCREENS.length - 1 ? 'Finish' : 'Next →');
+  document.getElementById('dotCounter').textContent = 'Screen ' + (cur + 1) + ' of ' + SCREENS.length;
+  document.getElementById('ftrLabel').textContent = 'Introduction \u00b7 Screen ' + (cur + 1) + ' of ' + SCREENS.length;
+}
+
+/* ───────────────────────────────────────────────────────────
+   BUTTON WIRING
+─────────────────────────────────────────────────────────── */
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (cur < SCREENS.length - 1) goTo(cur + 1);
+});
+document.getElementById('btnBack').addEventListener('click', () => {
+  if (cur > 0) goTo(cur - 1);
+});
+document.getElementById('btnReplay').addEventListener('click', () => {
+  playVO(cur, true);
+});
+
+/* Keyboard: Arrow keys navigate, Space replays */
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
+  if (e.key === 'ArrowRight' && cur < SCREENS.length - 1) { goTo(cur + 1); }
+  if (e.key === 'ArrowLeft'  && cur > 0)                   { goTo(cur - 1); }
+  if (e.key === ' ')                                        { e.preventDefault(); playVO(cur, true); }
+});
+
+/* ───────────────────────────────────────────────────────────
+   INIT
+─────────────────────────────────────────────────────────── */
+buildDots();
+
+// First screen: fade in
+const firstEl = document.getElementById(SCREENS[0].id);
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => { firstEl.classList.add('visible'); });
+});
+
+// Play Introduction button — provides the required user gesture to unlock speechSynthesis
+document.getElementById('int1PlayBtn').addEventListener('click', () => {
+  hasGestured = true;
+  playVO(0, true);
+  const btn = document.getElementById('int1PlayBtn');
+  btn.classList.add('played');
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Replay Introduction';
+});
+
+// Begin Course button also counts as the first gesture if play wasn't clicked yet
+const _origNext = document.getElementById('btnNext').onclick;
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (!hasGestured) hasGestured = true;
+}, true);
+</script>
+</body>
+</html>
