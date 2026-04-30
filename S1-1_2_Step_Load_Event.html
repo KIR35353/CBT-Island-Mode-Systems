@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>S1-1/S1-2 &middot; Step Load Event &mdash; Grid-Connected vs Island Mode</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f8fafb; font-family: Arial, sans-serif; width: 1040px; min-height: 550px; overflow: hidden; }
+
+  .header {
+    background: #002060; color: #fff;
+    height: 50px; display: flex; align-items: center; padding: 0 24px;
+    justify-content: space-between;
+  }
+  .header-title { font-size: 14px; font-weight: bold; letter-spacing: 1px; }
+  .header-tag {
+    background: #1a3660; border: 1px solid #3d7fbd;
+    border-radius: 12px; padding: 4px 16px;
+    font-size: 10px; font-weight: bold; color: #88aacc; letter-spacing: 0.5px;
+  }
+
+  /* ── MODE BAR ──────────────────────────────────────── */
+  .mode-bar {
+    background: #f0f4f8; border-bottom: 1px solid #c8d8e8;
+    height: 38px; display: flex; align-items: center; justify-content: center; gap: 12px;
+  }
+  .mode-btn {
+    height: 26px; padding: 0 20px; border-radius: 13px;
+    border: 1.5px solid #c8d8e8; background: #fff;
+    font-family: Arial, sans-serif; font-size: 10px; font-weight: bold;
+    color: #556677; cursor: pointer; letter-spacing: 0.3px;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .mode-btn:hover { background: #e8f0f8; border-color: #3d7fbd; color: #1a3660; }
+  .mode-btn.active-grid   { background: #002060; border-color: #002060; color: #fff; }
+  .mode-btn.active-island { background: #8b2000; border-color: #8b2000; color: #fff; }
+
+  .main { padding: 10px 16px 0; }
+
+  /* ── DIAGRAM PANEL ─────────────────────────────────── */
+  .diagram-panel {
+    background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px;
+    width: 100%; height: 374px; overflow: hidden;
+  }
+
+  /* ── ANIMATED FLOW LINES ────────────────────────────── */
+  @keyframes flowRight { to { stroke-dashoffset: -20; } }
+  @keyframes flowLeft  { to { stroke-dashoffset:  20; } }
+  @keyframes flowDown  { to { stroke-dashoffset: -20; } }
+
+  .flow-r { fill: none; stroke-linecap: round; stroke-dasharray: 10 6; animation: flowRight 0.6s linear infinite; }
+  .flow-l { fill: none; stroke-linecap: round; stroke-dasharray: 10 6; animation: flowLeft  0.6s linear infinite; }
+  .flow-d { fill: none; stroke-linecap: round; stroke-dasharray: 8  5; animation: flowDown  0.6s linear infinite; }
+
+  /* ── SWITCH ARM ─────────────────────────────────────── */
+  #switchArm {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    transform: rotate(40deg);
+    transition: transform 0.45s ease-in-out;
+  }
+
+  /* ── POWER ARROWS ───────────────────────────────────── */
+  #utilArrow { transition: d 0.5s ease-out; }
+  #gtgArrow  { transition: d 0.5s ease-out; }
+
+
+  /* ── KEY CONCEPT BAR ────────────────────────────────── */
+  .key-concept-bar {
+    margin: 8px 16px 0;
+    background: #fff4ee; border: 1px solid #e8c0a8; border-radius: 7px;
+    padding: 9px 18px 9px 22px; border-left: 4px solid #cc3d00;
+  }
+  .key-concept-head { font-size: 11px; font-weight: bold; color: #8b2000; margin-bottom: 4px; }
+  .key-concept-text { font-size: 10px; color: #334466; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">S1-1/S1-2 &middot; STEP LOAD EVENT &mdash; GRID-CONNECTED vs ISLAND MODE</div>
+  <div class="header-tag">SECTION 1 &middot; GRID VS. ISLAND</div>
+</div>
+
+<div class="mode-bar">
+  <button id="btnGrid"   class="mode-btn" onclick="setMode('grid')"  >&#x25B0; Grid-Connected</button>
+  <button id="btnIsland" class="mode-btn" onclick="setMode('island')">&#x26A1; Island Mode</button>
+</div>
+
+<div class="main">
+
+  <div class="diagram-panel">
+    <svg id="diagSvg" viewBox="0 0 1008 374" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- ════ PHASE LABEL BANNER ════ -->
+      <rect id="phaseBg" x="264" y="8" width="480" height="28" rx="6" fill="#002060"/>
+      <text id="phaseText" x="504" y="27" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="12" font-weight="bold" fill="#fff">
+        Steady State &#x2014; Normal Grid-Connected Operation
+      </text>
+
+      <!-- ════ UTILITY PANEL — GRID CONNECTED version ════ -->
+      <g id="utilPanelGrid">
+        <rect x="14" y="44" width="172" height="158" rx="7" fill="#eef4fb" stroke="#3d7fbd" stroke-width="1.5"/>
+        <!-- Combined header: title (line 1) + status + MW (line 2) -->
+        <rect x="14" y="44" width="172" height="31" rx="7" fill="#1a3660"/>
+        <text x="100" y="56" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#fff" letter-spacing="0.5">UTILITY GRID (INFINITE BUS)</text>
+        <text id="utilStatus" x="18" y="69" text-anchor="start"
+              font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#88ccee">Supplying Grid Share</text>
+        <text id="utilLabel" x="182" y="69" text-anchor="end"
+              font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#88ccee">3.0 MW</text>
+        <!-- Infinite-bus bars -->
+        <line x1="46"  y1="82"  x2="154" y2="82"  stroke="#002060" stroke-width="5"   stroke-linecap="round"/>
+        <line x1="58"  y1="93"  x2="142" y2="93"  stroke="#002060" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="70"  y1="103" x2="130" y2="103" stroke="#002060" stroke-width="2"   stroke-linecap="round"/>
+        <!-- Voltage-source circle -->
+        <line x1="100" y1="103" x2="100" y2="124" stroke="#3d7fbd" stroke-width="2.5"/>
+        <circle cx="100" cy="138" r="14" fill="none" stroke="#3d7fbd" stroke-width="2.5"/>
+        <text x="100" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#3d7fbd">~</text>
+        <!-- Lead from source to panel bottom -->
+        <line x1="100" y1="152" x2="100" y2="168" stroke="#3d7fbd" stroke-width="2.5"/>
+        <!-- Vertical wire: util → bus -->
+        <line x1="100" y1="168" x2="100" y2="210" stroke="#3d7fbd" stroke-width="2.5"/>
+      </g>
+
+      <!-- ════ UTILITY PANEL — ISLAND MODE version (initially hidden) ════ -->
+      <g id="utilPanelIsland" visibility="hidden">
+        <rect x="14" y="44" width="172" height="158" rx="7"
+              fill="#f4f4f8" stroke="#99aabb" stroke-width="1.5" stroke-dasharray="5 3"/>
+        <text x="100" y="62" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#778899" letter-spacing="0.5">UTILITY GRID</text>
+        <!-- Faded infinite-bus bars -->
+        <line x1="46"  y1="76"  x2="154" y2="76"  stroke="#b0c0d0" stroke-width="5"   stroke-linecap="round"/>
+        <line x1="58"  y1="87"  x2="142" y2="87"  stroke="#b0c0d0" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="70"  y1="97"  x2="130" y2="97"  stroke="#b0c0d0" stroke-width="2"   stroke-linecap="round"/>
+        <!-- Faded voltage-source circle -->
+        <line x1="100" y1="97"  x2="100" y2="118" stroke="#b0c0d0" stroke-width="2.5"/>
+        <circle cx="100" cy="132" r="14" fill="none" stroke="#b0c0d0" stroke-width="2.5"/>
+        <text x="100" y="137" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#b0c0d0">~</text>
+        <!-- Diagonal X — disconnected overlay -->
+        <line x1="40"  y1="66"  x2="162" y2="154" stroke="#cc3d00" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+        <line x1="162" y1="66"  x2="40"  y2="154" stroke="#cc3d00" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+        <!-- DISCONNECTED badge -->
+        <rect x="18" y="158" width="164" height="18" rx="3" fill="#fff0e0" stroke="#cc7700" stroke-width="1.5"/>
+        <text x="100" y="171" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#8b2000">NOT CONNECTED &#x2014; ISLAND MODE</text>
+        <!-- Dashed wire stub with open-circuit dot -->
+        <line x1="100" y1="176" x2="100" y2="200"
+              stroke="#c8d8e8" stroke-width="3" stroke-dasharray="4 3" stroke-linecap="round"/>
+        <circle cx="100" cy="205" r="5" fill="#fff" stroke="#cc3d00" stroke-width="2"/>
+      </g>
+
+      <!-- ════ GTG — GAS TURBINE GENERATOR (right, cx=908) ════ -->
+      <rect x="822" y="44" width="172" height="158" rx="7" fill="#e8f0f8" stroke="#002060" stroke-width="1.5"/>
+      <!-- Combined header: title (line 1) + status + MW (line 2) -->
+      <rect x="822" y="44" width="172" height="31" rx="7" fill="#002060"/>
+      <text x="908" y="56" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#fff" letter-spacing="0.5">GAS TURBINE GENERATOR</text>
+      <text id="gtgStatus" x="826" y="69" text-anchor="start"
+            font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#66cc88">Steady &#x2014; Governor Holding</text>
+      <text id="gtgLabel" x="990" y="69" text-anchor="end"
+            font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#66cc88">7.0 MW</text>
+      <!-- Turbine -->
+      <rect x="844" y="108" width="26" height="8" rx="3" fill="#334466"/>
+      <ellipse cx="854" cy="99"  rx="8" ry="3.5" fill="#556677" transform="rotate(-20 854 99)"/>
+      <ellipse cx="854" cy="112" rx="8" ry="3.5" fill="#556677"/>
+      <ellipse cx="854" cy="123" rx="8" ry="3.5" fill="#556677" transform="rotate(20 854 123)"/>
+      <!-- Generator body -->
+      <rect x="870" y="93" width="76" height="52" rx="8" fill="#e8f0f8" stroke="#002060" stroke-width="2.5"/>
+      <circle cx="908" cy="119" r="20" fill="#002060" stroke="#3d7fbd" stroke-width="2"/>
+      <circle cx="908" cy="119" r="9"  fill="#3d7fbd"/>
+      <text x="908" y="124" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="12" font-weight="bold" fill="#fff">G</text>
+      <!-- Lead from generator to panel bottom -->
+      <line x1="908" y1="145" x2="908" y2="168" stroke="#3d7fbd" stroke-width="2.5"/>
+      <!-- Vertical wire: GTG → bus -->
+      <line x1="908" y1="168" x2="908" y2="210" stroke="#3d7fbd" stroke-width="2.5"/>
+
+      <!-- ════ BUS BAR  x=60..948  y=210..220 ════ -->
+      <rect x="60" y="210" width="888" height="10" rx="3" fill="#002060"/>
+      <text x="504" y="204" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#334466" letter-spacing="0.8">DISTRIBUTION BUS</text>
+
+      <!-- ════ POWER FLOW ARROWS ════ -->
+      <!-- Util arrow (grid mode only — hidden in island mode) -->
+      <!-- Center-based, PX_PER_MW=17.3.  3 MW: sl=52, half=26 → shaft x=74..126 -->
+      <g id="utilArrowGroup">
+        <text id="utilArrowLabel" x="100" y="232" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="8" fill="#556677">GRID SUPPLY = 3.0 MW</text>
+        <path id="utilArrow" d="M 74,248 L 126,248 L 126,244 L 142,254 L 126,264 L 126,260 L 74,260 Z" fill="#3d7fbd"/>
+      </g>
+      <!-- GTG arrow (left-pointing): center at x=908 -->
+      <!-- Grid initial: PX_PER_MW=17.3, 7 MW → sl=121; Island: PX_PER_MW=12, 10 MW → sl=120 -->
+      <text id="gtgArrowLabel" x="908" y="232" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="8" fill="#556677">GTG OUTPUT = 7.0 MW</text>
+      <path id="gtgArrow" d="M 947.7,244.8 L 868.3,244.8 L 868.3,238.7 L 843.9,254 L 868.3,269.3 L 868.3,263.2 L 947.7,263.2 Z" fill="#002060"/>
+
+      <!-- ════ BASE LOAD (x=350) ════ -->
+      <line x1="350" y1="220" x2="350" y2="288" stroke="#dde8f2" stroke-width="4" stroke-linecap="round"/>
+      <line id="baseFlow" x1="350" y1="222" x2="350" y2="286"
+            class="flow-d" stroke="#cc3d00" stroke-width="5"/>
+      <rect x="304" y="288" width="92" height="44" rx="5" fill="#f0f4f8" stroke="#334466" stroke-width="1.5"/>
+      <text x="350" y="307" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#002060">BASE LOAD</text>
+      <text x="350" y="322" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="8" fill="#334466">10.0 MW</text>
+
+      <!-- ════ STEP LOAD — MOTOR + KNIFE SWITCH (x=530) ════ -->
+      <g id="stepGroup">
+        <line x1="530" y1="220" x2="530" y2="250" stroke="#c8d8e8" stroke-width="4" stroke-linecap="round"/>
+        <line id="stepFlowUpper" x1="530" y1="222" x2="530" y2="248"
+              class="flow-d" stroke="#cc3d00" stroke-width="5" opacity="0"/>
+        <circle id="swContactTop" cx="530" cy="250" r="5" fill="#c8d8e8" stroke="#aabbd0" stroke-width="1.5"/>
+        <line id="switchArm" x1="530" y1="268" x2="530" y2="250"
+              stroke="#556677" stroke-width="3.5" stroke-linecap="round"/>
+        <circle id="swContactBot" cx="530" cy="268" r="5" fill="#c8d8e8" stroke="#aabbd0" stroke-width="1.5"/>
+        <text id="swLabel" x="543" y="262" font-family="Arial,sans-serif" font-size="8"
+              font-weight="bold" fill="#cc7700">OPEN</text>
+        <line x1="530" y1="268" x2="530" y2="296" stroke="#c8d8e8" stroke-width="4" stroke-linecap="round"/>
+        <line id="stepFlowLower" x1="530" y1="270" x2="530" y2="294"
+              class="flow-d" stroke="#cc3d00" stroke-width="5" opacity="0"/>
+        <circle id="motorBody" cx="530" cy="322" r="26" fill="#f0f4f8" stroke="#556677" stroke-width="2"/>
+        <text id="motorM" x="530" y="329" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="18" font-weight="bold" fill="#334466">M</text>
+        <line x1="504" y1="322" x2="490" y2="322" stroke="#556677" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="556" y1="322" x2="570" y2="322" stroke="#556677" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- RUN/STOP button beside motor (right side) -->
+        <rect id="motorBtnBg" x="574" y="311" width="54" height="22" rx="11"
+              fill="#e8f5e0" stroke="#2a7a20" stroke-width="1.5" cursor="pointer"
+              onclick="toggleMotor()"/>
+        <text id="motorBtnTxt" x="601" y="325" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="9" font-weight="bold"
+              fill="#1a5020" cursor="pointer" onclick="toggleMotor()">&#x25B6; RUN</text>
+        <text x="530" y="360" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#334466">MOTOR LOAD</text>
+        <text x="530" y="372" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="8" fill="#556677">6.0 MW</text>
+      </g>
+
+      <!-- ════ FREQUENCY INDICATOR (x=720) ════ -->
+      <rect x="636" y="236" width="168" height="44" rx="5" fill="#f0f4f8" stroke="#c8d8e8" stroke-width="1.5"/>
+      <text x="720" y="254" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="8.5" fill="#667788">Bus Frequency</text>
+      <text id="freqDisplay" x="720" y="272" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="14" font-weight="bold" fill="#2a7a20">60.0 Hz &#x2014; Stable</text>
+
+      <!-- ════ LOAD READOUT (x=636-804, y=288-346) ════
+           Grid mode:   Row1=GTG share %, Row2=Grid share %, Sep, Row3=Total MW
+           Island mode: Row1=GTG output MW,          (hidden),  Sep, Row3=Total MW
+      ════ -->
+      <rect x="636" y="288" width="168" height="58" rx="5" fill="#f0f4f8" stroke="#c8d8e8" stroke-width="1.5"/>
+      <text id="readoutLabel1" x="644" y="303" font-family="Arial,sans-serif" font-size="9" fill="#556677">GTG share</text>
+      <text id="readoutVal1"   x="798" y="303" text-anchor="end" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#002060">70%</text>
+      <g id="gridShareRow">
+        <text x="644" y="319" font-family="Arial,sans-serif" font-size="9" fill="#556677">Grid share</text>
+        <text id="gridShareVal" x="798" y="319" text-anchor="end" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#3d7fbd">30%</text>
+      </g>
+      <line x1="644" y1="326" x2="796" y2="326" stroke="#c8d8e8" stroke-width="1"/>
+      <text x="644" y="340" font-family="Arial,sans-serif" font-size="9" fill="#556677">Total load</text>
+      <text id="totalLoad" x="798" y="340" text-anchor="end" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#334466">10.0 MW</text>
+
+      <!-- ════ GRID MODE BADGES ════ -->
+      <!-- GTG steady badge (grid phase 2) -->
+      <g id="gtgBadge" opacity="0">
+        <rect x="826" y="14" width="168" height="28" rx="5" fill="#e8f5e0" stroke="#2a7a20" stroke-width="1.5"/>
+        <text x="910" y="32" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#2a7a20">&#x2713; GTG STEADY &#x2014; 7.0 MW</text>
+      </g>
+      <!-- Utility surge badge (grid phase 2) -->
+      <g id="utilBadge" opacity="0">
+        <rect x="14" y="14" width="168" height="28" rx="5" fill="#fff0e0" stroke="#cc7700" stroke-width="1.5"/>
+        <text x="98" y="32" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#cc7700">GRID ABSORBS SURGE &#x2191; 3&#x2192;9 MW</text>
+      </g>
+
+      <!-- ════ ISLAND MODE BADGES ════ -->
+      <!-- Frequency droop badge (island phase 1) -->
+      <g id="freqBadge" opacity="0">
+        <rect x="14" y="14" width="168" height="28" rx="5" fill="#fff0e0" stroke="#cc3d00" stroke-width="1.5"/>
+        <text x="98" y="32" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#8b2000">&#x26A0; FREQ DROOPING &#x2193; 59.2 Hz</text>
+      </g>
+      <!-- GTG absorbed surge badge (island phase 2) -->
+      <g id="gtgAbsorbBadge" opacity="0">
+        <rect x="826" y="14" width="168" height="28" rx="5" fill="#e8f5e0" stroke="#2a7a20" stroke-width="1.5"/>
+        <text x="910" y="32" text-anchor="middle"
+              font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#2a7a20">&#x2713; GTG ABSORBED SURGE &#x2014; 16.0 MW</text>
+      </g>
+
+    </svg>
+  </div>
+
+</div><!-- .main -->
+
+<div class="key-concept-bar">
+  <div class="key-concept-head">Key Concept</div>
+  <div class="key-concept-text" id="keyText">
+    In grid-parallel operation, the utility acts as an <strong>infinite bus</strong>. When a step load event occurs,
+    the grid immediately supplies the extra power &#x2014; the GTG output and current remain
+    <strong>constant and undisturbed</strong>. The GTG never &ldquo;sees&rdquo; the load transient.
+  </div>
+</div>
+
+<script>
+/* ── Element refs ───────────────────────────────────────── */
+var utilPanelGrid    = document.getElementById('utilPanelGrid');
+var utilPanelIsland  = document.getElementById('utilPanelIsland');
+var utilArrowGroup   = document.getElementById('utilArrowGroup');
+var utilStatus       = document.getElementById('utilStatus');
+var utilLabel        = document.getElementById('utilLabel');
+var utilArrow        = document.getElementById('utilArrow');
+var utilArrowLabel   = document.getElementById('utilArrowLabel');
+
+var gtgStatus        = document.getElementById('gtgStatus');
+var gtgLabel         = document.getElementById('gtgLabel');
+var gtgArrow         = document.getElementById('gtgArrow');
+var gtgArrowLabel    = document.getElementById('gtgArrowLabel');
+
+var baseFlow         = document.getElementById('baseFlow');
+var switchArm        = document.getElementById('switchArm');
+var swContactTop     = document.getElementById('swContactTop');
+var swContactBot     = document.getElementById('swContactBot');
+var swLabel          = document.getElementById('swLabel');
+var motorBody        = document.getElementById('motorBody');
+var motorM           = document.getElementById('motorM');
+var stepFlowUpper    = document.getElementById('stepFlowUpper');
+var stepFlowLower    = document.getElementById('stepFlowLower');
+
+var phaseBg          = document.getElementById('phaseBg');
+var phaseText        = document.getElementById('phaseText');
+var freqDisplay      = document.getElementById('freqDisplay');
+var keyText          = document.getElementById('keyText');
+
+var readoutLabel1    = document.getElementById('readoutLabel1');
+var readoutVal1      = document.getElementById('readoutVal1');
+var gridShareRow     = document.getElementById('gridShareRow');
+var gridShareVal     = document.getElementById('gridShareVal');
+var totalLoad        = document.getElementById('totalLoad');
+
+var gtgBadge         = document.getElementById('gtgBadge');
+var utilBadge        = document.getElementById('utilBadge');
+var freqBadge        = document.getElementById('freqBadge');
+var gtgAbsorbBadge   = document.getElementById('gtgAbsorbBadge');
+
+/* ── State ──────────────────────────────────────────────── */
+var currentMode    = null;   /* set by setMode() */
+var motorConnected = false;
+var motorTimer     = null;
+var motorBtnBg       = document.getElementById('motorBtnBg');
+var motorBtnTxt      = document.getElementById('motorBtnTxt');
+
+/* ── Scenario state objects ────────────────────────────── */
+var stGridSteady = {
+  uMW: 3.0, uCls: '', uStatusTxt: 'Supplying Grid Share', uLbl: '3.0 MW',
+  gMW: 7.0, gCls: 'st-steady', gTxt: 'Steady \u2014 Governor Holding', gLbl: '7.0 MW',
+  switchClosed: false,
+  gtgBadgeOp: 0, utilBadgeOp: 0, freqBadgeOp: 0, gtgAbsorbOp: 0,
+  baseFlowDur: 0.55,
+  phaseTxt: 'Steady State \u2014 Normal Grid-Connected Operation', phaseBg: '#002060',
+  readoutLbl1: 'GTG share', readoutVal1: '70%', gridShareStr: '30%', totalStr: '10.0 MW',
+  freq: '60.0 Hz \u2014 Stable', freqClr: '#2a7a20',
+  key: 'In grid-parallel operation, the utility acts as an <strong>infinite bus</strong>. The GTG supplies its contracted share (7&nbsp;MW); the grid supplies the remainder (3&nbsp;MW). Total load: 10&nbsp;MW. <strong>Click &ldquo;Run&rdquo; to add the 6&nbsp;MW step load and observe the response.</strong>'
+};
+
+var stGridLoaded = {
+  uMW: 3.0, uCls: 'st-surge', uStatusTxt: '\u2191 Absorbing Load Surge', uLbl: '9.0 MW',
+  uArrowDelayMs: 200, uArrowDelayMw: 9.0,
+  gMW: 7.0, gCls: 'st-steady', gTxt: '\u2713 UNCHANGED \u2014 No Impact', gLbl: '7.0 MW',
+  switchClosed: true,
+  gtgBadgeOp: 1, utilBadgeOp: 1, freqBadgeOp: 0, gtgAbsorbOp: 0,
+  baseFlowDur: 0.40,
+  phaseTxt: 'Grid Absorbs Surge \u2014 GTG Output Unchanged', phaseBg: '#1a5020',
+  readoutLbl1: 'GTG share', readoutVal1: '44%', gridShareStr: '56%', totalStr: '16.0 MW',
+  freq: '60.0 Hz \u2014 Stable', freqClr: '#2a7a20',
+  key: 'The utility grid surged from 3&nbsp;MW to <strong>9&nbsp;MW</strong> instantly to supply the extra demand. The GTG output remains locked at <strong>7.0&nbsp;MW &mdash; completely undisturbed</strong>. Frequency never wavered. This is the protection the infinite bus provides. <strong>Switch to Island Mode and repeat to see the difference.</strong>'
+};
+
+var stIslandSteady = {
+  gMW: 10.0, gCls: 'st-steady', gTxt: 'Steady \u2014 Sole Power Source', gLbl: '10.0 MW',
+  switchClosed: false,
+  gtgBadgeOp: 0, utilBadgeOp: 0, freqBadgeOp: 0, gtgAbsorbOp: 0,
+  baseFlowDur: 0.55,
+  phaseTxt: 'Steady State \u2014 Island Mode Operation', phaseBg: '#002060',
+  readoutLbl1: 'GTG output', readoutVal1: '10.0 MW', totalStr: '10.0 MW',
+  freq: '60.0 Hz \u2014 Stable', freqClr: '#2a7a20',
+  key: 'In island mode, the GTG is the <strong>sole power source</strong>. There is no utility grid connection. <strong>Click &ldquo;Run&rdquo; to add the 6&nbsp;MW step load and observe the frequency droop and governor response.</strong>'
+};
+
+var stIslandTransient = {
+  gMW: 10.0, gCls: 'st-ramp', gTxt: 'Governor Responding\u2026', gLbl: '10.0 MW',
+  gArrowDelayMs: 200, gArrowDelayMw: 16.0,
+  switchClosed: true,
+  gtgBadgeOp: 0, utilBadgeOp: 0, freqBadgeOp: 1, gtgAbsorbOp: 0,
+  baseFlowDur: 0.55,
+  phaseTxt: '\u26A1\u2002Step Load Event \u2014 Motor Connects to Bus', phaseBg: '#8b2000',
+  readoutLbl1: 'GTG output', readoutVal1: '10.0 MW', totalStr: '16.0 MW',
+  freq: '59.2 Hz \u2014 Drooping \u2193', freqClr: '#cc3d00',
+  key: 'The 6&nbsp;MW motor load has connected to the bus. Unlike grid-connected mode, <strong>there is no infinite bus to absorb the surge</strong>. Rotating inertia briefly supplies the gap while the governor senses the speed drop &mdash; frequency droops to 59.2&nbsp;Hz. The governor is now opening the fuel valve&hellip;'
+};
+
+var stIslandSettled = {
+  gMW: 16.0, gCls: 'st-steady', gTxt: '\u2713 Absorbed Surge \u2014 16.0 MW', gLbl: '16.0 MW',
+  switchClosed: true,
+  gtgBadgeOp: 0, utilBadgeOp: 0, freqBadgeOp: 0, gtgAbsorbOp: 1,
+  baseFlowDur: 0.40,
+  phaseTxt: 'GTG Governor Responds \u2014 Frequency Restored', phaseBg: '#1a5020',
+  readoutLbl1: 'GTG output', readoutVal1: '16.0 MW', totalStr: '16.0 MW',
+  freq: '60.0 Hz \u2014 Restored', freqClr: '#2a7a20',
+  key: 'The GTG governor increased fuel input. Output ramped from 10&nbsp;MW to <strong>16.0&nbsp;MW</strong> to absorb the full 6&nbsp;MW surge alone. Frequency is restored to 60&nbsp;Hz. Compare this to grid-connected mode where the GTG output <em>never changed at all</em>. <strong>Click &ldquo;Stop&rdquo; to return to steady state.</strong>'
+};
+
+/* ── Motor toggle control ──────────────────────────────── */
+function renderSteady() {
+  motorConnected = false;
+  if (motorTimer) { clearTimeout(motorTimer); motorTimer = null; }
+  motorBtnBg.setAttribute('fill',   '#e8f5e0');
+  motorBtnBg.setAttribute('stroke', '#2a7a20');
+  motorBtnTxt.textContent = '\u25B6 RUN';
+  motorBtnTxt.setAttribute('fill', '#1a5020');
+  applyPhase(currentMode === 'grid' ? stGridSteady : stIslandSteady);
+}
+
+function connectLoad() {
+  motorConnected = true;
+  motorBtnBg.setAttribute('fill',   '#ffe0d0');
+  motorBtnBg.setAttribute('stroke', '#cc3d00');
+  motorBtnTxt.textContent = '\u25A0 STOP';
+  motorBtnTxt.setAttribute('fill', '#8b2000');
+  if (currentMode === 'grid') {
+    applyPhase(stGridLoaded);
+  } else {
+    applyPhase(stIslandTransient);
+    motorTimer = setTimeout(function() {
+      if (motorConnected && currentMode === 'island') {
+        applyPhase(stIslandSettled);
+      }
+    }, 2200);
+  }
+}
+
+function toggleMotor() {
+  if (motorConnected) { renderSteady(); } else { connectLoad(); }
+}
+
+/* ── Mode switching ──────────────────────────────────── */
+function setMode(mode) {
+  if (currentMode === mode) return;
+  currentMode = mode;
+
+  /* Button styles */
+  document.getElementById('btnGrid').className   = 'mode-btn' + (mode === 'grid'   ? ' active-grid'   : '');
+  document.getElementById('btnIsland').className = 'mode-btn' + (mode === 'island' ? ' active-island' : '');
+
+  /* Utility panel & arrow visibility */
+  if (mode === 'grid') {
+    utilPanelGrid.setAttribute('visibility', 'visible');
+    utilPanelIsland.setAttribute('visibility', 'hidden');
+    utilArrowGroup.setAttribute('visibility', 'visible');
+    gridShareRow.setAttribute('visibility', 'visible');
+  } else {
+    utilPanelGrid.setAttribute('visibility', 'hidden');
+    utilPanelIsland.setAttribute('visibility', 'visible');
+    utilArrowGroup.setAttribute('visibility', 'hidden');
+    gridShareRow.setAttribute('visibility', 'hidden');
+  }
+
+  /* Clear all badges */
+  setOpacity(gtgBadge, 0); setOpacity(utilBadge, 0);
+  setOpacity(freqBadge, 0); setOpacity(gtgAbsorbBadge, 0);
+
+  /* Reset to steady state for the new mode */
+  renderSteady();
+}
+
+/* ── Initial render ──────────────────────────────────── */
+setMode('grid');
+
+/* ── Helpers ────────────────────────────────────────────── */
+function setOpacity(el, val) { el.setAttribute('opacity', val); }
+
+function setSwitchState(closed) {
+  if (closed) {
+    switchArm.style.transform = 'rotate(0deg)';
+    switchArm.setAttribute('stroke', '#cc3d00');
+    swContactTop.setAttribute('fill', '#cc3d00'); swContactTop.setAttribute('stroke', '#cc3d00');
+    swContactBot.setAttribute('fill', '#cc3d00'); swContactBot.setAttribute('stroke', '#cc3d00');
+    swLabel.textContent = 'CLOSED'; swLabel.setAttribute('fill', '#2a7a20');
+    motorBody.setAttribute('fill', '#fff0e0'); motorBody.setAttribute('stroke', '#cc3d00');
+    motorM.setAttribute('fill', '#cc3d00');
+    stepFlowUpper.setAttribute('opacity', '1'); stepFlowLower.setAttribute('opacity', '1');
+  } else {
+    switchArm.style.transform = 'rotate(40deg)';
+    switchArm.setAttribute('stroke', '#556677');
+    swContactTop.setAttribute('fill', '#c8d8e8'); swContactTop.setAttribute('stroke', '#aabbd0');
+    swContactBot.setAttribute('fill', '#c8d8e8'); swContactBot.setAttribute('stroke', '#aabbd0');
+    swLabel.textContent = 'OPEN'; swLabel.setAttribute('fill', '#cc7700');
+    motorBody.setAttribute('fill', '#f0f4f8'); motorBody.setAttribute('stroke', '#556677');
+    motorM.setAttribute('fill', '#334466');
+    stepFlowUpper.setAttribute('opacity', '0'); stepFlowLower.setAttribute('opacity', '0');
+  }
+}
+
+/* ── Arrow dimension formula ───────────────────────────────────
+   Area proportional to MW: base 3 MW shaft = 12 h x 52 w = 624 px2 => 208 px2/MW.
+   Aspect ratio w/h = 4.333 kept constant so both axes scale.
+   Tip height = shaft_h x (20/12); tip width = tip_h x (16/20).
+   Arrow vertical centre fixed at ARROW_CY = 244.
+────────────────────────────────────────────────── */
+var ARROW_CY     = 254;      /* vertical centre of arrow band */
+var ARROW_AREA   = 208;      /* px2 per MW (3 MW x 208 = 624) */
+var ARROW_ASPECT = 52 / 12;  /* shaft w/h ratio = 4.333 */
+
+function arrowDims(mw) {
+  var h  = Math.sqrt(ARROW_AREA * mw / ARROW_ASPECT);
+  var w  = ARROW_ASPECT * h;
+  var ty = h * (20 / 12);  /* tip height proportional to shaft height */
+  var tx = ty * (16 / 20); /* tip width proportional to tip height   */
+  return { h: h, w: w, ty: ty, tx: tx };
+}
+
+function buildArrowPath(mw, cx, dir) {
+  var d = arrowDims(mw);
+  var tailX   = cx - dir * d.w / 2;
+  var tipBase = cx + dir * d.w / 2;
+  var tipPt   = tipBase + dir * d.tx;
+  var top     = ARROW_CY - d.h  / 2;
+  var bot     = ARROW_CY + d.h  / 2;
+  var tipTop  = ARROW_CY - d.ty / 2;
+  var tipBot  = ARROW_CY + d.ty / 2;
+  function f(n) { return n.toFixed(1); }
+  return 'path("M ' + f(tailX) + ',' + f(top) +
+         ' L ' + f(tipBase) + ',' + f(top) +
+         ' L ' + f(tipBase) + ',' + f(tipTop) +
+         ' L ' + f(tipPt)   + ',' + ARROW_CY +
+         ' L ' + f(tipBase) + ',' + f(tipBot) +
+         ' L ' + f(tipBase) + ',' + f(bot) +
+         ' L ' + f(tailX)   + ',' + f(bot) + ' Z")';
+}
+
+function updateUtilArrow(mw) {
+  utilArrow.style.d = buildArrowPath(mw, 100, 1);
+  utilArrowLabel.textContent = 'GRID SUPPLY = ' + mw.toFixed(1) + ' MW';
+}
+
+function updateGtgArrow(mw) {
+  gtgArrow.style.d = buildArrowPath(mw, 908, -1);
+  gtgArrowLabel.textContent = 'GTG OUTPUT = ' + mw.toFixed(1) + ' MW';
+}
+
+function setGTGStatus(cls, txt) {
+  /* Text color in dark header — no background rect to update */
+  var txtMap = { 'st-steady': '#66cc88', 'st-event': '#ff9955', 'st-ramp': '#ff9955' };
+  var clr = txtMap[cls] || '#66cc88';
+  gtgStatus.textContent = txt;
+  gtgStatus.setAttribute('fill', clr);
+  gtgLabel.setAttribute('fill',  clr);
+}
+
+/* ── Apply a phase ──────────────────────────────────────── */
+function applyPhase(ph) {
+  /* Reset arrow transition-delays (prevents surge delay leaking into other phases) */
+  utilArrow.style.transitionDelay = '0s';
+  gtgArrow.style.transitionDelay  = '0s';
+
+  /* GTG */
+  setGTGStatus(ph.gCls, ph.gTxt);
+  gtgLabel.textContent = ph.gLbl;
+  updateGtgArrow(ph.gMW);
+
+  /* Utility arrow + header text (grid mode only) */
+  if (currentMode === 'grid') {
+    updateUtilArrow(ph.uMW || 0);
+    var uClr = (ph.uCls === 'st-surge') ? '#ffaa44' : '#88ccee';
+    utilStatus.textContent = ph.uStatusTxt || '';
+    utilStatus.setAttribute('fill', uClr);
+    utilLabel.textContent  = ph.uLbl || '';
+    utilLabel.setAttribute('fill', uClr);
+  }
+
+  /* Switch & motor */
+  setSwitchState(ph.switchClosed);
+  baseFlow.style.animationDuration = ph.baseFlowDur + 's';
+
+  /* Phase banner */
+  phaseText.textContent = ph.phaseTxt;
+  phaseBg.setAttribute('fill', ph.phaseBg);
+
+  /* Frequency */
+  freqDisplay.textContent = ph.freq;
+  freqDisplay.style.fill  = ph.freqClr;
+
+  /* Load readout */
+  readoutLabel1.textContent = ph.readoutLbl1;
+  readoutVal1.textContent   = ph.readoutVal1;
+  totalLoad.textContent     = ph.totalStr;
+  if (currentMode === 'grid') {
+    gridShareVal.textContent = ph.gridShareStr || '';
+  }
+
+  /* Badges */
+  setOpacity(gtgBadge,       ph.gtgBadgeOp);
+  setOpacity(utilBadge,      ph.utilBadgeOp);
+  setOpacity(freqBadge,      ph.freqBadgeOp);
+  setOpacity(gtgAbsorbBadge, ph.gtgAbsorbOp);
+
+  /* Key concept */
+  keyText.innerHTML = ph.key;
+
+  /* Delayed util arrow surge (grid phase 1 only) */
+  if (ph.uArrowDelayMs) {
+    var uDelay = (ph.uArrowDelayMs / 1000) + 's';
+    utilArrow.style.transitionDelay = uDelay;
+    updateUtilArrow(ph.uArrowDelayMw);
+  }
+
+  /* Delayed GTG arrow ramp (island phase 1 only) */
+  if (ph.gArrowDelayMs) {
+    var gDelay = (ph.gArrowDelayMs / 1000) + 's';
+    gtgArrow.style.transitionDelay = gDelay;
+    updateGtgArrow(ph.gArrowDelayMw);
+  }
+}
+</script>
+
+</body>
+</html>

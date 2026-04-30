@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>S1-4 Reactive Power &mdash; The Hidden Constraint</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f8fafb; font-family: Arial, sans-serif; width: 1040px; min-height: 548px; overflow: hidden; }
+
+  /* ── HEADER ──────────────────────────────────────── */
+  .header {
+    background: #002060; color: #fff;
+    height: 50px; display: flex; align-items: center; padding: 0 24px;
+    justify-content: space-between;
+  }
+  .header-title { font-size: 14px; font-weight: bold; letter-spacing: 1px; }
+  .header-tag {
+    background: #1a3660; border: 1px solid #3d7fbd;
+    border-radius: 12px; padding: 4px 16px;
+    font-size: 10px; font-weight: bold; color: #88aacc; letter-spacing: 0.5px;
+  }
+
+  /* ── MAIN ────────────────────────────────────────── */
+  .main { display: flex; height: 360px; gap: 0; padding: 10px 16px 0; }
+
+  /* ── LEFT PANEL: SOURCE CONTEXT ─────────────────── */
+  .source-panel {
+    width: 300px; flex-shrink: 0;
+    background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px;
+    display: flex; flex-direction: column;
+    padding: 10px 12px 8px; margin-right: 10px;
+    overflow: hidden;
+  }
+  .panel-title {
+    font-size: 10px; font-weight: bold; color: #1a3660; letter-spacing: 0.5px;
+    text-transform: uppercase; margin-bottom: 8px; flex-shrink: 0;
+  }
+  .source-diagrams {
+    display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;
+  }
+  .src-row {
+    border-radius: 5px; padding: 5px 8px;
+    border: 1.5px solid #c8d8e8;
+    transition: opacity 0.5s;
+  }
+  .src-row-title {
+    font-size: 8px; font-weight: bold; text-transform: uppercase;
+    letter-spacing: 0.4px; margin-bottom: 3px;
+  }
+  .src-row svg { display: block; }
+
+  .bullet-list { margin-top: 8px; flex: 1; }
+  .bullet-row {
+    display: flex; align-items: flex-start; gap: 6px;
+    margin-bottom: 6px; font-size: 9.5px; color: #334466; line-height: 1.4;
+  }
+  .bullet-dot {
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+  }
+
+  .source-label-bar {
+    margin-top: 6px; padding: 5px 8px; border-radius: 4px;
+    font-size: 9px; font-weight: bold; text-align: center;
+    transition: background 0.5s, color 0.5s;
+    flex-shrink: 0;
+  }
+
+  /* ── CENTER PANEL: P-Q CAPABILITY CURVE ─────────── */
+  .pq-panel {
+    flex: 1;
+    background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; overflow: hidden;
+  }
+  .pq-panel svg { width: 100%; height: 100%; }
+
+  /* Operating point group — uses CSS transform for transition */
+  #opGroup {
+    transition: transform 0.8s ease-out;
+  }
+  #maxPGroup {
+    transition: transform 0.8s ease-out;
+  }
+  #headroomGroup {
+    transition: opacity 0.4s;
+  }
+
+  /* ── RIGHT PANEL: CONSTRAINT CALCULATOR ─────────── */
+  .calc-panel {
+    width: 266px; flex-shrink: 0;
+    display: flex; flex-direction: column;
+    gap: 8px; margin-left: 10px;
+  }
+  .calc-box {
+    background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .calc-box-title {
+    font-size: 10px; font-weight: bold; color: #1a3660;
+    text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 7px;
+  }
+  .calc-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 5px; font-size: 10px; color: #334466;
+  }
+  .calc-val { font-weight: bold; font-size: 11px; }
+  .calc-divider { border: none; border-top: 1px solid #dde8f2; margin: 5px 0; }
+  .eq-line { font-size: 10px; color: #334466; margin-bottom: 4px; line-height: 1.5; }
+  .eq-line span { font-weight: bold; color: #002060; }
+
+  /* Status badge */
+  .status-badge {
+    border-radius: 5px; padding: 7px 10px; text-align: center;
+    font-size: 10px; font-weight: bold; letter-spacing: 0.3px;
+    transition: background 0.5s, color 0.5s, border-color 0.5s;
+    border: 1.5px solid transparent;
+    flex-shrink: 0;
+  }
+
+  /* ── POWER ARROWS ─────────────────────────────────────── */
+  #headroomRect { transition: x 0.8s ease-out, y 0.8s ease-out, width 0.8s ease-out, height 0.8s ease-out, opacity 0.4s; }
+
+  /* ── LEFT PANEL CONTROLS ─────────────────────────── */
+  .q-control-area {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 10px; flex: 1;
+  }
+  .q-instruction {
+    font-size: 10px; color: #556677; text-align: center;
+    line-height: 1.6; padding: 0 4px;
+  }
+  .q-buttons {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .q-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 2px solid #3d7fbd; background: #eef4fb;
+    font-size: 24px; color: #002060; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s, opacity 0.3s;
+    line-height: 1;
+  }
+  .q-btn:hover:not(:disabled) { background: #3d7fbd; color: #fff; }
+  .q-btn:disabled { opacity: 0.28; cursor: default; border-color: #c8d8e8; color: #aabbcc; background: #f4f4f8; }
+  .q-step-label {
+    font-size: 9px; font-weight: bold; color: #556677; text-align: center;
+    min-height: 14px;
+  }
+  .q-scenario-dots {
+    display: flex; gap: 7px; align-items: center; justify-content: center;
+  }
+  .q-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #c8d8e8; border: 1.5px solid #aabbd0;
+    transition: background 0.3s, border-color 0.3s, transform 0.2s;
+  }
+  .q-dot.active-ok   { background: #2a7a20; border-color: #1a5010; transform: scale(1.25); }
+  .q-dot.active-warn { background: #cc7700; border-color: #995500; transform: scale(1.25); }
+  .q-dot.active-bad  { background: #cc3d00; border-color: #8b2000; transform: scale(1.25); }
+  .key-concept-bar {
+    margin: 8px 16px 0;
+    background: #fff4ee; border: 1px solid #e8c0a8; border-radius: 7px;
+    padding: 10px 18px 10px 22px; border-left: 4px solid #cc3d00;
+  }
+  .key-concept-head { font-size: 11px; font-weight: bold; color: #8b2000; margin-bottom: 4px; }
+  .key-concept-text { font-size: 10px; color: #334466; line-height: 1.6; }
+
+  /* ── MODE TOGGLE BAR ─────────────────────────────── */
+  .mode-bar {
+    background: #f0f4f8; border-bottom: 1px solid #c8d8e8;
+    display: flex; align-items: center; justify-content: center;
+    padding: 7px 16px; gap: 0;
+  }
+  .mode-bar-label {
+    font-size: 10px; font-weight: bold; color: #556677;
+    letter-spacing: 0.4px; margin-right: 12px;
+  }
+  .mode-btn {
+    padding: 5px 22px; border: 1.5px solid #c8d8e8;
+    background: #fff; color: #556677;
+    font-size: 11px; font-weight: bold; cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .mode-btn:first-of-type { border-radius: 20px 0 0 20px; border-right: none; }
+  .mode-btn:last-of-type  { border-radius: 0 20px 20px 0; }
+  .mode-btn.active-grid   { background: #3d7fbd; color: #fff; border-color: #3d7fbd; }
+  .mode-btn.active-island { background: #8b2000; color: #fff; border-color: #8b2000; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">S1-4 &middot; REACTIVE POWER &mdash; THE HIDDEN CONSTRAINT</div>
+  <div class="header-tag">SECTION 1 &middot; GRID VS. ISLAND</div>
+</div>
+
+<div class="mode-bar">
+  <span class="mode-bar-label">View Mode:</span>
+  <button class="mode-btn active-grid" id="btnGrid"   onclick="setMode('grid')">&#x2261; Grid-Connected</button>
+  <button class="mode-btn"             id="btnIsland" onclick="setMode('island')">&#x26A1; Island Mode</button>
+</div>
+
+<div class="main">
+
+  <!-- ════ LEFT PANEL: Q CONTROLS ════ -->
+  <div class="source-panel">
+    <div class="panel-title">Reactive Load Control</div>
+
+    <div class="q-control-area">
+
+      <div class="q-instruction" id="qInstruction">
+        Switch to <strong>Island Mode</strong> above, then use the buttons to increase or decrease reactive power and see the effect on available real power.
+      </div>
+
+      <div class="q-buttons">
+        <button class="q-btn" id="btnQUp"   onclick="stepQ(1)"  disabled title="Increase reactive load">&#x25B2;</button>
+        <div class="q-step-label" id="qStepLabel">&mdash;</div>
+        <button class="q-btn" id="btnQDown" onclick="stepQ(-1)" disabled title="Decrease reactive load">&#x25BC;</button>
+      </div>
+
+      <div class="q-scenario-dots" id="scenarioDots">
+        <div class="q-dot" id="dot0"></div>
+        <div class="q-dot" id="dot1"></div>
+        <div class="q-dot" id="dot2"></div>
+      </div>
+
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-row">
+        <div class="bullet-dot" style="background:#3d7fbd"></div>
+        <div>On the grid, reactive power is supplied by the grid</div>
+      </div>
+      <div class="bullet-row">
+        <div class="bullet-dot" style="background:#cc7700"></div>
+        <div>In island mode, <strong>all reactive power</strong> comes from the on-site alternator(s)</div>
+      </div>
+      <div class="bullet-row">
+        <div class="bullet-dot" style="background:#cc3d00"></div>
+        <div>Reactive loading <strong>reduces available real power</strong> at a fixed MVA rating</div>
+      </div>
+      <div class="bullet-row">
+        <div class="bullet-dot" style="background:#002060"></div>
+        <div><strong>S&sup2; = P&sup2; + Q&sup2;</strong> &mdash; increasing Q reduces available P</div>
+      </div>
+    </div>
+
+  </div><!-- .source-panel -->
+
+
+  <!-- ════ CENTER PANEL: P-Q CAPABILITY CURVE ════ -->
+  <!--
+    ViewBox: 0 0 430 340
+    Origin (P=0, Q=0): (215, 305)
+    Scale: 9 px per MW or MVAR
+    Radius = 20 MVA × 9 = 180 px
+
+    Grid lines:
+      P=5  → y = 305 − 45 = 260
+      P=10 → y = 305 − 90 = 215
+      P=15 → y = 305 − 135 = 170
+      P=20 → y = 305 − 180 = 125
+
+      Q=+5  → x = 215 + 45 = 260
+      Q=+10 → x = 215 + 90 = 305
+      Q=−5  → x = 215 − 45 = 170
+      Q=−10 → x = 215 − 90 = 125
+
+    MVA circle (upper semicircle):
+      Left end  (Q=−20): x = 215−180 = 35,  y = 305
+      Right end (Q=+20): x = 215+180 = 395, y = 305
+      Top       (Q=0):   x = 215,            y = 125
+
+    Operating point coordinates (SVG px, origin 215,305, scale 9):
+      Phase 0: Q=0,  P=16.0 → cx_abs=215, cy_abs=161  (16*9=144 up)
+      Phase 1: Q=4,  P=16.0 → cx_abs=251, cy_abs=161  (4*9=36 right; 16*9=144 up)
+      Phase 2: Q=8,  P=18.33→ cx_abs=287, cy_abs=140  (8*9=72 right; √(180²−72²)=165→cy=305−165=140)
+      Phase 3: Q=12, P=16.0 → cx_abs=323, cy_abs=161  (12*9=108 right; √(180²−108²)=144→cy=305−144=161)
+    All Phases 2,3 verified ON circle: √(dx²+dy²)=180.
+
+    Max-P dot (on circle at current Q):
+      Phase 0: cx_abs=215, cy_abs=125  (maxP=20→cy=305−180=125)
+      Phase 1: cx_abs=251, cy_abs=129  (maxP=19.6→cy=305−176.4≈129)
+      Phase 2: cx_abs=287, cy_abs=140  (same as opPoint)
+      Phase 3: cx_abs=323, cy_abs=161  (same as opPoint)
+
+    CSS transform on groups (translateX translateY from (0,0)):
+      opGroup default position = (215,161) = Phase 0
+      maxPGroup default = (215,125) = Phase 0
+  -->
+  <div class="pq-panel">
+    <svg viewBox="0 0 430 340" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Phase banner -->
+      <rect id="phaseBg" x="60" y="6" width="310" height="22" rx="5" fill="#002060"/>
+      <text id="phaseText" x="215" y="21" text-anchor="middle"
+            font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#fff">
+        Grid-Connected &mdash; No Reactive Constraint
+      </text>
+
+      <!-- Zone shading -->
+      <!-- Overexcited (lagging, Q>0): right sector -->
+      <path d="M 215 305 L 395 305 A 180 180 0 0 0 215 125 Z"
+            fill="#fff4ee" opacity="0.65"/>
+      <!-- Underexcited (leading, Q<0): left sector -->
+      <path d="M 215 305 L 35 305 A 180 180 0 0 1 215 125 Z"
+            fill="#eef4fb" opacity="0.65"/>
+
+      <!-- Grid lines: horizontal (constant P) -->
+      <line x1="35"  y1="260" x2="395" y2="260" stroke="#dde8f2" stroke-width="1"/>
+      <line x1="35"  y1="215" x2="395" y2="215" stroke="#dde8f2" stroke-width="1"/>
+      <line x1="35"  y1="170" x2="395" y2="170" stroke="#dde8f2" stroke-width="1"/>
+      <line x1="35"  y1="125" x2="395" y2="125" stroke="#dde8f2" stroke-width="1"/>
+      <!-- Grid lines: vertical (constant Q) -->
+      <line x1="170" y1="125" x2="170" y2="305" stroke="#dde8f2" stroke-width="1"/>
+      <line x1="125" y1="125" x2="125" y2="305" stroke="#dde8f2" stroke-width="1"/>
+      <line x1="260" y1="125" x2="260" y2="305" stroke="#dde8f2" stroke-width="1"/>
+      <line x1="305" y1="125" x2="305" y2="305" stroke="#dde8f2" stroke-width="1"/>
+
+      <!-- MVA circle: upper semicircle (generating mode only)
+           Arc: large-arc-flag=0 (short), sweep=1 (clockwise)
+           from left end (35,305) to right end (395,305) through top (215,125) -->
+      <path d="M 35 305 A 180 180 0 0 1 395 305"
+            fill="none" stroke="#002060" stroke-width="2.5"/>
+
+      <!-- Axes -->
+      <defs>
+        <marker id="arrowBlue" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto">
+          <polygon points="0 0,8 3.5,0 7" fill="#334466"/>
+        </marker>
+        <marker id="arrowBlueR" markerWidth="8" markerHeight="7" refX="1" refY="3.5" orient="auto">
+          <polygon points="8 0,0 3.5,8 7" fill="#334466"/>
+        </marker>
+        <!-- Small arrowhead for arc arrows on MVA circle -->
+        <marker id="arcArrow" markerWidth="5" markerHeight="4" refX="4.5" refY="2" orient="auto">
+          <polygon points="0 0, 5 2, 0 4" fill="#002060"/>
+        </marker>
+        <!-- Arrowhead for PF triangle S vector -->
+        <marker id="pfArr" markerWidth="5" markerHeight="4" refX="4.5" refY="2" orient="auto">
+          <polygon points="0 0, 5 2, 0 4" fill="#557799"/>
+        </marker>
+      </defs>
+      <!-- P axis (vertical) -->
+      <line x1="215" y1="310" x2="215" y2="108" stroke="#334466" stroke-width="2" marker-end="url(#arrowBlue)"/>
+      <!-- Q axis (horizontal, double-headed) -->
+      <line x1="38" y1="305" x2="412" y2="305" stroke="#334466" stroke-width="2" marker-end="url(#arrowBlue)"/>
+      <!-- Q axis left arrowhead -->
+      <polygon points="38,300 25,305 38,310" fill="#334466"/>
+
+      <!-- Axis labels -->
+      <text x="215" y="100" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#334466">Real Power (MW)</text>
+      <text x="215" y="329" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#334466">Reactive Power (MVAR)</text>
+      <text x="385" y="320" font-family="Arial,sans-serif" font-size="8" fill="#778899">Lagging</text>
+      <text x="18"  y="320" font-family="Arial,sans-serif" font-size="8" fill="#778899">Leading</text>
+
+
+
+      <!-- MVA label on circle — outer end 2px inside circumference at 17° -->
+      <!-- text-anchor="end" puts right edge at anchor; r=178→(385,253) -->
+      <text x="385" y="253" text-anchor="end" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#002060" transform="rotate(-17 385 253)">S = 20 MVA</text>
+      <!-- CW arc arrow: r=166 (inside circle), 14°→5° toward +Q -->
+      <!-- center=(215,305): 14°→(376,265)  5°→(380,291) -->
+      <path d="M 376 265 A 166 166 0 0 1 380 291"
+            fill="none" stroke="#002060" stroke-width="1.5"
+            marker-end="url(#arcArrow)"/>
+      <!-- CCW arc arrow: r=166 (inside circle), 21°→30° toward +P -->
+      <!-- center=(215,305): 21°→(370,246)  30°→(359,222) -->
+      <path d="M 370 246 A 166 166 0 0 0 359 222"
+            fill="none" stroke="#002060" stroke-width="1.5"
+            marker-end="url(#arcArrow)"/>
+
+      <!-- Zone labels -->
+      <text x="330" y="220" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#cc7700">Overexcited</text>
+      <text x="330" y="232" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#778899">(Lagging PF)</text>
+      <text x="96"  y="220" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="#3d7fbd">Underexcited</text>
+      <text x="96"  y="232" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#778899">(Leading PF)</text>
+
+      <!-- ── Classical Power Factor Triangle (reference inset) ── -->
+      <!-- O=(155,275)  A=(155,222) right-angle corner  B=(188,222) S-endpoint -->
+      <!-- Placed in upper-left interior (underexcited zone) away from operating-point path -->
+      <g id="pfTriangle" opacity="0.85">
+        <!-- P leg: vertical from O up to A -->
+        <line x1="155" y1="275" x2="155" y2="222" stroke="#557799" stroke-width="1.4"/>
+        <!-- Q leg: horizontal dashed from A to B -->
+        <line x1="155" y1="222" x2="188" y2="222" stroke="#557799" stroke-width="1.4" stroke-dasharray="4 2"/>
+        <!-- S hypotenuse from O to B (with arrowhead) -->
+        <line x1="155" y1="275" x2="188" y2="222" stroke="#557799" stroke-width="1.8" marker-end="url(#pfArr)"/>
+        <!-- Right-angle marker at A=(155,222) -->
+        <path d="M 155 228 L 161 228 L 161 222" fill="none" stroke="#557799" stroke-width="1"/>
+        <!-- φ arc at O=(155,275), r=16, CW from P-axis direction to S direction -->
+        <!-- P-axis pt: (155,259); S-dir pt at r=16: (163,261) -->
+        <path d="M 155 259 A 16 16 0 0 1 163 261" fill="none" stroke="#557799" stroke-width="1"/>
+        <!-- Labels -->
+        <text x="150" y="251" text-anchor="end"    font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#557799">P</text>
+        <text x="171" y="218" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#557799">Q</text>
+        <text x="177" y="257" text-anchor="start"  font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#557799" font-style="italic">S</text>
+        <text x="166" y="261" font-family="Arial,sans-serif" font-size="9" font-style="italic" fill="#557799">&#x03C6;</text>
+        <text x="171" y="283" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#557799">cos &#x03C6; = P / S</text>
+      </g>
+
+      <!-- ── HEADROOM SHADING RECT (behind everything else) ── -->
+      <!-- Default: Phase 0 (grid, Q=0): green, x=203, y=125, w=24, h=36 -->
+      <rect id="headroomRect" rx="3" fill="#2a7a20" opacity="0.22"
+            style="x:203px; y:125px; width:24px; height:36px;"/>
+
+      <!-- ── HEADROOM GROUP: max-P dot + headroom line ── -->
+      <!-- Default: Phase 0 — maxP at (215,125); opPoint at (215,161) -->
+      <!-- maxPGroup translates to (215,125) from origin (0,0) -->
+      <g id="headroomGroup" opacity="1">
+        <!-- Headroom dashed line: from maxPDot (cy_abs) down to opPoint (cy_abs)
+             Drawn in local coords relative to the x-position, using absolute SVG coords -->
+        <line id="headroomLine" x1="215" y1="125" x2="215" y2="161"
+              stroke="#2a7a20" stroke-width="1.5" stroke-dasharray="5 3"/>
+        <!-- Headroom label -->
+        <text id="headroomLabel" x="222" y="144" font-family="Arial,sans-serif"
+              font-size="8" font-weight="bold" fill="#2a7a20">Headroom</text>
+        <!-- Max-P dot group (translates to position on MVA circle) -->
+        <g id="maxPGroup" style="transform: translate(215px, 125px);">
+          <circle r="6" fill="#002060" stroke="#3d7fbd" stroke-width="1.5"/>
+        </g>
+      </g>
+
+      <!-- ── S-VECTOR & PHI ARC (live PF illustration) ── -->
+      <!-- Phase 0 default: Q=0 → vertical S-vec to (215,161); phi=0 so arc+label hidden -->
+      <g id="pfVecGroup" opacity="0.85">
+        <!-- S apparent-power vector from origin to operating point -->
+        <line id="sVec" x1="215" y1="305" x2="215" y2="161"
+              stroke="#557799" stroke-width="1.8" marker-end="url(#pfArr)"/>
+        <!-- φ arc at origin (r=24), from P-axis direction to S-vector direction -->
+        <path id="phiArc" d="M 215 281 A 24 24 0 0 1 215 281"
+              fill="none" stroke="#557799" stroke-width="1.2"/>
+        <!-- φ angle label (hidden when Q=0) -->
+        <text id="phiLabel" x="220" y="285" font-family="Arial,sans-serif" font-size="9"
+              font-style="italic" fill="#557799" opacity="0">&#x03C6;</text>
+        <!-- Live PF value, offset to right of S-vector midpoint -->
+        <text id="pfValue" x="231" y="237" text-anchor="start" font-family="Arial,sans-serif"
+              font-size="9" font-weight="bold" fill="#557799">PF = 1.00</text>
+      </g>
+
+      <!-- ── CROSSHAIR LINES ── -->
+      <!-- qLine: vertical from opPoint down to Q-axis -->
+      <line id="qLine" x1="215" y1="161" x2="215" y2="305"
+            stroke="#aabbcc" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+      <!-- pLine: horizontal from opPoint left to P-axis -->
+      <line id="pLine" x1="215" y1="161" x2="215" y2="161"
+            stroke="#aabbcc" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+
+      <!-- ── OPERATING POINT GROUP ── -->
+      <!-- Translates to absolute SVG position via CSS transform.
+           Default position = Phase 0: (215,161) -->
+      <g id="opGroup" style="transform: translate(215px, 161px);">
+        <!-- Outer ring (constraint indicator) -->
+        <circle id="opRing" r="7" fill="none" stroke="#3d7fbd" stroke-width="1.5" opacity="0.5"/>
+        <!-- Main dot -->
+        <circle id="opDot" r="5" fill="#3d7fbd" stroke="#fff" stroke-width="1.5"/>
+      </g>
+
+    </svg>
+  </div><!-- .pq-panel -->
+
+
+  <!-- ════ RIGHT PANEL: CONSTRAINT CALCULATOR ════ -->
+  <div class="calc-panel">
+
+    <!-- Status badge (top) -->
+    <div class="status-badge" id="statusBadge"
+         style="background:#ddeeff; color:#1a3660; border-color:#3d7fbd;">
+      GRID SUPPLIES REACTIVE POWER
+    </div>
+
+    <!-- MVA Rating (static) -->
+    <div class="calc-box" style="background:#eef4fb; border-color:#3d7fbd; padding:8px 12px;">
+      <div class="calc-box-title">Alternator Rating</div>
+      <div style="font-size:18px; font-weight:bold; color:#002060; text-align:center;">20.0 MVA</div>
+      <div style="font-size:9px; color:#556677; text-align:center; margin-top:2px;">Fixed apparent power limit</div>
+    </div>
+
+    <!-- Operating conditions (dynamic) -->
+    <div class="calc-box" style="flex:1;">
+      <div class="calc-box-title">Operating Conditions</div>
+      <div class="calc-row">
+        <span>Reactive load (Q)</span>
+        <span class="calc-val" id="valQ" style="color:#cc7700;">0.0 MVAR</span>
+      </div>
+      <div class="calc-row">
+        <span>P available &radic;(S&sup2;&minus;Q&sup2;)</span>
+        <span class="calc-val" id="valPavail" style="color:#002060;">20.0 MW</span>
+      </div>
+      <div class="calc-row">
+        <span>P actual (turbine)</span>
+        <span class="calc-val" id="valPactual" style="color:#002060;">16.0 MW</span>
+      </div>
+      <hr class="calc-divider"/>
+      <div class="calc-row">
+        <span style="font-weight:bold;">Headroom</span>
+        <span class="calc-val" id="valHeadroom" style="color:#2a7a20;">4.0 MW</span>
+      </div>
+    </div>
+
+    <!-- Equation box (dynamic) -->
+    <div class="calc-box" style="padding:8px 12px;">
+      <div class="calc-box-title">S&sup2; = P&sup2; + Q&sup2;</div>
+      <div class="eq-line" id="eqLine1">20&sup2; = P&sup2; + 0&sup2;</div>
+      <div class="eq-line" id="eqLine2">400 = P&sup2; + 0</div>
+      <div class="eq-line"><span id="eqResult">P = &radic;400 = 20.0 MW available</span></div>
+    </div>
+
+  </div><!-- .calc-panel -->
+
+</div><!-- .main -->
+
+<div class="key-concept-bar">
+  <div class="key-concept-head">Key Concept</div>
+  <div class="key-concept-text" id="keyText">
+    In grid-connected operation, the utility supplies all reactive power (VARs) demanded by the load &mdash;
+    the alternator&rsquo;s full MVA rating is available for real power (MW).
+  </div>
+</div>
+
+<script>
+/* ── Element refs ──────────────────────────────────────────── */
+var qInstruction  = document.getElementById('qInstruction');
+var btnQUp        = document.getElementById('btnQUp');
+var btnQDown      = document.getElementById('btnQDown');
+var qStepLabel    = document.getElementById('qStepLabel');
+var dots          = [document.getElementById('dot0'), document.getElementById('dot1'), document.getElementById('dot2')];
+
+var phaseBg        = document.getElementById('phaseBg');
+var phaseText      = document.getElementById('phaseText');
+
+var opGroup        = document.getElementById('opGroup');
+var opDot          = document.getElementById('opDot');
+var opRing         = document.getElementById('opRing');
+
+var maxPGroup      = document.getElementById('maxPGroup');
+var headroomGroup  = document.getElementById('headroomGroup');
+var headroomRect   = document.getElementById('headroomRect');
+var headroomLine   = document.getElementById('headroomLine');
+var headroomLabel  = document.getElementById('headroomLabel');
+
+var qLine          = document.getElementById('qLine');
+var pLine          = document.getElementById('pLine');
+var sVecLine       = document.getElementById('sVec');
+var phiArcPath     = document.getElementById('phiArc');
+var phiLabelText   = document.getElementById('phiLabel');
+var pfValueText    = document.getElementById('pfValue');
+
+var statusBadge    = document.getElementById('statusBadge');
+var valQ           = document.getElementById('valQ');
+var valPavail      = document.getElementById('valPavail');
+var valPactual     = document.getElementById('valPactual');
+var valHeadroom    = document.getElementById('valHeadroom');
+var eqLine1        = document.getElementById('eqLine1');
+var eqLine2        = document.getElementById('eqLine2');
+var eqResult       = document.getElementById('eqResult');
+var keyText        = document.getElementById('keyText');
+
+/* ── Coordinate helpers ─────────────────────────────────────
+   Origin: (215, 305). Scale: 9px per MW or MVAR.
+   SVG x = 215 + Q*9   (Q positive = right = lagging/overexcited)
+   SVG y = 305 − P*9   (P positive = up)
+   On circle: P_avail = sqrt(180² − (Q*9)²) / 9
+────────────────────────────────────────────────────────────── */
+var OX = 215, OY = 305, SCALE = 9, RADIUS = 180;
+
+function svgX(q) { return OX + q * SCALE; }
+function svgY(p) { return OY - p * SCALE; }
+function maxP(q)  { var dx = q * SCALE; return Math.sqrt(RADIUS * RADIUS - dx * dx) / SCALE; }
+
+/* ── Phase definitions ──────────────────────────────────────── */
+var phases = [
+  {
+    hold: 4000,
+    q: 0, p: 16.0,
+    sourceName: 'Grid',
+    phaseTxt: 'Grid-Connected \u2014 No Reactive Constraint',
+    phaseBg: '#002060',
+    constrained: false,
+    statusTxt:   'GRID SUPPLIES REACTIVE POWER',
+    statusBg:    '#ddeeff', statusColor: '#1a3660', statusBorder: '#3d7fbd',
+    gridOp: 1.0, islandOp: 0.45,
+    srcGridBg: '#eef4fb', srcGridBorder: '#3d7fbd',
+    srcIslandBg: '#f4f4f8', srcIslandBorder: '#aabbd0',
+    labelBg: '#eef4fb', labelColor: '#1a3660', labelBorderColor: '#3d7fbd',
+    labelTxt: 'Q Source: Utility Grid',
+    key: 'In grid-connected operation the utility grid supplies all reactive current (VARs) directly &mdash; none flows through the alternator windings. The stator carries only real-load current, so the full 20 MVA thermal rating is available for real power (MW). The turbine has plenty of mechanical power in reserve; the alternator is the unconstrained path.'
+  },
+  {
+    hold: 3500,
+    q: 4, p: 16.0,
+    sourceName: 'Island',
+    phaseTxt: 'Island Mode \u2014 4 MVAR Reactive Load (Light)',
+    phaseBg: '#1a3660',
+    constrained: false,
+    statusTxt:   '\u2714 OK \u2014 Headroom Available',
+    statusBg:    '#e8f5e0', statusColor: '#1a5020', statusBorder: '#2a7a20',
+    gridOp: 0.3, islandOp: 1.0,
+    srcGridBg: '#f4f4f8', srcGridBorder: '#aabbd0',
+    srcIslandBg: '#fff4ee', srcIslandBorder: '#cc7700',
+    labelBg: '#fff8e8', labelColor: '#8b5000', labelBorderColor: '#cc7700',
+    labelTxt: 'Q Source: On-Site Alternator',
+    key: 'In island mode the alternator must supply <strong>both</strong> real and reactive current simultaneously. At 4 MVAR the combined stator current reaches 16.5 MVA &mdash; PF&nbsp;0.97. The turbine still has mechanical headroom and could push more shaft power, but the stator is already carrying the vector sum of P and Q. The thermal rating of the windings, not the turbine, now sets the ceiling at 19.6 MW real power.'
+  },
+  {
+    hold: 4500,
+    q: 8, p: 16.0,
+    sourceName: 'Island',
+    phaseTxt: 'Island Mode \u2014 8 MVAR Reactive Load \u2014 Headroom Reducing',
+    phaseBg: '#1a3660',
+    constrained: false,
+    statusTxt:   '\u26A0 Headroom Reducing \u2014 2.3 MW Left',
+    statusBg:    '#fff8e0', statusColor: '#8b5000', statusBorder: '#cc7700',
+    gridOp: 0.3, islandOp: 1.0,
+    srcGridBg: '#f4f4f8', srcGridBorder: '#aabbd0',
+    srcIslandBg: '#fff8e0', srcIslandBorder: '#cc7700',
+    labelBg: '#fff8e0', labelColor: '#8b5000', labelBorderColor: '#cc7700',
+    labelTxt: 'Q Source: On-Site Alternator',
+    key: 'With <strong>8 MVAR</strong> the excitation system is working hard to force reactive current through the stator alongside real-load current. Total apparent power reaches 17.9 MVA &mdash; PF&nbsp;0.89. The stator is now the clear bottleneck: only 2.3 MW of real-power headroom remains before the windings hit their thermal limit. The turbine could still deliver more shaft torque &mdash; but there is no electrical room left to convert it.'
+  },
+  {
+    hold: 4000,
+    q: 15, p: 13.2,
+    sourceName: 'Island',
+    phaseTxt: '\u26D4 Island Mode \u2014 15 MVAR Reactive Load \u2014 REAL POWER FALLS',
+    phaseBg: '#8b2000',
+    constrained: true,
+    statusTxt:   '\u26D4 HEADROOM EXCEEDED \u2014 REAL POWER FORCED DOWN',
+    statusBg:    '#ffe0e0', statusColor: '#7a0000', statusBorder: '#cc3d00',
+    gridOp: 0.3, islandOp: 1.0,
+    srcGridBg: '#f4f4f8', srcGridBorder: '#aabbd0',
+    srcIslandBg: '#ffe0e0', srcIslandBorder: '#cc3d00',
+    labelBg: '#ffe0e0', labelColor: '#7a0000', labelBorderColor: '#cc3d00',
+    labelTxt: 'Q Source: On-Site Alternator',
+    key: 'At <strong>15 MVAR</strong> the stator current has reached the 20 MVA thermal limit of the alternator windings. The excitation system cannot sustain this reactive current <em>and</em> pass 16 MW of real current simultaneously &mdash; the winding would overheat. The governor-exciter control therefore backs real power down to <strong>13.2 MW</strong> to keep total current on the MVA circle. The turbine is producing excess shaft torque that cannot be converted: the constraint is entirely in the alternator, not the prime mover. Data center loads will drop or trip.'
+  }
+];
+
+/* ── Apply a phase ──────────────────────────────────────────── */
+function applyPhase(ph) {
+  var qv   = ph.q;
+  var pv   = ph.p;
+  var pav  = maxP(qv);
+  var headroom = pav - pv;
+  if (headroom < 0) headroom = 0;
+
+  /* Operating point SVG absolute coords */
+  var ox = svgX(qv);
+  var oy = svgY(pv);
+  /* Max-P dot absolute coords (on MVA circle at same Q) */
+  var mx = ox;
+  var my = svgY(pav);
+
+  /* ── Translate operating point group ── */
+  opGroup.style.transform = 'translate(' + ox + 'px, ' + oy + 'px)';
+
+  /* ── Operating point color ── */
+  if (ph.constrained) {
+    opDot.setAttribute('fill', '#cc3d00');
+    opRing.setAttribute('stroke', '#cc3d00');
+  } else {
+    opDot.setAttribute('fill', '#3d7fbd');
+    opRing.setAttribute('stroke', '#3d7fbd');
+  }
+
+  /* ── Max-P group ── */
+  maxPGroup.style.transform = 'translate(' + mx + 'px, ' + my + 'px)';
+
+  /* ── Headroom line & label + shading rect ── */
+  if (ph.constrained) {
+    /* Red deficit: from desired P (16 MW) down to actual forced P */
+    var desiredY = svgY(16.0);
+    headroomRect.style.x      = (ox - 12) + 'px';
+    headroomRect.style.y      = desiredY + 'px';
+    headroomRect.style.width  = '24px';
+    headroomRect.style.height = (oy - desiredY) + 'px';
+    headroomRect.setAttribute('fill', '#cc3d00');
+    headroomRect.style.opacity = '0.28';
+    headroomGroup.style.opacity = '0';
+  } else {
+    /* Green headroom: from max-P point down to actual operating point */
+    headroomRect.style.x      = (ox - 12) + 'px';
+    headroomRect.style.y      = my + 'px';
+    headroomRect.style.width  = '24px';
+    headroomRect.style.height = (oy - my) + 'px';
+    headroomRect.setAttribute('fill', '#2a7a20');
+    headroomRect.style.opacity = '0.22';
+    headroomGroup.style.opacity = '1';
+    headroomLine.setAttribute('x1', ox);
+    headroomLine.setAttribute('y1', my);
+    headroomLine.setAttribute('x2', ox);
+    headroomLine.setAttribute('y2', oy);
+    var labelX = (qv >= 4) ? ox - 72 : ox + 5;
+    headroomLabel.setAttribute('x', labelX);
+    headroomLabel.setAttribute('y', (my + oy) / 2 + 4);
+  }
+
+  /* ── Crosshair lines ── */
+  qLine.setAttribute('x1', ox); qLine.setAttribute('y1', oy);
+  qLine.setAttribute('x2', ox); qLine.setAttribute('y2', OY);
+  pLine.setAttribute('x1', OX); pLine.setAttribute('y1', oy);
+  pLine.setAttribute('x2', ox); pLine.setAttribute('y2', oy);
+
+  /* ── Phase banner ── */
+  phaseText.textContent = ph.phaseTxt;
+  phaseBg.setAttribute('fill', ph.phaseBg);
+
+  /* ── Status badge ── */
+  statusBadge.textContent          = ph.statusTxt;
+  statusBadge.style.background     = ph.statusBg;
+  statusBadge.style.color          = ph.statusColor;
+  statusBadge.style.borderColor    = ph.statusBorder;
+
+  /* ── Right panel values ── */
+  valQ.textContent       = qv.toFixed(1) + ' MVAR';
+  valPavail.textContent  = pav.toFixed(1) + ' MW';
+  valPactual.textContent = pv.toFixed(1) + ' MW';
+  valHeadroom.textContent = headroom.toFixed(1) + ' MW';
+  valHeadroom.style.color = (headroom <= 0) ? '#cc3d00' : '#2a7a20';
+  valPavail.style.color   = ph.constrained ? '#cc3d00' : '#002060';
+
+  var qSq = (qv * qv).toFixed(0);
+  var pSq = (pv * pv).toFixed(0);
+  eqLine1.innerHTML  = '20&sup2; = P&sup2; + ' + qv.toFixed(0) + '&sup2;';
+  eqLine2.innerHTML  = '400 = P&sup2; + ' + qSq;
+  eqResult.innerHTML = '<span>P = &radic;(400&minus;' + qSq + ') = ' + pav.toFixed(1) + ' MW</span>';
+
+  /* ── S-vector & φ arc ── */
+  /* S in MVA = sqrt(P²+Q²); PF = P/S */
+  var smva  = Math.sqrt(pv * pv + qv * qv);
+  var pf    = (smva > 0) ? (pv / smva).toFixed(2) : '1.00';
+  var r_arc = 24;
+
+  /* S-vector: endpoint offset back 2.9px along unit vector so ~2/3 of arrowhead
+     is visible outside the opDot (r=5); 1/3 (3px) tucks under the dot */
+  sVecLine.setAttribute('x1', OX);
+  sVecLine.setAttribute('y1', OY);
+  var dx_sv = ox - OX, dy_sv = oy - OY;
+  var sVecLen = Math.sqrt(dx_sv * dx_sv + dy_sv * dy_sv);
+  var svOff = 2.9;
+  var ex = sVecLen > 0 ? ox - (dx_sv / sVecLen) * svOff : ox;
+  var ey = sVecLen > 0 ? oy - (dy_sv / sVecLen) * svOff : oy;
+  sVecLine.setAttribute('x2', ex.toFixed(1));
+  sVecLine.setAttribute('y2', ey.toFixed(1));
+
+  /* φ arc: from P-axis point CW to S-direction point */
+  var arcStartX = OX;
+  var arcStartY = OY - r_arc;
+  if (qv < 0.01) {
+    /* φ = 0: collapse arc to a point */
+    phiArcPath.setAttribute('d', 'M ' + arcStartX + ' ' + arcStartY + ' L ' + arcStartX + ' ' + arcStartY);
+    phiLabelText.setAttribute('opacity', '0');
+  } else {
+    var arcEndX = OX + (qv / smva) * r_arc;
+    var arcEndY = OY - (pv / smva) * r_arc;
+    phiArcPath.setAttribute('d', 'M ' + arcStartX + ' ' + arcStartY.toFixed(1) +
+      ' A ' + r_arc + ' ' + r_arc + ' 0 0 1 ' + arcEndX.toFixed(1) + ' ' + arcEndY.toFixed(1));
+    /* φ label at bisector of the arc */
+    var halfAngle = Math.atan2(qv, pv) / 2;
+    var phiR = r_arc + 9;
+    phiLabelText.setAttribute('x', (OX + Math.sin(halfAngle) * phiR).toFixed(1));
+    phiLabelText.setAttribute('y', (OY - Math.cos(halfAngle) * phiR + 3).toFixed(1));
+    phiLabelText.setAttribute('opacity', '1');
+  }
+
+  /* PF value: offset perpendicular-right of S-vector midpoint */
+  var midX  = (OX + ox) / 2;
+  var midY  = (OY + oy) / 2;
+  var dvx   = ox - OX, dvy = oy - OY;
+  var slen  = Math.sqrt(dvx * dvx + dvy * dvy);
+  var perp  = 14;
+  var perpX = slen > 0 ? (-dvy / slen * perp) : perp;
+  var perpY = slen > 0 ? ( dvx / slen * perp) : 0;
+  pfValueText.setAttribute('x', (midX + perpX).toFixed(1));
+  pfValueText.setAttribute('y', (midY + perpY + 4).toFixed(1));
+  pfValueText.textContent = 'PF = ' + pf;
+
+  /* ── Key concept ── */
+  keyText.innerHTML = ph.key;
+}
+
+/* ── Mode & manual step control ─────────────────────────────
+   Grid mode:   static — phases[0]. Buttons disabled.
+   Island mode: manual — user steps through phases[1..3] with ▲▼.
+────────────────────────────────────────────────────────────── */
+var currentMode = 'grid';
+var islandIdx   = 1;   /* 1=4MVAR, 2=8MVAR, 3=15MVAR */
+
+/* Dot style classes per island scenario index */
+var dotClasses = ['active-ok', 'active-warn', 'active-bad'];
+/* Step labels shown between the buttons */
+var stepLabels = ['4 MVAR', '8 MVAR', '15 MVAR'];
+
+function updateControls() {
+  if (currentMode === 'grid') {
+    btnQUp.disabled   = true;
+    btnQDown.disabled = true;
+    qStepLabel.textContent = '\u2014';
+    qInstruction.innerHTML = 'Switch to <strong>Island Mode</strong> above, then use the buttons to increase or decrease reactive power and see the effect on available real power.';
+    dots.forEach(function(d) { d.className = 'q-dot'; });
+  } else {
+    btnQUp.disabled   = (islandIdx >= 3);
+    btnQDown.disabled = (islandIdx <= 1);
+    qStepLabel.textContent = stepLabels[islandIdx - 1];
+    qInstruction.innerHTML = 'Use the buttons to increase or decrease reactive power and observe the effect on available real power.';
+    dots.forEach(function(d, i) {
+      d.className = 'q-dot' + (i === islandIdx - 1 ? ' ' + dotClasses[i] : '');
+    });
+  }
+}
+
+function setMode(mode) {
+  if (currentMode === mode) return;
+  currentMode = mode;
+
+  var bg = document.getElementById('btnGrid');
+  var bi = document.getElementById('btnIsland');
+  bg.className = 'mode-btn' + (mode === 'grid'   ? ' active-grid'   : '');
+  bi.className = 'mode-btn' + (mode === 'island' ? ' active-island' : '');
+
+  if (mode === 'grid') {
+    applyPhase(phases[0]);
+  } else {
+    islandIdx = 1;
+    applyPhase(phases[islandIdx]);
+  }
+  updateControls();
+}
+
+function stepQ(dir) {
+  if (currentMode !== 'island') return;
+  var next = islandIdx + dir;
+  if (next < 1 || next > 3) return;
+  islandIdx = next;
+  applyPhase(phases[islandIdx]);
+  updateControls();
+}
+
+/* Initial render */
+setMode('grid');
+</script>
+
+</body>
+</html>
