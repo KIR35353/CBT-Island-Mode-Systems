@@ -156,34 +156,43 @@ Total instruction: ~45 min | Total with exam: ~53 min
 ---
 
 ## Section 1: Grid-Connected vs. Island Mode — Fundamental Differences
-**Estimated Duration: 7 minutes | Screens: ~7 | Followed by Section Quiz 1**
+**Estimated Duration: 7 minutes | Screens: ~6 | Followed by Section Quiz 1**
 
 ### Section Intro: S1-0
 - **Visuals**: ![S1-0: Section 1 Intro](S1-0_Section_Intro.svg)
-  *Production file: `S1-0_Section_Intro.svg` — Split-screen: left side shows the GTG connected to the utility grid (infinite bus); right side shows the same GTG alone on an island bus with no utility connection.*
-- **VO Script**: "Section one. Before we discuss limits and protection systems, we need to establish a clear picture of what changes when a generator goes from grid-connected to island mode — and why those changes matter to you as a packaging engineer."
+  *Production file: `S1-0_Section_Intro.svg` — Split-screen: left side shows the GTG connected to the utility grid (infinite bus); right side shows the same GTG alone on an island bus with no utility connection. Below the split, a two-column callout band labels the two analytical lenses used throughout the section:*
+  - *Left column — **Lens 1**: Real Power · Frequency · Turbine / Governor · Thermal & Inertia Limits*
+  - *Right column — **Lens 2**: Reactive Power · Terminal Voltage · Alternator / AVR · Reactive Capability Limits*
+- **VO Script**: "Section one. Before we discuss limits and protection systems, we need to establish a clear picture of what changes when a generator goes from grid-connected to island mode — and why those changes matter to you as a packaging engineer. `[PAUSE]` We will examine the step-load event from two perspectives. The first perspective is real power and frequency — how turbine thermal capacity and rotational inertia limit the machine's ability to absorb a sudden load increase. The second perspective is reactive power and terminal voltage — how the alternator's reactive capability and the speed of the automatic voltage regulator determine whether voltage survives the same event. Both responses happen simultaneously when a large motor starts, and either one can independently cause the system to trip."
 
 ---
 
-### Screen S1-1: The Grid-Connected Scenario
-- **Visuals**: Animated single-line diagram. An "infinite bus" symbol represents the utility grid. One GTG connected to it. Load changes shown as arrows.
-- **On-Screen Text**:
+### Screen S1-1 / S1-2: Real Power — A Step Load's Impact on the Turbine and Frequency *(Combined Interactive Screen)*
+- **Production File:** [`S1-1_2_Step_Load_Event.html`](S1-1_2_Step_Load_Event.html) — Interactive HTML module. Single screen covering both S1-1 (grid-connected) and S1-2 (island mode) scenarios via a mode toggle.
+- **Visuals**: Animated single-line diagram. Utility panel (left) and Gas Turbine Generator panel (right) feed a common distribution bus. A motor load (6 MW) hangs off the bus via a knife switch. Area-proportional animated power-flow arrows show real-time MW from each source. A frequency indicator and load readout show bus frequency and source shares.
+  - **Mode toggle**: `▰ Grid-Connected` / `⚡ Island Mode` buttons switch the entire scenario. In island mode the utility panel greys out with an open-circuit dot and red X, and the utility supply arrow hides.
+  - **Run / Stop button**: Located beside the motor symbol. **▶ RUN** closes the knife switch and connects the 6 MW motor load; **■ STOP** opens it and returns to steady state. In island mode a 2.2-second auto-advance shows the transient (frequency droops to 59.2 Hz) then the settled state (GTG ramps to 16 MW, frequency restored).
+  - **Power arrows**: Single `<path>` elements with CSS `transition: d` — shaft and arrowhead animate as one object. Arrow area is proportional to MW (208 px²/MW, aspect ratio 4.33). GTG arrow points left toward the bus; utility arrow points right.
+  - **Key Concept bar**: Updates per state — describes what just happened and instructs the next action.
+- **On-Screen Text (Grid-Connected — steady state)**:
   - The utility grid acts as an **infinite bus**
-  - Absorbs power swings and frequency deviations
-  - Provides essentially unlimited reactive power (VARs)
-  - Individual generator sees only a fraction of any load step
-- **VO Script**: "When a generator operates connected to a large utility grid, the grid functions like an infinite reservoir of voltage and frequency stability. If load suddenly changes, the grid absorbs the transient. If reactive power demand spikes — from motor starts, for example — the grid supplies it. The individual generator is largely buffered from system events."
-
----
-
-### Screen S1-2: The Island Mode Scenario
-- **Visuals**: Same diagram but the utility connection is removed. The GTG is now alone. Load change arrows now have full impact on the single machine.
-- **On-Screen Text**:
-  - No external grid — **the GTGs are the only source**
-  - Every load change is a **system event**
-  - Frequency and voltage stability depend entirely on the GTG(s)
-  - Reactive power must come from the on-site alternator(s)
-- **VO Script**: "In island mode, those buffers disappear. Every load change, every motor start, every fluctuation in the data center is a system-level event that the gas turbine and alternator must absorb alone. The gas turbine controls frequency. The alternator and its excitation system control voltage. There is nothing else."
+  - GTG supplies its contracted share (7 MW); grid supplies remainder (3 MW)
+  - Click **Run** to add the 6 MW step load and observe the response
+- **On-Screen Text (Grid-Connected — motor running)**:
+  - Grid supply surges 3 → **9 MW** instantly
+  - GTG output: **unchanged at 7.0 MW** — completely undisturbed
+  - Frequency: **60.0 Hz** — never wavered
+- **On-Screen Text (Island Mode — steady state)**:
+  - GTG is the **sole power source** — no utility connection
+  - Click **Run** to add the 6 MW step load and observe frequency droop
+- **On-Screen Text (Island Mode — transient)**:
+  - Frequency droops to **59.2 Hz** — inertia briefly supplies the gap
+  - Governor is opening the fuel valve…
+- **On-Screen Text (Island Mode — settled)**:
+  - GTG output ramped to **16.0 MW** — absorbed the entire surge alone
+  - Frequency restored to **60.0 Hz**
+- **VO Script (Grid-Connected)**: "When a generator operates connected to a large utility grid, the grid functions like an infinite reservoir of voltage and frequency stability. If load suddenly changes, the grid absorbs the transient — the GTG output does not change at all. The utility supply surges instantly to cover the difference. Frequency stays locked at sixty hertz."
+- **VO Script (Island Mode)**: "In island mode, those buffers disappear. There is no infinite bus. The gas turbine is the only power source. The same motor load that barely registered in grid-connected mode now causes an immediate frequency droop. The turbine governor must respond entirely on its own to restore the balance."
 
 ---
 
@@ -211,14 +220,18 @@ Total instruction: ~45 min | Total with exam: ~53 min
 
 ---
 
-### Screen S1-5: Load Transient Sensitivity
-- **Visuals**: Side-by-side comparison chart showing a grid-connected vs. island mode response to the same step load event. Time vs. frequency plots.
+### Screen S1-5: Voltage Control — The Excitation System in Island Mode
+- **Production File:** [`S1-5_Excitation_Voltage.html`](S1-5_Excitation_Voltage.html) — Interactive HTML module. Three-panel animated layout; auto-cycling four-phase sequence.
+- **Visuals**: Parallel diagram to S1-3. Left column: turbine → shaft → governor → frequency control loop (greyed, labelled "covered"). Right column: alternator stator → rotor field winding → automatic voltage regulator (AVR) → terminal voltage control loop (highlighted). A step-load event arrow feeds into both loops simultaneously, showing that a motor start depresses **both** frequency and voltage at the same instant.
 - **On-Screen Text**:
-  - **Grid-connected**: Step load shared across many generators — small individual impact
-  - **Island mode**: Entire step load hits the GTG(s) — large, immediate impact
-  - Governor must respond in seconds, not minutes
-  - DLE combustion system must survive the transient (covered in Section 5)
-- **VO Script**: "In a grid-connected plant, a large motor starting or a sudden load increase is divided among many generators across the grid. In an island mode data center, that same load step lands entirely on the packaged GTGs. The turbine governor must respond in seconds. The excitation system must hold voltage. And as we will discuss in Section five, the combustion system must survive the event without flaming out."
+  - Just as the turbine governor controls **frequency**, the excitation system controls **voltage**
+  - In grid-parallel mode: the grid holds terminal voltage — the AVR trims reactive output
+  - In island mode: the AVR is the **only** voltage reference — there is no external voltage support
+  - A motor starting draws a large reactive current surge → terminal voltage dips
+  - The AVR must boost field current fast enough to arrest the dip before contactors drop out
+- **Key Callout**: Frequency stability = governor problem. Voltage stability = excitation problem. In island mode, **both must respond simultaneously** to the same event.
+- **Key Concept**: The excitation system has its own response time constant (typically 0.1–0.5 seconds for a modern static exciter). If the AVR is too slow, or if the alternator is already near its reactive capability limit, the voltage dip can be deep enough to cause under-voltage load shedding or contactor drop-out — even if frequency recovers normally.
+- **VO Script**: "We have seen how a step load event in island mode drives an immediate frequency droop — and how the turbine governor must respond to restore it. But the same event simultaneously drives a voltage dip. When a large motor starts, it draws a surge of reactive current. That reactive surge forces the terminal voltage down. In grid-parallel operation, the grid holds the voltage and the AVR simply adjusts reactive output. In island mode, the automatic voltage regulator is the only thing standing between the load and a complete voltage collapse. `[PAUSE]` The AVR must detect the voltage dip and boost the alternator field current fast enough to arrest it — typically within a few hundred milliseconds. If it cannot, under-voltage protection will start shedding loads. `[PAUSE]` This is why island mode packages require fast-response static exciters and carefully tuned AVR gain settings — requirements that are often overlooked when a package is specified for grid-parallel service and then redeployed in island mode."
 
 ---
 

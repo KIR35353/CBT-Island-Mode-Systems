@@ -33,10 +33,16 @@
     font-size: 10px; font-weight: bold; color: #1a3660; letter-spacing: 0.5px;
     text-transform: uppercase; margin-bottom: 8px;
   }
-  .rotor-svg { width: 240px; height: 240px; }
+  .rotor-svg { width: 90px; height: 90px; margin-left: -10px; }
+  .turbine-rotor-row { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 4px; }
+  .turbine-svg { width: 72px; height: 96px; flex-shrink: 0; }
+  .shaft-connector { width: 8px; height: 10px; background: #334466; border-radius: 2px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.25); }
+  .load-connector { width: 14px; height: 3px; background: #cc3d00; flex-shrink: 0; margin-left: -10px; margin-right: -2px; }
+  .load-box { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 62px; height: 56px; background: #fff4ee; border: 2px solid #cc3d00; border-radius: 6px; }
+  .load-box-label { font-size: 8px; font-weight: bold; color: #8b2000; letter-spacing: 0.4px; text-align: center; line-height: 1.4; }
 
-  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  .rotor-body { transform-origin: 120px 120px; animation: spin 2s linear infinite; }
+  /* rotor rotation driven by JS rAF — no CSS animation */
+  .rotor-body { transform-origin: center; transform-box: fill-box; }
 
   .power-bars { width: 100%; display: flex; gap: 8px; margin-top: 6px; justify-content: center; }
   .bar-group { display: flex; flex-direction: column; align-items: center; gap: 3px; }
@@ -77,12 +83,18 @@
   }
   .key-concept-head { font-size: 11px; font-weight: bold; color: #8b2000; margin-bottom: 4px; }
   .key-concept-text { font-size: 10px; color: #334466; line-height: 1.6; }
+
+  .one-line-wrap { width: 100%; margin-top: 8px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .one-line-svg { width: 312px; height: 80px; }
+  .motor3-btn { font-size: 10px; font-weight: bold; padding: 4px 14px; border-radius: 14px; border: 2px solid #cc3d00; background: #fff4ee; color: #8b2000; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s, color 0.2s; }
+  .motor3-btn:hover { background: #ffe0cc; }
+  .motor3-btn.btn-active { background: #cc3d00; color: #fff; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-title">S1-3 &middot; THE SWING EQUATION &mdash; FREQUENCY IS NOT FREE</div>
+  <div class="header-title">THE SWING EQUATION &mdash; FREQUENCY IS NOT FREE</div>
   <div class="header-tag">SECTION 1 &middot; INTRO</div>
 </div>
 
@@ -91,7 +103,33 @@
   <!-- LEFT: ROTOR -->
   <div class="rotor-panel">
     <div class="panel-title">Rotor Power Balance</div>
-    <svg class="rotor-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+    <div class="turbine-rotor-row">
+      <svg class="turbine-svg" viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer casing -->
+        <rect x="6" y="28" width="66" height="64" rx="5" fill="#e8f0f8" stroke="#1a3660" stroke-width="2"/>
+        <!-- Inlet (left flare) -->
+        <polygon points="6,28 6,92 0,100 0,20" fill="#dde8f2" stroke="#1a3660" stroke-width="1.5"/>
+        <!-- Shaft stub (right, connects to shaft-connector div) -->
+        <rect x="72" y="56" width="18" height="8" fill="#334466" rx="2"/>
+        <!-- Compressor blades -->
+        <line x1="22" y1="29" x2="17" y2="91" stroke="#3d7fbd" stroke-width="2" stroke-linecap="round"/>
+        <line x1="33" y1="29" x2="28" y2="91" stroke="#3d7fbd" stroke-width="2" stroke-linecap="round"/>
+        <!-- Hot section divider -->
+        <line x1="44" y1="28" x2="44" y2="92" stroke="#cc8800" stroke-width="1.2" stroke-dasharray="3,2"/>
+        <!-- Combustion glow -->
+        <ellipse cx="55" cy="60" rx="10" ry="24" fill="#ff8c00" fill-opacity="0.22"/>
+        <!-- Turbine blades -->
+        <line x1="58" y1="29" x2="63" y2="91" stroke="#cc3d00" stroke-width="2" stroke-linecap="round"/>
+        <line x1="68" y1="31" x2="71" y2="89" stroke="#cc3d00" stroke-width="2" stroke-linecap="round"/>
+        <!-- Centre shaft line -->
+        <line x1="0" y1="60" x2="72" y2="60" stroke="#334466" stroke-width="1" stroke-dasharray="3,2" opacity="0.45"/>
+        <!-- Hub -->
+        <circle cx="44" cy="60" r="5" fill="#002060"/>
+        <!-- Label -->
+        <text x="38" y="112" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">GAS TURBINE</text>
+      </svg>
+      <div class="shaft-connector"></div>
+      <svg class="rotor-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <circle cx="120" cy="120" r="88" fill="#f0f5fa" stroke="#c8d8e8" stroke-width="3"/>
       <circle cx="120" cy="120" r="88" fill="none" stroke="#dde8f2" stroke-width="10" stroke-dasharray="8 6"/>
       <g class="rotor-body" id="rotorBody">
@@ -111,15 +149,19 @@
           <polygon points="0 0,9 3.5,0 7" fill="#cc3d00"/>
         </marker>
       </defs>
-      <line x1="8" y1="120" x2="28" y2="120" stroke="#2a7a20" stroke-width="4" marker-end="url(#aGreen)"/>
-      <text x="5" y="110" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#2a7a20">P</text>
-      <text x="5" y="122" font-family="Arial,sans-serif" font-size="7" fill="#2a7a20">mech</text>
-      <text x="5" y="132" font-family="Arial,sans-serif" font-size="8" fill="#2a7a20">(turbine)</text>
-      <line x1="212" y1="120" x2="232" y2="120" stroke="#cc3d00" stroke-width="4" marker-end="url(#aRed)"/>
-      <text x="215" y="110" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="#cc3d00">P</text>
-      <text x="215" y="122" font-family="Arial,sans-serif" font-size="7" fill="#cc3d00">elec</text>
-      <text x="212" y="132" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">(load)</text>
+
     </svg>
+      <div class="load-connector"></div>
+      <div class="load-box">
+        <svg width="28" height="22" viewBox="0 0 28 22" xmlns="http://www.w3.org/2000/svg">
+          <!-- Resistor symbol -->
+          <line x1="0" y1="11" x2="5" y2="11" stroke="#cc3d00" stroke-width="1.8"/>
+          <rect x="5" y="6" width="18" height="10" rx="2" fill="none" stroke="#cc3d00" stroke-width="1.8"/>
+          <line x1="23" y1="11" x2="28" y2="11" stroke="#cc3d00" stroke-width="1.8"/>
+        </svg>
+        <div class="load-box-label">ELEC<br/>LOAD</div>
+      </div>
+    </div>
     <div class="power-bars">
       <div class="bar-group">
         <div class="bar-track"><div class="bar-fill bar-pmech" id="barPmech" style="height:60%"></div></div>
@@ -133,6 +175,43 @@
         <div class="bar-track"><div class="bar-fill bar-imbalance" id="barImb" style="height:2%"></div></div>
         <div class="bar-label">Imbal-<br/>ance</div>
       </div>
+    </div>
+    <!-- ONE-LINE DIAGRAM -->
+    <div class="one-line-wrap">
+      <svg class="one-line-svg" viewBox="0 0 312 80" xmlns="http://www.w3.org/2000/svg">
+        <!-- GTG -->
+        <circle cx="30" cy="44" r="15" fill="#f5f8fc" stroke="#1a3660" stroke-width="1.8"/>
+        <text x="30" y="48" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">G</text>
+        <line x1="30" y1="29" x2="30" y2="14" stroke="#1a3660" stroke-width="2"/>
+        <text x="30" y="72" text-anchor="middle" font-size="7" fill="#556677">GTG</text>
+        <!-- Bus -->
+        <line x1="10" y1="14" x2="295" y2="14" stroke="#1a3660" stroke-width="3.5" stroke-linecap="square"/>
+        <!-- Motor 1 -->
+        <line x1="95" y1="14" x2="95" y2="36" stroke="#1a3660" stroke-width="1.8"/>
+        <circle cx="95" cy="49" r="13" fill="#edf3fa" stroke="#1a3660" stroke-width="1.5"/>
+        <text x="95" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">M</text>
+        <text x="95" y="72" text-anchor="middle" font-size="7" fill="#556677">M1</text>
+        <!-- Motor 2 -->
+        <line x1="188" y1="14" x2="188" y2="36" stroke="#1a3660" stroke-width="1.8"/>
+        <circle cx="188" cy="49" r="13" fill="#edf3fa" stroke="#1a3660" stroke-width="1.5"/>
+        <text x="188" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">M</text>
+        <text x="188" y="72" text-anchor="middle" font-size="7" fill="#556677">M2</text>
+        <!-- Motor 3: upper feeder -->
+        <line x1="272" y1="14" x2="272" y2="22" stroke="#cc3d00" stroke-width="1.8"/>
+        <!-- Upper contact -->
+        <circle cx="272" cy="23" r="2.5" fill="#aaa" id="swContactTop"/>
+        <!-- Blade pivots at lower contact (272,33); open=angled, closed=vertical -->
+        <line id="switchBlade" x1="272" y1="33" x2="281" y2="26" stroke="#cc3d00" stroke-width="2" stroke-linecap="round"/>
+        <!-- Lower pivot contact -->
+        <circle cx="272" cy="33" r="2.5" fill="#cc3d00"/>
+        <!-- Lower feeder to motor -->
+        <line x1="272" y1="35" x2="272" y2="36" stroke="#cc3d00" stroke-width="1.8"/>
+        <!-- Motor 3 circle (greyed when open) -->
+        <circle cx="272" cy="49" r="13" fill="#f4f4f4" stroke="#aaa" stroke-width="1.5" id="motor3circle"/>
+        <text x="272" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#aaa" id="motor3label">M</text>
+        <text x="272" y="72" text-anchor="middle" font-size="7" fill="#cc3d00">M3 +STEP</text>
+      </svg>
+      <button class="motor3-btn" id="motor3Btn" onclick="toggleMotor3()">&#9654; CONNECT MOTOR 3</button>
     </div>
   </div>
 
@@ -250,47 +329,255 @@
 </div>
 
 <script>
-var rotor   = document.getElementById('rotorBody');
-var needle  = document.getElementById('needle');
-var pmechB  = document.getElementById('barPmech');
-var pelecB  = document.getElementById('barPelec');
-var imbB    = document.getElementById('barImb');
-var freqEl  = document.getElementById('freqDisplay');
-var capEl   = document.getElementById('meterCaption');
+var rotor  = document.getElementById('rotorBody');
+var needle = document.getElementById('needle');
+var pmechB = document.getElementById('barPmech');
+var pelecB = document.getElementById('barPelec');
+var imbB   = document.getElementById('barImb');
+var freqEl = document.getElementById('freqDisplay');
+var capEl  = document.getElementById('meterCaption');
 
-// needle: 0deg = 60 Hz (straight up)
-// NEGATIVE rotation = counter-clockwise = LEFT = LOWER Hz = FREQUENCY DIP
-function applyPhase(pmech, pelec, imb, needleDeg, freqText, freqColor, rotorSec, cap) {
+var motor3On = false;
+var pending  = null;
+
+function applyPhase(pmech, pelec, imb, needleDeg, freqVal, freqColor, _unused, cap) {
   pmechB.style.height = pmech + '%';
   pelecB.style.height = pelec + '%';
   imbB.style.height   = imb + '%';
   needle.style.transform = 'rotate(' + needleDeg + 'deg)';
-  freqEl.textContent  = freqText;
-  freqEl.style.color  = freqColor;
-  rotor.style.animationDuration = rotorSec + 's';
-  capEl.textContent   = cap;
+  currentFreq = freqVal;
+  freqEl.textContent = freqVal.toFixed(1) + ' Hz';
+  freqEl.style.color = freqColor;
+  capEl.textContent  = cap;
 }
 
-// [pmech%, pelec%, imb%, needleDeg, freqText, freqColor, rotorSec, caption, holdMs]
-// Negative needleDeg = needle swings LEFT = frequency DIP
-var phases = [
-  [60, 60,  2,   0,  '60.0 Hz', '#2a7a20', 2.0, 'Balanced - Pmech = Pelec',              3500],
-  [60, 90, 38,   0,  '60.0 Hz', '#cc7700', 2.0, 'Load step - Pelec jumps',               1500],
-  [60, 90, 38, -40,  '58.4 Hz', '#cc3d00', 3.8, 'Frequency drops - rotor decelerates',   3500],
-  [90, 90,  2,   0,  '60.0 Hz', '#2a7a20', 2.1, 'Governor responds - frequency recovers', 5000],
-  [90, 60, 38,   0,  '60.0 Hz', '#cc7700', 2.1, 'Load drops - Pelec falls',               1500],
-  [90, 60, 38, +38,  '61.5 Hz', '#cc7700', 1.4, 'Frequency rises - rotor accelerates',   3500],
-  [60, 60,  2,   0,  '60.0 Hz', '#2a7a20', 2.0, 'Governor responds - frequency recovers', 5000]
-];
-
-var idx = 0;
-function tick() {
-  var p = phases[idx];
-  applyPhase(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
-  idx = (idx + 1) % phases.length;
-  setTimeout(tick, p[8]);
+function setSwitchOpen() {
+  document.getElementById('switchBlade').setAttribute('x2', '281');
+  document.getElementById('switchBlade').setAttribute('y2', '26');
+  document.getElementById('swContactTop').setAttribute('fill', '#aaa');
+  document.getElementById('motor3circle').setAttribute('stroke', '#aaa');
+  document.getElementById('motor3circle').setAttribute('fill', '#f4f4f4');
+  document.getElementById('motor3label').setAttribute('fill', '#aaa');
 }
-tick();
+
+function setSwitchClosed() {
+  document.getElementById('switchBlade').setAttribute('x2', '272');
+  document.getElementById('switchBlade').setAttribute('y2', '23');
+  document.getElementById('swContactTop').setAttribute('fill', '#cc3d00');
+  document.getElementById('motor3circle').setAttribute('stroke', '#cc3d00');
+  document.getElementById('motor3circle').setAttribute('fill', '#fff4ee');
+  document.getElementById('motor3label').setAttribute('fill', '#cc3d00');
+}
+
+function cancelPending() {
+  if (pending) { clearTimeout(pending); pending = null; }
+  if (window._rampTimer) { clearInterval(window._rampTimer); window._rampTimer = null; }
+}
+
+// rAF-driven rotor: currentFreq drives rotation speed
+var currentFreq = 60.0;
+var rotorAngle  = 0;
+var lastTs      = null;
+
+function freqToDegPerMs(freq) {
+  // 60.0 Hz = 2 rev/s = 0.720 deg/ms
+  // 58.4 Hz = 0.5 rev/s = 0.180 deg/ms
+  return 0.180 + (freq - 58.4) / 1.6 * 0.540;
+}
+
+(function rafLoop(ts) {
+  if (lastTs !== null) {
+    rotorAngle = (rotorAngle + freqToDegPerMs(currentFreq) * (ts - lastTs)) % 360;
+    rotor.style.transform = 'rotate(' + rotorAngle.toFixed(2) + 'deg)';
+  }
+  lastTs = ts;
+  requestAnimationFrame(rafLoop);
+})(performance.now());
+
+function freqToDuration(freq) {
+  // kept for any legacy calls — not used for rotor
+  return 0.5 + (60.0 - freq) / 1.6 * 0.5;
+}
+
+function rampUp(onComplete) {
+  needle.style.transition = 'transform 0.25s linear';
+  pmechB.style.transition = 'height 0.25s linear';
+  pelecB.style.transition = 'height 0.25s ease-out';
+  imbB.style.transition   = 'height 0.25s linear';
+  capEl.textContent       = 'Motor 3 disconnected \u2014 frequency rising';
+
+  needle.style.transform = 'rotate(38deg)';
+  pmechB.style.height    = '90%';
+  pelecB.style.height    = '60%';
+  imbB.style.height      = '38%';
+
+  var steps = 5; // 5 × 50ms = 250ms
+  var step  = 0;
+  var start = 60.0;
+  var end   = 61.5;
+  window._rampTimer = setInterval(function() {
+    step++;
+    var val   = start + (end - start) * (step / steps);
+    var color = '#cc7700';
+    currentFreq = val;
+    freqEl.textContent = val.toFixed(1) + ' Hz';
+    freqEl.style.color = color;
+    if (step >= steps) {
+      clearInterval(window._rampTimer);
+      window._rampTimer = null;
+      currentFreq = 61.5;
+      freqEl.textContent = '61.5 Hz';
+      freqEl.style.color = '#cc7700';
+      needle.style.transition = 'transform 1.2s linear';
+      pmechB.style.transition = 'height 2.8s linear';
+      pelecB.style.transition = 'height 0.35s ease-out';
+      imbB.style.transition   = 'height 0.4s linear';
+      if (onComplete) onComplete();
+    }
+  }, 50);
+}
+
+function rampSettle(onComplete) {
+  needle.style.transition = 'transform 6s linear';
+  pmechB.style.transition = 'height 6s linear';
+  pelecB.style.transition = 'height 6s linear';
+  imbB.style.transition   = 'height 6s linear';
+  capEl.textContent       = 'Governor responding \u2014 settling back to 60 Hz';
+
+  needle.style.transform = 'rotate(0deg)';
+  pmechB.style.height    = '60%';
+  pelecB.style.height    = '60%';
+  imbB.style.height      = '2%';
+
+  var steps = 120; // 120 × 50ms = 6000ms
+  var step  = 0;
+  var start = 61.5;
+  var end   = 60.0;
+  window._rampTimer = setInterval(function() {
+    step++;
+    var val   = start + (end - start) * (step / steps);
+    var color = val > 60.5 ? '#cc7700' : '#2a7a20';
+    currentFreq = val;
+    freqEl.textContent = val.toFixed(1) + ' Hz';
+    freqEl.style.color = color;
+    if (step >= steps) {
+      clearInterval(window._rampTimer);
+      window._rampTimer = null;
+      currentFreq = 60.0;
+      freqEl.textContent = '60.0 Hz';
+      freqEl.style.color = '#2a7a20';
+      capEl.textContent  = 'Balanced \u2014 Pmech = Pelec';
+      needle.style.transition = 'transform 1.2s linear';
+      pmechB.style.transition = 'height 2.8s linear';
+      pelecB.style.transition = 'height 0.35s ease-out';
+      imbB.style.transition   = 'height 0.4s linear';
+      if (onComplete) onComplete();
+    }
+  }, 50);
+}
+
+function rampDown(onComplete) {
+  needle.style.transition = 'transform 0.25s linear';
+  pmechB.style.transition = 'height 0.25s linear';
+  pelecB.style.transition = 'height 0.25s ease-out';
+  imbB.style.transition   = 'height 0.25s linear';
+  capEl.textContent       = 'Motor 3 connected — frequency dropping';
+
+  needle.style.transform = 'rotate(-40deg)';
+  pmechB.style.height    = '60%';
+  pelecB.style.height    = '90%';
+  imbB.style.height      = '38%';
+
+  var steps = 5; // 5 × 50ms = 250ms
+  var step  = 0;
+  var start = 60.0;
+  var end   = 58.4;
+  window._rampTimer = setInterval(function() {
+    step++;
+    var val   = start + (end - start) * (step / steps);
+    var color = val < 59.5 ? '#cc3d00' : val < 59.9 ? '#cc7700' : '#2a7a20';
+    currentFreq = val;
+    freqEl.textContent = val.toFixed(1) + ' Hz';
+    freqEl.style.color = color;
+    if (step >= steps) {
+      clearInterval(window._rampTimer);
+      window._rampTimer = null;
+      currentFreq = 58.4;
+      freqEl.textContent = '58.4 Hz';
+      freqEl.style.color = '#cc3d00';
+      needle.style.transition = 'transform 1.2s linear';
+      pmechB.style.transition = 'height 2.8s linear';
+      pelecB.style.transition = 'height 0.35s ease-out';
+      imbB.style.transition   = 'height 0.4s linear';
+      if (onComplete) onComplete();
+    }
+  }, 50);
+}
+
+function rampRecover() {
+  needle.style.transition = 'transform 6s linear';
+  pmechB.style.transition = 'height 6s linear';
+  pelecB.style.transition = 'height 6s linear';
+  imbB.style.transition   = 'height 6s linear';
+  capEl.textContent       = 'Governor responding \u2014 ramping back to 60 Hz';
+
+  needle.style.transform = 'rotate(0deg)';
+  pmechB.style.height    = '90%';
+  pelecB.style.height    = '90%';
+  imbB.style.height      = '2%';
+
+  // Tick frequency display and rotor speed 58.4 → 60.0 over 6000ms (120 × 50ms)
+  var steps = 120;
+  var step  = 0;
+  var start = 58.4;
+  var end   = 60.0;
+  window._rampTimer = setInterval(function() {
+    step++;
+    var val   = start + (end - start) * (step / steps);
+    var color = val < 59.5 ? '#cc3d00' : val < 59.9 ? '#cc7700' : '#2a7a20';
+    currentFreq = val;
+    freqEl.textContent = val.toFixed(1) + ' Hz';
+    freqEl.style.color = color;
+    if (step >= steps) {
+      clearInterval(window._rampTimer);
+      window._rampTimer = null;
+      currentFreq = 60.0;
+      freqEl.textContent = '60.0 Hz';
+      freqEl.style.color = '#2a7a20';
+      capEl.textContent  = 'Balanced \u2014 Pmech = Pelec';
+      needle.style.transition = 'transform 1.2s linear';
+      pmechB.style.transition = 'height 2.8s linear';
+      pelecB.style.transition = 'height 0.35s ease-out';
+      imbB.style.transition   = 'height 0.4s linear';
+    }
+  }, 50);
+}
+
+function toggleMotor3() {
+  cancelPending();
+  var btn = document.getElementById('motor3Btn');
+  if (!motor3On) {
+    motor3On = true;
+    btn.textContent = '\u25A0 DISCONNECT MOTOR 3';
+    btn.classList.add('btn-active');
+    setSwitchClosed();
+    rampDown(function() {
+      rampRecover();
+    });
+  } else {
+    motor3On = false;
+    btn.textContent = '\u25B6 CONNECT MOTOR 3';
+    btn.classList.remove('btn-active');
+    setSwitchOpen();
+    rampUp(function() {
+      rampSettle();
+    });
+  }
+}
+
+// Initial state
+applyPhase(60, 60, 2, 0, 60.0, '#2a7a20', 0, 'Balanced \u2014 Pmech = Pelec');
+setSwitchOpen();
 </script>
 
 </body>
