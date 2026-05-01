@@ -119,7 +119,7 @@
   }
 
   /* ── POWER ARROWS ─────────────────────────────────────── */
-  #headroomRect { transition: x 0.8s ease-out, y 0.8s ease-out, width 0.8s ease-out, height 0.8s ease-out, opacity 0.4s; }
+  #headroomRect { transition: opacity 0.4s; }
 
   /* ── LEFT PANEL CONTROLS ─────────────────────────── */
   .q-control-area {
@@ -192,7 +192,7 @@
 <body>
 
 <div class="header">
-  <div class="header-title">S1-4 &middot; REACTIVE POWER &mdash; THE HIDDEN CONSTRAINT</div>
+  <div class="header-title">THE ALTERNATOR AND REACTIVE POWER &mdash; THE HIDDEN CONSTRAINT</div>
   <div class="header-tag">SECTION 1 &middot; GRID VS. ISLAND</div>
 </div>
 
@@ -400,10 +400,10 @@
         <text x="171" y="283" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#557799">cos &#x03C6; = P / S</text>
       </g>
 
-      <!-- ── HEADROOM SHADING RECT (behind everything else) ── -->
-      <!-- Default: Phase 0 (grid, Q=0): green, x=203, y=125, w=24, h=36 -->
-      <rect id="headroomRect" rx="3" fill="#2a7a20" opacity="0.22"
-            style="x:203px; y:125px; width:24px; height:36px;"/>
+      <!-- ── HEADROOM SHADING REGION (behind everything else) ── -->
+      <path id="headroomGreen" fill="#2a7a20" opacity="0.22"/>
+      <!-- ── RED DEFICIT OVERLAY (constrained phase only) ── -->
+      <path id="headroomRect" fill="#cc3d00" opacity="0" />
 
       <!-- ── HEADROOM GROUP: max-P dot + headroom line ── -->
       <!-- Default: Phase 0 — maxP at (215,125); opPoint at (215,161) -->
@@ -537,6 +537,7 @@ var opRing         = document.getElementById('opRing');
 var maxPGroup      = document.getElementById('maxPGroup');
 var headroomGroup  = document.getElementById('headroomGroup');
 var headroomRect   = document.getElementById('headroomRect');
+var headroomGreen  = document.getElementById('headroomGreen');
 var headroomLine   = document.getElementById('headroomLine');
 var headroomLabel  = document.getElementById('headroomLabel');
 
@@ -667,33 +668,44 @@ function applyPhase(ph) {
   /* ── Max-P group ── */
   maxPGroup.style.transform = 'translate(' + mx + 'px, ' + my + 'px)';
 
-  /* ── Headroom line & label + shading rect ── */
+  /* ── Headroom shading: always draw green region ── */
+  /* Floor is the target P (16 MW when constrained, actual pv otherwise) */
+  var floorP = ph.constrained ? 16.0 : pv;
+  var floorY = svgY(floorP);
+  var pAxisTop = svgY(maxP(0)); /* = 125, P=20 on P-axis */
+  var pDy = floorP * SCALE;
+  var maxQatPx = svgX(Math.sqrt(RADIUS * RADIUS - pDy * pDy) / SCALE);
+  var headD = 'M ' + OX + ',' + floorY +
+              ' L ' + maxQatPx.toFixed(1) + ',' + floorY +
+              ' A 180 180 0 0 0 ' + OX + ',' + pAxisTop +
+              ' Z';
+  headroomGreen.setAttribute('d', headD);
+  headroomGreen.style.opacity = '0.22';
+
+  headroomGroup.style.opacity = '1';
+  headroomLine.setAttribute('x1', ox);
+  headroomLine.setAttribute('y1', my);
+  headroomLine.setAttribute('x2', ox);
+  headroomLine.setAttribute('y2', oy);
+  headroomLabel.setAttribute('x', OX + 5);
+  headroomLabel.setAttribute('y', svgY(18));
+
   if (ph.constrained) {
-    /* Red deficit: from desired P (16 MW) down to actual forced P */
-    var desiredY = svgY(16.0);
-    headroomRect.style.x      = (ox - 12) + 'px';
-    headroomRect.style.y      = desiredY + 'px';
-    headroomRect.style.width  = '24px';
-    headroomRect.style.height = (oy - desiredY) + 'px';
-    headroomRect.setAttribute('fill', '#cc3d00');
+    /* Red deficit region: P-axis → MVA arc at P=16 → arc down to P=actual → P-axis */
+    var desiredP  = 16.0;
+    var desiredY  = svgY(desiredP);
+    /* Right extent of MVA arc at each P level */
+    var maxQat16  = svgX(Math.sqrt(RADIUS * RADIUS - Math.pow(desiredP * SCALE, 2)) / SCALE);
+    var maxQatAct = svgX(Math.sqrt(RADIUS * RADIUS - Math.pow(pv * SCALE, 2)) / SCALE);
+    headroomRect.setAttribute('d',
+      'M ' + OX + ',' + desiredY +
+      ' L ' + maxQat16.toFixed(1) + ',' + desiredY +
+      ' A 180 180 0 0 1 ' + maxQatAct.toFixed(1) + ',' + oy +
+      ' L ' + OX + ',' + oy +
+      ' Z');
     headroomRect.style.opacity = '0.28';
-    headroomGroup.style.opacity = '0';
   } else {
-    /* Green headroom: from max-P point down to actual operating point */
-    headroomRect.style.x      = (ox - 12) + 'px';
-    headroomRect.style.y      = my + 'px';
-    headroomRect.style.width  = '24px';
-    headroomRect.style.height = (oy - my) + 'px';
-    headroomRect.setAttribute('fill', '#2a7a20');
-    headroomRect.style.opacity = '0.22';
-    headroomGroup.style.opacity = '1';
-    headroomLine.setAttribute('x1', ox);
-    headroomLine.setAttribute('y1', my);
-    headroomLine.setAttribute('x2', ox);
-    headroomLine.setAttribute('y2', oy);
-    var labelX = (qv >= 4) ? ox - 72 : ox + 5;
-    headroomLabel.setAttribute('x', labelX);
-    headroomLabel.setAttribute('y', (my + oy) / 2 + 4);
+    headroomRect.style.opacity = '0';
   }
 
   /* ── Crosshair lines ── */

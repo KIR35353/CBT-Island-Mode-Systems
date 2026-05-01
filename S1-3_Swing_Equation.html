@@ -60,6 +60,10 @@
   .equation-box { background: #fff; border: 1.5px solid #c8d8e8; border-radius: 8px; padding: 12px 14px; flex: 1; }
   .eq-title { font-size: 10px; font-weight: bold; color: #1a3660; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
   .eq-formula { font-size: 15px; font-weight: bold; color: #002060; text-align: center; margin: 6px 0 10px; }
+  .eq-frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 4px; }
+  .eq-frac .eq-num, .eq-frac .eq-den { padding: 1px 6px; font-size: 13px; font-weight: bold; color: #002060; }
+  .eq-frac .eq-bar { width: 100%; height: 2px; background: #002060; }
+  .eq-lhs { font-size: 15px; font-weight: bold; color: #002060; vertical-align: middle; }
   .eq-terms { font-size: 9px; color: #334466; line-height: 1.7; }
   .eq-terms span { color: #002060; font-weight: bold; }
 
@@ -84,9 +88,9 @@
   .key-concept-head { font-size: 11px; font-weight: bold; color: #8b2000; margin-bottom: 4px; }
   .key-concept-text { font-size: 10px; color: #334466; line-height: 1.6; }
 
-  .one-line-wrap { width: 100%; margin-top: 8px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-  .one-line-svg { width: 312px; height: 80px; }
-  .motor3-btn { font-size: 10px; font-weight: bold; padding: 4px 14px; border-radius: 14px; border: 2px solid #cc3d00; background: #fff4ee; color: #8b2000; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s, color 0.2s; }
+  .one-line-wrap { width: 100%; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 0; }
+  .one-line-svg { width: 255px; height: 80px; overflow: visible; }
+  .motor3-btn { font-size: 10px; font-weight: bold; padding: 4px 0; width: 80px; border-radius: 14px; border: 2px solid #cc3d00; background: #fff4ee; color: #8b2000; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s, color 0.2s; text-align: center; align-self: flex-start; margin-top: 36px; }
   .motor3-btn:hover { background: #ffe0cc; }
   .motor3-btn.btn-active { background: #cc3d00; color: #fff; }
 </style>
@@ -178,40 +182,40 @@
     </div>
     <!-- ONE-LINE DIAGRAM -->
     <div class="one-line-wrap">
-      <svg class="one-line-svg" viewBox="0 0 312 80" xmlns="http://www.w3.org/2000/svg">
+      <svg class="one-line-svg" viewBox="0 0 255 80" xmlns="http://www.w3.org/2000/svg">
         <!-- GTG -->
-        <circle cx="30" cy="44" r="15" fill="#f5f8fc" stroke="#1a3660" stroke-width="1.8"/>
-        <text x="30" y="48" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">G</text>
-        <line x1="30" y1="29" x2="30" y2="14" stroke="#1a3660" stroke-width="2"/>
+        <circle cx="30" cy="49" r="15" fill="#f5f8fc" stroke="#1a3660" stroke-width="1.8"/>
+        <text x="30" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">G</text>
+        <line x1="30" y1="34" x2="30" y2="14" stroke="#1a3660" stroke-width="2"/>
         <text x="30" y="72" text-anchor="middle" font-size="7" fill="#556677">GTG</text>
         <!-- Bus -->
-        <line x1="10" y1="14" x2="295" y2="14" stroke="#1a3660" stroke-width="3.5" stroke-linecap="square"/>
+        <line x1="10" y1="14" x2="240" y2="14" stroke="#1a3660" stroke-width="3.5" stroke-linecap="square"/>
         <!-- Motor 1 -->
         <line x1="95" y1="14" x2="95" y2="36" stroke="#1a3660" stroke-width="1.8"/>
         <circle cx="95" cy="49" r="13" fill="#edf3fa" stroke="#1a3660" stroke-width="1.5"/>
         <text x="95" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">M</text>
         <text x="95" y="72" text-anchor="middle" font-size="7" fill="#556677">M1</text>
         <!-- Motor 2 -->
-        <line x1="188" y1="14" x2="188" y2="36" stroke="#1a3660" stroke-width="1.8"/>
-        <circle cx="188" cy="49" r="13" fill="#edf3fa" stroke="#1a3660" stroke-width="1.5"/>
-        <text x="188" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">M</text>
-        <text x="188" y="72" text-anchor="middle" font-size="7" fill="#556677">M2</text>
+        <line x1="160" y1="14" x2="160" y2="36" stroke="#1a3660" stroke-width="1.8"/>
+        <circle cx="160" cy="49" r="13" fill="#edf3fa" stroke="#1a3660" stroke-width="1.5"/>
+        <text x="160" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a3660">M</text>
+        <text x="160" y="72" text-anchor="middle" font-size="7" fill="#556677">M2</text>
         <!-- Motor 3: upper feeder -->
-        <line x1="272" y1="14" x2="272" y2="22" stroke="#cc3d00" stroke-width="1.8"/>
+        <line x1="225" y1="14" x2="225" y2="22" stroke="#cc3d00" stroke-width="1.8"/>
         <!-- Upper contact -->
-        <circle cx="272" cy="23" r="2.5" fill="#aaa" id="swContactTop"/>
-        <!-- Blade pivots at lower contact (272,33); open=angled, closed=vertical -->
-        <line id="switchBlade" x1="272" y1="33" x2="281" y2="26" stroke="#cc3d00" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="225" cy="23" r="2.5" fill="#aaa" id="swContactTop"/>
+        <!-- Blade pivots at lower contact (225,33); open=angled, closed=vertical -->
+        <line id="switchBlade" x1="225" y1="33" x2="234" y2="26" stroke="#cc3d00" stroke-width="2" stroke-linecap="round"/>
         <!-- Lower pivot contact -->
-        <circle cx="272" cy="33" r="2.5" fill="#cc3d00"/>
+        <circle cx="225" cy="33" r="2.5" fill="#cc3d00"/>
         <!-- Lower feeder to motor -->
-        <line x1="272" y1="35" x2="272" y2="36" stroke="#cc3d00" stroke-width="1.8"/>
+        <line x1="225" y1="35" x2="225" y2="36" stroke="#cc3d00" stroke-width="1.8"/>
         <!-- Motor 3 circle (greyed when open) -->
-        <circle cx="272" cy="49" r="13" fill="#f4f4f4" stroke="#aaa" stroke-width="1.5" id="motor3circle"/>
-        <text x="272" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#aaa" id="motor3label">M</text>
-        <text x="272" y="72" text-anchor="middle" font-size="7" fill="#cc3d00">M3 +STEP</text>
+        <circle cx="225" cy="49" r="13" fill="#f4f4f4" stroke="#aaa" stroke-width="1.5" id="motor3circle"/>
+        <text x="225" y="53" text-anchor="middle" font-size="8" font-weight="bold" fill="#aaa" id="motor3label">M</text>
+        <text x="225" y="72" text-anchor="middle" font-size="7" fill="#cc3d00">M3 +STEP</text>
       </svg>
-      <button class="motor3-btn" id="motor3Btn" onclick="toggleMotor3()">&#9654; CONNECT MOTOR 3</button>
+      <button class="motor3-btn" id="motor3Btn" onclick="toggleMotor3()">&#9654; RUN</button>
     </div>
   </div>
 
@@ -219,7 +223,19 @@
   <div class="mid-panel">
     <div class="equation-box">
       <div class="eq-title">The Swing Equation</div>
-      <div class="eq-formula">df/dt = (P<sub>mech</sub> &minus; P<sub>elec</sub>) / (2 &times; H)</div>
+      <div class="eq-formula">
+        <span class="eq-frac">
+          <span class="eq-num">df</span>
+          <span class="eq-bar"></span>
+          <span class="eq-den">dt</span>
+        </span>
+        <span class="eq-lhs">&nbsp;=&nbsp;</span>
+        <span class="eq-frac">
+          <span class="eq-num">P<sub>mech</sub> &minus; P<sub>elec</sub></span>
+          <span class="eq-bar"></span>
+          <span class="eq-den">2H</span>
+        </span>
+      </div>
       <div class="eq-terms">
         <span>df/dt</span> &mdash; rate of frequency change (Hz/s)<br/>
         <span>P<sub>mech</sub></span> &mdash; mechanical power from turbine<br/>
@@ -294,7 +310,7 @@
 
       <!-- UFLS Trip dashed line: at ~58.5 Hz = -37.5deg → (102,93) -->
       <line x1="192" y1="210" x2="102" y2="93" stroke="#cc3d00" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
-      <text x="86" y="83" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">UFLS trip</text>
+      <text x="65" y="92" font-family="Arial,sans-serif" font-size="8" fill="#cc3d00">UFLS trip</text>
 
       <!-- Needle (pivots at 192,210; 0deg = straight up = 60 Hz; negative = left = dip) -->
       <g class="needle" id="needle">
@@ -352,7 +368,7 @@ function applyPhase(pmech, pelec, imb, needleDeg, freqVal, freqColor, _unused, c
 }
 
 function setSwitchOpen() {
-  document.getElementById('switchBlade').setAttribute('x2', '281');
+  document.getElementById('switchBlade').setAttribute('x2', '234');
   document.getElementById('switchBlade').setAttribute('y2', '26');
   document.getElementById('swContactTop').setAttribute('fill', '#aaa');
   document.getElementById('motor3circle').setAttribute('stroke', '#aaa');
@@ -361,7 +377,7 @@ function setSwitchOpen() {
 }
 
 function setSwitchClosed() {
-  document.getElementById('switchBlade').setAttribute('x2', '272');
+  document.getElementById('switchBlade').setAttribute('x2', '225');
   document.getElementById('switchBlade').setAttribute('y2', '23');
   document.getElementById('swContactTop').setAttribute('fill', '#cc3d00');
   document.getElementById('motor3circle').setAttribute('stroke', '#cc3d00');
@@ -558,7 +574,7 @@ function toggleMotor3() {
   var btn = document.getElementById('motor3Btn');
   if (!motor3On) {
     motor3On = true;
-    btn.textContent = '\u25A0 DISCONNECT MOTOR 3';
+    btn.textContent = '\u25A0 STOP';
     btn.classList.add('btn-active');
     setSwitchClosed();
     rampDown(function() {
@@ -566,7 +582,7 @@ function toggleMotor3() {
     });
   } else {
     motor3On = false;
-    btn.textContent = '\u25B6 CONNECT MOTOR 3';
+    btn.textContent = '\u25B6 RUN';
     btn.classList.remove('btn-active');
     setSwitchOpen();
     rampUp(function() {

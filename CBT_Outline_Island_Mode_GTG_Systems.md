@@ -160,78 +160,151 @@ Total instruction: ~45 min | Total with exam: ~53 min
 
 ### Section Intro: S1-0
 - **Visuals**: ![S1-0: Section 1 Intro](S1-0_Section_Intro.svg)
-  *Production file: `S1-0_Section_Intro.svg` — Split-screen: left side shows the GTG connected to the utility grid (infinite bus); right side shows the same GTG alone on an island bus with no utility connection. Below the split, a two-column callout band labels the two analytical lenses used throughout the section:*
-  - *Left column — **Lens 1**: Real Power · Frequency · Turbine / Governor · Thermal & Inertia Limits*
-  - *Right column — **Lens 2**: Reactive Power · Terminal Voltage · Alternator / AVR · Reactive Capability Limits*
+  *Production file: `S1-0_Section_Intro.svg` — 1040×510 px static SVG. Split-screen: left panel (blue, "GRID-CONNECTED OPERATION") shows the GTG connected to a utility grid with an infinite-bus pill; right panel (orange/red, "ISLAND MODE OPERATION") shows the same GTG alone on an island bus with an open-circuit indicator and "utility disconnected" label. A centred "VS" badge sits between the two panels. Both sides show a +5 MW load step block with a dashed drop line and L-shaped power-flow arrow pointing into the load step.*
+  - *Below each panel: a side-specific callout bar with three bullet lines:*
+    - *Left callout — "Load step absorbed by the utility grid — GTG output barely changes" · "Grid holds frequency and voltage. Supplies reactive power. GTG sees only a fraction." · "Governor response time: minutes. DLE combustion: low transient risk."*
+    - *Right callout — "Frequency deviation is immediate. Governor must respond within 1–2 seconds." · "No reactive power buffer. DLE combustion system must survive the transient." · "Alternator terminal voltage dips — AVR must restore reactive output before protection trips."*
+  - *Full-width two-perspectives band at bottom:*
+    - *Header: "Both scenarios are examined through two independent lenses — each one can independently cause a trip:"*
+    - ***Lens 1 — Real Power & Frequency**: turbine thermal capacity, rotational inertia, governor response rate, swing equation (Screens S1-1 · S1-2 · S1-3)*
+    - ***Lens 2 — Reactive Power & Voltage**: alternator reactive capability, AVR excitation speed, terminal voltage survival (Screens S1-4 · S1-5)*
 - **VO Script**: "Section one. Before we discuss limits and protection systems, we need to establish a clear picture of what changes when a generator goes from grid-connected to island mode — and why those changes matter to you as a packaging engineer. `[PAUSE]` We will examine the step-load event from two perspectives. The first perspective is real power and frequency — how turbine thermal capacity and rotational inertia limit the machine's ability to absorb a sudden load increase. The second perspective is reactive power and terminal voltage — how the alternator's reactive capability and the speed of the automatic voltage regulator determine whether voltage survives the same event. Both responses happen simultaneously when a large motor starts, and either one can independently cause the system to trip."
 
 ---
 
 ### Screen S1-1 / S1-2: Real Power — A Step Load's Impact on the Turbine and Frequency *(Combined Interactive Screen)*
 - **Production File:** [`S1-1_2_Step_Load_Event.html`](S1-1_2_Step_Load_Event.html) — Interactive HTML module. Single screen covering both S1-1 (grid-connected) and S1-2 (island mode) scenarios via a mode toggle.
-- **Visuals**: Animated single-line diagram. Utility panel (left) and Gas Turbine Generator panel (right) feed a common distribution bus. A motor load (6 MW) hangs off the bus via a knife switch. Area-proportional animated power-flow arrows show real-time MW from each source. A frequency indicator and load readout show bus frequency and source shares.
-  - **Mode toggle**: `▰ Grid-Connected` / `⚡ Island Mode` buttons switch the entire scenario. In island mode the utility panel greys out with an open-circuit dot and red X, and the utility supply arrow hides.
+- **Visuals**: Animated single-line diagram. Utility panel (left) and Gas Turbine Generator panel (right) feed a common distribution bus. Two loads hang off the bus:
+  - **Base load** (10 MW, fixed) — always connected at x=350 on the bus; represents the existing data-centre load before the step event.
+  - **Motor load** (6 MW, switchable) — at x=530 on the bus behind a knife switch; added by the **▶ RUN** button.
+  - **Phase banner**: Centred label at top of the SVG diagram updates each phase with a coloured background (navy, green, or red) and descriptive text.
+  - **Mode toggle**: `▰ Grid-Connected` / `⚡ Island Mode` buttons switch the entire scenario. In island mode the utility panel greys out, shows a diagonal red X overlay and a "NOT CONNECTED — ISLAND MODE" badge; the utility supply arrow hides.
   - **Run / Stop button**: Located beside the motor symbol. **▶ RUN** closes the knife switch and connects the 6 MW motor load; **■ STOP** opens it and returns to steady state. In island mode a 2.2-second auto-advance shows the transient (frequency droops to 59.2 Hz) then the settled state (GTG ramps to 16 MW, frequency restored).
   - **Power arrows**: Single `<path>` elements with CSS `transition: d` — shaft and arrowhead animate as one object. Arrow area is proportional to MW (208 px²/MW, aspect ratio 4.33). GTG arrow points left toward the bus; utility arrow points right.
+  - **Badge overlays**: Four SVG badge overlays (top-left and top-right corners) flash during specific phases: "GTG STEADY — 7.0 MW" (grid loaded), "GRID ABSORBS SURGE ↑ 3→9 MW" (grid loaded), "⚠ FREQ DROOPING ↓ 59.2 Hz" (island transient), "✓ GTG ABSORBED SURGE — 16.0 MW" (island settled).
+  - **Load readout panel**: Grid mode shows GTG share % and Grid share %; island mode shows GTG output MW. Both modes show total load MW.
   - **Key Concept bar**: Updates per state — describes what just happened and instructs the next action.
 - **On-Screen Text (Grid-Connected — steady state)**:
   - The utility grid acts as an **infinite bus**
-  - GTG supplies its contracted share (7 MW); grid supplies remainder (3 MW)
+  - GTG supplies its contracted share (7 MW); grid supplies remainder (3 MW); total load 10 MW
   - Click **Run** to add the 6 MW step load and observe the response
 - **On-Screen Text (Grid-Connected — motor running)**:
-  - Grid supply surges 3 → **9 MW** instantly
+  - Grid supply surges 3 → **9 MW** instantly; GTG share drops to 44%, grid share rises to 56%
   - GTG output: **unchanged at 7.0 MW** — completely undisturbed
   - Frequency: **60.0 Hz** — never wavered
 - **On-Screen Text (Island Mode — steady state)**:
-  - GTG is the **sole power source** — no utility connection
+  - GTG is the **sole power source** — no utility connection; supplying **10.0 MW** base load
   - Click **Run** to add the 6 MW step load and observe frequency droop
 - **On-Screen Text (Island Mode — transient)**:
   - Frequency droops to **59.2 Hz** — inertia briefly supplies the gap
-  - Governor is opening the fuel valve…
+  - Governor is opening the fuel valve…; total load now **16.0 MW**
 - **On-Screen Text (Island Mode — settled)**:
   - GTG output ramped to **16.0 MW** — absorbed the entire surge alone
   - Frequency restored to **60.0 Hz**
-- **VO Script (Grid-Connected)**: "When a generator operates connected to a large utility grid, the grid functions like an infinite reservoir of voltage and frequency stability. If load suddenly changes, the grid absorbs the transient — the GTG output does not change at all. The utility supply surges instantly to cover the difference. Frequency stays locked at sixty hertz."
-- **VO Script (Island Mode)**: "In island mode, those buffers disappear. There is no infinite bus. The gas turbine is the only power source. The same motor load that barely registered in grid-connected mode now causes an immediate frequency droop. The turbine governor must respond entirely on its own to restore the balance."
+- **VO Script (Grid-Connected)**: "When a generator operates connected to a large utility grid, the grid functions like an infinite reservoir of voltage and frequency stability. `[PAUSE]` The screen is now showing grid-connected operation. Click the Run button beside the motor load to add the six megawatt step load and watch what happens. `[PAUSE]` If load suddenly changes, the grid absorbs the transient — the GTG output does not change at all. The utility supply surges instantly to cover the difference. Frequency stays locked at sixty hertz. `[PAUSE]` Click Stop to return to steady state, then switch to Island Mode using the button at the top and click Run again to compare."
+- **VO Script (Island Mode)**: "In island mode, those buffers disappear. There is no infinite bus. The gas turbine is the only power source. `[PAUSE]` Click Run to add the same six megawatt motor load. `[PAUSE]` The same motor load that barely registered in grid-connected mode now causes an immediate frequency droop. The turbine governor must respond entirely on its own to restore the balance. `[PAUSE]` Click Stop to disconnect the motor load and reset to steady state."
 
 ---
 
 ### Screen S1-3: The Swing Equation — Frequency Is Not Free
-- **Visuals**: Animated diagram showing a spinning rotor with arrows for mechanical power in and electrical power out. A frequency meter needle swings as they become unbalanced.
-- **On-Screen Text** (simplified):
-  - Frequency deviation is governed by power imbalance
-  - **df/dt = (P_mech − P_elec) / (2 × H)**
-  - H (inertia constant) for gas turbines: approximately 3–6 seconds
-  - A 10% load step can cause a 1–2 Hz frequency excursion within the first second
-- **Key Callout**: Small inertia = fast frequency response required
-- **VO Script**: "Frequency stability is governed by Newton's second law applied to rotating machinery. If electrical load exceeds mechanical input power, the rotor decelerates and frequency drops. Gas turbines have relatively low inertia constants — typically three to six seconds — meaning frequency can change rapidly. A ten percent load step can cause a one to two hertz frequency excursion within the first second if the governor does not respond adequately. `[PAUSE]` This is the central challenge of island mode operation."
+- **Production File:** [`S1-3_Swing_Equation.html`](S1-3_Swing_Equation.html) — Interactive HTML module. Three-panel layout. Banner: "THE SWING EQUATION — FREQUENCY IS NOT FREE".
+- **Visuals**:
+  - **Left panel — Rotor Power Balance** (340 px wide):
+    - *Turbine–rotor–load chain*: Gas turbine SVG casing icon (compressor blades, combustion glow, turbine blades) connected via a shaft-connector bar to a spinning rotor SVG (cross-arm design, rAF-driven rotation). Rotor connects via a horizontal load-connector to an electrical load box (resistor symbol + "ELEC LOAD" label).
+    - *Rotor speed*: Driven by `requestAnimationFrame` loop reading `currentFreq` each frame. At 60 Hz = 0.720 deg/ms (2 rev/s); at 58.4 Hz = 0.180 deg/ms (0.5 rev/s). Speed changes smoothly — no CSS keyframe reset artifact.
+    - *Three power bars*: P_mech (navy, slow transition 2.8 s), P_elec (red, fast 0.35 s), Imbalance (amber). Heights update per phase.
+    - *One-line SLD*: GTG (G circle, cx=30) feeds a bus. M1 (cx=95), M2 (cx=160) are permanently connected. M3 (cx=225, labelled "M3 +STEP") is behind a knife switch. Switch starts open (blade angled). **▶ RUN / ■ STOP** button (80 px wide, beside the SLD) toggles M3.
+  - **Middle panel — Equation & Facts** (278 px wide):
+    - *Swing equation box*: Title "THE SWING EQUATION". Equation rendered as two proper CSS fractions side by side: **df/dt = (P_mech − P_elec) / 2H** — both df/dt and the right-hand side use `.eq-frac` flex-column layout with a 2 px horizontal bar. Term definitions below: df/dt (Hz/s), P_mech, P_elec, H (inertia constant, gas turbines typically 3–6 s).
+    - *What This Means box*: Four bullet rows — P_elec > P_mech → frequency drops; P_mech > P_elec → frequency rises; low H = faster change for same imbalance; 10% load step → 1–2 Hz excursion in first second.
+  - **Right panel — Frequency Meter** (flex remainder):
+    - Analogue half-arc meter (r=148, centre at 192,210). Scale 57–62 Hz; each Hz = 25°. Red danger zone (57–59 Hz), green normal zone (59–61 Hz). UFLS trip dashed line at ~58.5 Hz. Needle pivots at centre; CSS transition 1.2 s linear. Digital readout below shows Hz numerically.
+    - Meter caption below readout updates with phase description.
+  - **Key Concept bar** (bottom, full width): Fixed text — frequency deviation governed by power imbalance / 2H; gas turbines low inertia (3–6 s); governor must respond immediately or UFLS cascades.
+- **Interaction — Connect sequence (▶ RUN)**:
+  1. Switch closes; `rampDown` (250 ms, 5 steps): 60.0 → 58.4 Hz, needle rotates –40°, P_elec bar rises to 90%, imbalance bar rises to 38%. Caption: "Motor 3 connected — frequency dropping".
+  2. `rampRecover` (6 000 ms, 120 steps): 58.4 → 60.0 Hz, needle returns to 0°, P_mech bar rises to 90%, both bars settle equal, imbalance drops to 2%. Caption: "Governor responding — ramping back to 60 Hz".
+- **Interaction — Disconnect sequence (■ STOP)**:
+  1. Switch opens; `rampUp` (250 ms, 5 steps): 60.0 → 61.5 Hz, needle rotates +38°, P_mech bar 90%, P_elec 60%, imbalance 38%. Caption: "Motor 3 disconnected — frequency rising".
+  2. `rampSettle` (6 000 ms, 120 steps): 61.5 → 60.0 Hz, needle returns to 0°, both bars settle to 60%, imbalance 2%. Caption: "Governor responding — settling back to 60 Hz".
+- **On-Screen Text**:
+  - Swing equation: **df/dt = (P_mech − P_elec) / 2H**
+  - df/dt — rate of frequency change (Hz/s)
+  - H — inertia constant (MWs/MVA); gas turbines typically **3–6 s**
+  - P_elec > P_mech → rotor decelerates → **frequency drops**
+  - 10% load step → **1–2 Hz excursion** in first second
+  - **Click RUN** to connect Motor 3 step load and watch the swing
+- **VO Script**: "Frequency stability is governed by Newton's second law applied to rotating machinery. If electrical load exceeds mechanical input power, the rotor decelerates and frequency drops. Gas turbines have relatively low inertia constants — typically three to six seconds — meaning frequency can change rapidly. A ten percent load step can cause a one to two hertz frequency excursion within the first second if the governor does not respond adequately. `[PAUSE]` Click the Run button on the one-line diagram to connect Motor Three and observe the rotor slow down, the frequency meter dip, and the governor recover. `[PAUSE]` Click Stop to disconnect the motor and watch frequency overshoot slightly before the governor settles back to sixty hertz. `[PAUSE]` This is the central challenge of island mode operation."
 
 ---
 
-### Screen S1-4: Reactive Power — The Hidden Constraint
-- **Visuals**: Generator capability curve diagram showing the P-Q plane. Highlight the lagging (overexcited) and leading (underexcited) regions. Show how reactive loading constrains available real power.
+### Screen S1-4: The Alternator and Reactive Power — The Hidden Constraint
+- **Production File:** [`S1-4_Reactive_Power.html`](S1-4_Reactive_Power.html) — Interactive HTML module. Three-panel layout. Banner: "THE ALTERNATOR AND REACTIVE POWER — THE HIDDEN CONSTRAINT".
+- **Mode toggle**: `≡ Grid-Connected` / `⚡ Island Mode` buttons. Grid mode is static (Phase 0 only). Island mode enables the ▲▼ step buttons.
+- **Visuals**:
+  - **Left panel — Reactive Load Control** (300 px wide): ▲/▼ step buttons (disabled in grid mode) with a step label between them showing current MVAR level. Three scenario indicator dots (green/amber/red) track position through island phases. Four fixed bullet points: grid supplies reactive power; in island mode all reactive power comes from on-site alternator(s); reactive loading reduces available real power; S²=P²+Q². Instruction text updates per mode.
+  - **Centre panel — P-Q Capability Curve** (flex, SVG viewBox 0 0 430 340): 20 MVA upper semicircle (r=180 px, 9 px/MW·MVAR scale, origin at 215,305). Grid lines at P=5/10/15/20 MW and Q=±5/±10 MVAR. Right sector shaded orange-tint (Overexcited/Lagging PF); left sector shaded blue-tint (Underexcited/Leading PF). Classical PF triangle inset (upper-left): P vertical leg, Q dashed horizontal, S hypotenuse with arrowhead, φ arc, "cos φ = P/S" label. Phase banner at top of SVG updates each phase. Dynamic elements per phase:
+    - *Operating point* (blue dot + ring): transitions 0.8 s ease-out.
+    - *Max-P dot* (navy dot on MVA arc at current Q): transitions 0.8 s ease-out.
+    - *Headroom green region*: filled polygon from P-axis (Q=0) horizontally to where the MVA arc intersects the current floor P, then CCW along the arc to P=20 at the axis. On constrained phase: floor stays fixed at P=16 MW target.
+    - *Red deficit region* (constrained phase only): filled polygon from P-axis at P=16 MW, right to MVA arc at P=16, CW arc down to MVA arc at P=13.2, left back to P-axis — shows real power forced below target.
+    - *Headroom dashed line*: vertical from max-P dot down to operating point.
+    - *"Headroom" label*: fixed at Q-axis + 5 px, P=18 MW.
+    - *S-vector*: from origin to operating point with arrowhead; φ arc and live "PF = x.xx" label alongside.
+    - *Crosshair dashed lines*: vertical to Q-axis, horizontal to P-axis.
+  - **Right panel — Constraint Calculator** (266 px wide): Status badge (colour-coded: blue=grid, green=ok, amber=warning, red=constrained). Static "Alternator Rating: 20.0 MVA" box. Dynamic operating conditions box: Q (MVAR), P available = √(S²−Q²), P actual (turbine), Headroom (MW). Live equation box showing 20² = P² + Q² expanded numerically per phase.
+  - **Key Concept bar** (full width, bottom): Updates per phase with detailed narrative.
+- **Four phases**:
+  | Phase | Mode | Q | P actual | P available | Headroom | Status |
+  |---|---|---|---|---|---|---|
+  | 0 | Grid-Connected | 0 MVAR | 16.0 MW | 20.0 MW | 4.0 MW | GRID SUPPLIES REACTIVE POWER |
+  | 1 | Island — Light | 4 MVAR | 16.0 MW | 19.6 MW | 3.6 MW | ✔ OK — Headroom Available |
+  | 2 | Island — Reducing | 8 MVAR | 16.0 MW | 18.3 MW | 2.3 MW | ⚠ Headroom Reducing — 2.3 MW Left |
+  | 3 | Island — Constrained | 15 MVAR | 13.2 MW | 13.2 MW | 0 MW | ⛔ HEADROOM EXCEEDED — REAL POWER FORCED DOWN |
 - **On-Screen Text**:
-  - On the grid: reactive power is supplied by the grid
-  - In island mode: **all reactive power comes from the on-site alternator(s)**
-  - Reactive loading reduces available real power capacity
-  - **S² = P² + Q²** — increasing Q reduces available P at a fixed S rating
-- **Example**: A 20 MVA alternator supplying 8 MVAR leaves only 18.3 MW of real power capacity
-- **VO Script**: "The second critical difference involves reactive power. On the grid, reactive demands are met by the grid itself. In island mode, the alternator must supply all reactive power needed by the data center loads. Because the alternator has a fixed apparent power rating, every megavar spent on reactive load directly reduces the megawatts available for real work. This is not a minor constraint — an eight megavar reactive load on a twenty megavolt-ampere machine limits real power output to just over eighteen megawatts, even if the turbine is thermally capable of more."
+  - On the grid: reactive power is supplied by the grid — full **20.0 MVA** available for real power
+  - In island mode: **all reactive power** comes from the on-site alternator(s)
+  - **S² = P² + Q²** — increasing Q reduces available P at a fixed MVA rating
+  - At 8 MVAR: P available = √(400−64) = **18.3 MW** — only 2.3 MW headroom remains
+  - At 15 MVAR: alternator hits its thermal limit — real power is **forced down to 13.2 MW**
+- **VO Script**: "The second critical difference involves reactive power. The centre of this screen shows a P-Q capability diagram — the circular boundary is the alternator's twenty megavolt-ampere thermal limit. The operating point is the dot on the diagram, and the green shaded region above it is the available real-power headroom. `[PAUSE]` The screen starts in grid-connected mode. On the grid, reactive demands are met by the grid itself — the operating point sits freely inside the MVA circle and the full headroom is available. `[PAUSE]` Now switch to Island Mode using the button at the top. `[PAUSE — VO holds here; resumes after student clicks Island Mode]` The alternator must now supply all reactive power needed by the data center loads. `[PAUSE]` Use the up arrow button on the left to increase the reactive load and watch the maximum real power available move along the MVA arc. Because the alternator has a fixed apparent power rating, every megavar spent on reactive load directly reduces the megawatts available for real work. `[PAUSE]` At eight megavars the headroom is almost gone. At fifteen megavars the alternator hits its thermal limit — the operating point is forced down the arc and real power output falls to thirteen point two megawatts, even though the turbine is thermally capable of more. This is not a minor constraint. Use the down arrow to reduce reactive load and watch the headroom recover."
 
 ---
 
-### Screen S1-5: Voltage Control — The Excitation System in Island Mode
-- **Production File:** [`S1-5_Excitation_Voltage.html`](S1-5_Excitation_Voltage.html) — Interactive HTML module. Three-panel animated layout; auto-cycling four-phase sequence.
-- **Visuals**: Parallel diagram to S1-3. Left column: turbine → shaft → governor → frequency control loop (greyed, labelled "covered"). Right column: alternator stator → rotor field winding → automatic voltage regulator (AVR) → terminal voltage control loop (highlighted). A step-load event arrow feeds into both loops simultaneously, showing that a motor start depresses **both** frequency and voltage at the same instant.
+### Screen S1-5: Voltage and Reactive Power — Reacting to Transients
+- **Production File:** [`S1-5_Excitation_Voltage.html`](S1-5_Excitation_Voltage.html) — Interactive HTML module. Banner: "VOLTAGE AND REACTIVE POWER — REACTING TO TRANSIENTS". Layout mirrors S1-1/2 exactly: same SVG structure, same mode toggle, same RUN/STOP interaction — but all quantities are reactive power (MVAR) and terminal voltage (pu) instead of real power (MW) and frequency (Hz).
+- **Mode toggle**: `▰ Grid-Connected` / `⚡ Island Mode` buttons. Same behaviour as S1-1/2.
+- **Visuals** (SVG viewBox 0 0 1008 374):
+  - **Left: Utility panel** — grid-connected version shows "UTILITY GRID (INFINITE BUS)" header, VAR support status and MVAR label, infinite-bus bars, voltage-source circle with "~". Island version: greyed, diagonal red X overlay, "NOT CONNECTED — ISLAND MODE" badge, dashed stub with open-circuit dot.
+  - **Right: GTG/Alternator panel** — header "GTG / ALTERNATOR (AVR)". Generator symbol uses "A" (alternator) instead of "G". AVR status and MVAR output in header. Turbine blades + generator body same as S1-1/2.
+  - **Bus bar** (y=210–220): "DISTRIBUTION BUS" label above.
+  - **Reactive power arrows** (area-proportional, same formula as S1-1/2 but in MVAR):
+    - Grid arrow (right-pointing, blue): "GRID VAR SUPPORT = x.x MVAR"
+    - Alternator arrow (left-pointing, navy): "ALTERNATOR = x.x MVAR"
+  - **Base load** (x=350): fixed 5.0 MVAR reactive load (always-on).
+  - **Motor load** (x=530): 8.0 MVAR surge behind knife switch; **▶ RUN / ■ STOP** button beside it.
+  - **Terminal Voltage indicator** (x=636–804, y=236–280): displays voltage in pu (e.g. "1.00 pu — Stable", "0.89 pu — Dipping ↓").
+  - **Load readout panel** (y=288–346): Alt. MVAR output; Grid VAR support (grid mode only); Total reactive MVAR.
+  - **Phase banner** (centre top of SVG): updates colour and text each phase.
+  - **Four badge overlays** (top-left / top-right corners):
+    - "✓ AVR STEADY — 2.0 MVAR" (grid loaded, top-right)
+    - "GRID HOLDS VOLTAGE ↑ 3→11 MVAR" (grid loaded, top-left)
+    - "⚠ VOLT DROOPING ↓ 0.89 pu" (island transient, top-left)
+    - "✓ AVR RESTORED VOLTAGE — 13 MVAR" (island settled, top-right)
+  - **Key Concept bar** (full width, bottom): updates per phase.
+- **Four phases**:
+  | Phase | Mode | Alt. MVAR | Grid MVAR | Total MVAR | Terminal V | Status |
+  |---|---|---|---|---|---|---|
+  | Grid Steady | Grid-Connected | 2.0 | 3.0 | 5.0 | 1.00 pu — Stable | Supplying VAR Support |
+  | Grid Loaded | Grid-Connected | 2.0 (unchanged) | 11.0 (surge) | 13.0 | 1.00 pu — Stable | AVR STEADY / GRID HOLDS VOLTAGE |
+  | Island Transient | Island Mode | 5.0 | — | 13.0 | 0.89 pu — Dipping ↓ | ⚠ VOLT DROOPING |
+  | Island Settled | Island Mode | 13.0 | — | 13.0 | 1.00 pu — Restored | ✓ AVR RESTORED VOLTAGE |
 - **On-Screen Text**:
-  - Just as the turbine governor controls **frequency**, the excitation system controls **voltage**
-  - In grid-parallel mode: the grid holds terminal voltage — the AVR trims reactive output
-  - In island mode: the AVR is the **only** voltage reference — there is no external voltage support
-  - A motor starting draws a large reactive current surge → terminal voltage dips
-  - The AVR must boost field current fast enough to arrest the dip before contactors drop out
-- **Key Callout**: Frequency stability = governor problem. Voltage stability = excitation problem. In island mode, **both must respond simultaneously** to the same event.
-- **Key Concept**: The excitation system has its own response time constant (typically 0.1–0.5 seconds for a modern static exciter). If the AVR is too slow, or if the alternator is already near its reactive capability limit, the voltage dip can be deep enough to cause under-voltage load shedding or contactor drop-out — even if frequency recovers normally.
-- **VO Script**: "We have seen how a step load event in island mode drives an immediate frequency droop — and how the turbine governor must respond to restore it. But the same event simultaneously drives a voltage dip. When a large motor starts, it draws a surge of reactive current. That reactive surge forces the terminal voltage down. In grid-parallel operation, the grid holds the voltage and the AVR simply adjusts reactive output. In island mode, the automatic voltage regulator is the only thing standing between the load and a complete voltage collapse. `[PAUSE]` The AVR must detect the voltage dip and boost the alternator field current fast enough to arrest it — typically within a few hundred milliseconds. If it cannot, under-voltage protection will start shedding loads. `[PAUSE]` This is why island mode packages require fast-response static exciters and carefully tuned AVR gain settings — requirements that are often overlooked when a package is specified for grid-parallel service and then redeployed in island mode."
+  - Grid mode: AVR supplies its share (2 MVAR); grid supplies remainder (3 MVAR) — voltage locked at **1.00 pu**
+  - Grid loaded: grid surges 3 → **11 MVAR** instantly; AVR output **unchanged at 2.0 MVAR**
+  - Island transient: reactive surge pulls voltage to **0.89 pu** — AVR boosting field current
+  - Island settled: AVR ramped from 5 → **13.0 MVAR** — voltage restored to **1.00 pu**
+- **VO Script**: "We have seen how a step load event in island mode drives an immediate frequency droop — and how the turbine governor must respond to restore it. But the same event simultaneously drives a voltage dip. When a large motor starts, it draws a surge of reactive current. That reactive surge forces the terminal voltage down. `[PAUSE]` The screen starts in grid-connected operation. Click the Run button beside the motor load to add the eight megavar reactive surge and observe the response. `[PAUSE]` In grid-parallel operation, the grid absorbs the reactive surge instantly — the alternator output barely changes and terminal voltage holds steady at one point zero zero per unit. `[PAUSE]` Click Stop to return to steady state, then switch to Island Mode using the button at the top and click Run again to compare. `[PAUSE — VO holds here; resumes after student clicks Island Mode]` In island mode, the automatic voltage regulator is the only thing standing between the load and a complete voltage collapse. `[PAUSE]` Click Run to add the same reactive surge. `[PAUSE]` Terminal voltage immediately dips to zero point eight nine per unit — watch the AVR detect the drop and boost the alternator field current to arrest it, climbing from two megavars to thirteen megavars and restoring voltage to one point zero zero per unit. The AVR must respond within a few hundred milliseconds. If it cannot, under-voltage protection will start shedding loads. `[PAUSE]` Click Stop to reset to steady state. `[PAUSE]` This is why island mode packages require fast-response static exciters and carefully tuned AVR gain settings — requirements that are often overlooked when a package is specified for grid-parallel service and then redeployed in island mode."
 
 ---
 
@@ -262,9 +335,13 @@ In grid-parallel operation, a generator is largely buffered from load transients
 - C) The alternator has a higher MVA rating
 - D) DLE combustion is not required
 
-**Q2** *(True/False)*
-In island mode, the on-site alternator(s) must supply all reactive power needed by the load connected to the bus.
-- **True** ✓
+**Q2** *(Multiple Choice)*
+In island mode, a motor start draws an 8 MVAR reactive surge. The alternator's AVR detects a terminal voltage dip to 0.89 per unit and increases reactive output from 2 MVAR to 13 MVAR. What must happen if the AVR cannot respond fast enough?
+- A) The turbine governor increases fuel flow to compensate for the reactive deficit
+- B) Under-voltage protection activates and begins shedding loads ✓
+- C) The alternator automatically switches from lagging to leading power factor
+- D) The frequency meter drops below 59 Hz and UFLS Stage 1 activates
+- *Feedback*: In island mode the AVR is the only source of voltage support. If it cannot arrest the voltage dip within a few hundred milliseconds, under-voltage protection will shed loads to prevent equipment damage — this is why fast-response static exciters and well-tuned AVR gain settings are required in island mode packages.
 
 **Q3** *(Multiple Choice)*
 A 20 MVA alternator is supplying 8 MVAR of reactive power. What is the maximum real power it can deliver?
