@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" height="460"
+     font-family="'Segoe UI', Arial, Helvetica, sans-serif">
+
+  <!--
+    CHART GEOMETRY
+    Chart area: x=120 to 800 (680px wide), y=30 to 290 (260px tall)
+    Y-axis: 0 MW (y=290) to 20 MW (y=30). Scale: 1 MW = 13px.
+    Bar width: 138px each.
+    Bar 1 (ISO 20 MW, 100%): x=120–258, top=y=30,   height=260
+    Bar 2 (17.6 MW,  88%):   x=331–469, top=y=61.2, height=228.8
+    Bar 3 (15.0 MW,  75%):   x=542–680, top=y=95,   height=195
+    Step connectors: y=61.2 from x=258→331; y=95 from x=469→542
+    Bracket 1 (12% = 31.2px): x≈305, y=30 to 61.2
+    Bracket 2 (13% = 34px):   x≈516, y=61.2 to 95
+  -->
+
+  <!-- Background -->
+  <rect width="900" height="460" fill="#f4f6f9"/>
+
+  <!-- ── Y-axis ── -->
+  <line x1="115" y1="25" x2="115" y2="295" stroke="#aaa" stroke-width="1.5"/>
+  <!-- Y-axis label -->
+  <text transform="rotate(-90,24,160)" x="24" y="160" fill="#555" font-size="11" text-anchor="middle">Output (MW)</text>
+
+  <!-- Y-axis ticks and labels
+       0 MW  → y=290
+       5 MW  → y=290−65=225
+      10 MW  → y=290−130=160
+      15 MW  → y=290−195=95   (also top of Bar 3)
+      17.6 MW→ y=290−228.8=61.2 (also top of Bar 2)
+      20 MW  → y=30
+  -->
+  <g fill="#555" font-size="10.5" text-anchor="end">
+    <line x1="110" y1="290" x2="115" y2="290" stroke="#aaa" stroke-width="1.5"/>
+    <text x="107" y="294">0</text>
+    <line x1="110" y1="225" x2="115" y2="225" stroke="#aaa" stroke-width="1.5"/>
+    <text x="107" y="229">5</text>
+    <line x1="110" y1="160" x2="115" y2="160" stroke="#aaa" stroke-width="1.5"/>
+    <text x="107" y="164">10</text>
+    <line x1="110" y1="95"  x2="115" y2="95"  stroke="#aaa" stroke-width="1.5"/>
+    <text x="107" y="99">15</text>
+    <line x1="110" y1="61" x2="115" y2="61"  stroke="#aaa" stroke-width="1.2" stroke-dasharray="3 2"/>
+    <text x="107" y="65" fill="#002060">17.6</text>
+    <line x1="110" y1="30"  x2="115" y2="30"  stroke="#aaa" stroke-width="1.5"/>
+    <text x="107" y="34">20</text>
+  </g>
+
+  <!-- ── Dashed ceiling line at 100% (y=30) ── -->
+  <line x1="115" y1="30" x2="795" y2="30"
+        stroke="#aaa" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="800" y="34" fill="#555" font-size="10" text-anchor="start">ISO Base Rating = 20 MW</text>
+
+  <!-- ═══════════════════════════════
+       BAR 1 — ISO Base Rating
+       x=120–258, y=30–290, h=260
+       ═══════════════════════════════ -->
+  <rect x="120" y="30" width="138" height="260" fill="#002060" rx="2"/>
+  <!-- Label above -->
+  <text x="189" y="22" fill="#002060" font-size="11" font-weight="700" text-anchor="middle">ISO BASE RATING</text>
+  <!-- Value inside -->
+  <text x="189" y="155" fill="white" font-size="14" font-weight="700" text-anchor="middle">20 MW</text>
+  <text x="189" y="173" fill="#a0b4d0" font-size="11" text-anchor="middle">100%</text>
+
+  <!-- ── Step connector 1: y=61 from x=258 to x=331 ── -->
+  <line x1="258" y1="61" x2="331" y2="61" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- ── Drop bracket 1 (12% = 31px) at x=305, y=30 to 61 ── -->
+  <!-- Vertical line -->
+  <line x1="305" y1="30" x2="305" y2="61" stroke="#cc3d00" stroke-width="1.5"/>
+  <!-- Top serif -->
+  <line x1="298" y1="30" x2="312" y2="30" stroke="#cc3d00" stroke-width="1.5"/>
+  <!-- Bottom serif -->
+  <line x1="298" y1="61" x2="312" y2="61" stroke="#cc3d00" stroke-width="1.5"/>
+  <!-- Label -->
+  <text x="316" y="43" fill="#cc3d00" font-size="10" font-weight="700">Temp. Derate</text>
+  <text x="316" y="56" fill="#cc3d00" font-size="10">−2.4 MW (−12%)</text>
+
+  <!-- ═══════════════════════════════
+       BAR 2 — After Temp Derate
+       x=331–469, y=61–290, h=229
+       ═══════════════════════════════ -->
+  <rect x="331" y="61" width="138" height="229" fill="#002060" rx="2"/>
+  <!-- Label above -->
+  <text x="400" y="53" fill="#002060" font-size="11" font-weight="700" text-anchor="middle">AFTER TEMP. DERATE</text>
+  <!-- Value inside -->
+  <text x="400" y="170" fill="white" font-size="14" font-weight="700" text-anchor="middle">17.6 MW</text>
+  <text x="400" y="188" fill="#a0b4d0" font-size="11" text-anchor="middle">88%</text>
+
+  <!-- ── Step connector 2: y=95 from x=469 to x=542 ── -->
+  <line x1="469" y1="95" x2="542" y2="95" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- ── Drop bracket 2 (13% of ISO = 34px) at x=516, y=61 to 95 ── -->
+  <line x1="516" y1="61"  x2="516" y2="95"  stroke="#cc3d00" stroke-width="1.5"/>
+  <line x1="509" y1="61"  x2="523" y2="61"  stroke="#cc3d00" stroke-width="1.5"/>
+  <line x1="509" y1="95"  x2="523" y2="95"  stroke="#cc3d00" stroke-width="1.5"/>
+  <text x="527" y="75"  fill="#cc3d00" font-size="10" font-weight="700">Island Mode Derate</text>
+  <text x="527" y="88"  fill="#cc3d00" font-size="10">−2.6 MW (−15%)</text>
+
+  <!-- ═══════════════════════════════
+       BAR 3 — Island Mode Limit
+       x=542–680, y=95–290, h=195
+       ═══════════════════════════════ -->
+  <rect x="542" y="95" width="138" height="195" fill="#002060" rx="2"/>
+  <!-- Green top-edge rule -->
+  <rect x="542" y="95" width="138" height="4" fill="#00a651" rx="1"/>
+  <!-- "Operating ceiling" label -->
+  <text x="681" y="100" fill="#00a651" font-size="10" font-weight="600">Operating ceiling — do not exceed</text>
+  <!-- Label above -->
+  <text x="611" y="87" fill="#002060" font-size="11" font-weight="700" text-anchor="middle">ISLAND MODE LIMIT</text>
+  <!-- Value inside -->
+  <text x="611" y="185" fill="white" font-size="14" font-weight="700" text-anchor="middle">15.0 MW</text>
+  <text x="611" y="203" fill="#a0b4d0" font-size="11" text-anchor="middle">75%</text>
+
+  <!-- ══════════════════════════════════════
+       ANNOTATION CALLOUT BOXES  y=315–390
+       ══════════════════════════════════════ -->
+
+  <!-- Left — Derate 1: Temperature (amber border) -->
+  <rect x="28"  y="315" width="408" height="72" rx="4" fill="white" stroke="#dde3ea" stroke-width="1"/>
+  <rect x="28"  y="315" width="3"   height="72" rx="1" fill="#e8a000"/>
+  <text x="41"  y="332" fill="#b07800" font-size="12" font-weight="700">Derate 1 — Temperature (Ambient Correction)</text>
+  <text x="41"  y="350" fill="#555"    font-size="11">Applies in ALL operating modes.</text>
+  <text x="41"  y="366" fill="#555"    font-size="11">Driven by site conditions — ambient temperature, altitude, relative humidity.</text>
+  <text x="41"  y="382" fill="#555"    font-size="10.5" font-style="italic">Example shown: 12% derate at elevated temperature and altitude.</text>
+
+  <!-- Right — Derate 2: Island Mode (orange border) -->
+  <rect x="464" y="315" width="408" height="72" rx="4" fill="white" stroke="#dde3ea" stroke-width="1"/>
+  <rect x="464" y="315" width="3"   height="72" rx="1" fill="#cc3d00"/>
+  <text x="477" y="332" fill="#cc3d00" font-size="12" font-weight="700">Derate 2 — Island Mode (Stability and Control)</text>
+  <text x="477" y="350" fill="#555"    font-size="11">Applies ONLY in island mode. A control margin — not a thermal limit.</text>
+  <text x="477" y="366" fill="#555"    font-size="11">Stacks on top of the temperature derate.</text>
+  <text x="477" y="382" fill="#555"    font-size="10.5" font-style="italic">Example shown: 15% control margin applied to derated output.</text>
+
+  <!-- ══════════════════════════════════════
+       KEY CONCEPT BAR  y=395–460
+       ══════════════════════════════════════ -->
+  <rect x="0" y="395" width="900" height="65" fill="#002060"/>
+  <text x="20" y="415" fill="#e8a000" font-size="11" font-weight="700">KEY CONCEPT</text>
+  <text x="20" y="433" fill="white"   font-size="11">These two derates are independent and cumulative. Size the package using the usable island mode output — not the ISO nameplate</text>
+  <text x="20" y="449" fill="white"   font-size="11">rating. Both must be applied before any load analysis is performed.</text>
+
+</svg>

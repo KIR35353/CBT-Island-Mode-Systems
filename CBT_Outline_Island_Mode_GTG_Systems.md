@@ -366,26 +366,48 @@ Which of the following is the primary reason rapid frequency excursions occur in
 **Estimated Duration: 8 minutes | Screens: ~7 | Followed by Section Quiz 2**
 
 ### Section Intro: S2-0
-- **Production File:** `S2-0_Section_Intro.html` — Static introduction screen. Single-panel layout with animated SVG power meter. Banner: "POWER RATINGS, DERATING, AND RESERVE MARGIN".
-- **Visuals**: A power output meter showing a turbine's rated capacity, with a "ceiling" marker dropping from 100% to 85–90%.
+- **Production File:** `S2-0_Section_Intro.html` — Static introduction screen with animated SVG power meter. Banner: "POWER RATINGS, DERATING, AND RESERVE MARGIN".
+- **Visuals** (SVG `S2-0_Section_Intro.svg`, viewBox 0 0 1040 510, single-panel full-width layout):
+  *Production file: `S2-0_Section_Intro.svg` — 1040×510 px static SVG. Centre-weighted layout: large analogue power output meter dominates the upper portion; annotation layer below.*
+  - **Power output meter** (centred, radius 200 px, arc from 210° to −30°, total 240° sweep): Half-arc analogue meter face, navy background (`#002060`). Scale 0–100% of ISO Base Rating; major tick marks at 0, 25, 50, 75, 90, 100%; minor ticks every 5%. Three colour zones on the arc:
+    - *Green zone (0–90%)*: safe continuous island mode operating range.
+    - *Amber zone (90–95%)*: short-term transient region — do not sustain.
+    - *Red zone (95–100%)*: overload / do not exceed in island mode.
+  - **Meter needle**: pivots at arc centre; initial resting position at 100% (full ISO output). Animated: sweeps from 100% down to 88% (island mode operating ceiling) over 1.8 s with CSS `transition: transform 1.8s ease-out`. Needle colour navy; pivot dot white.
+  - **Ceiling marker**: horizontal orange dashed line (`#cc3d00`, stroke-dasharray 8 4) at the 90% arc position. Label beside the line: "ISLAND MODE CEILING — 90% MAX CONTINUOUS" in orange, 13 px, font-weight 600.
+  - **Centre label cluster** (below needle pivot): Three stacked text lines — "ISO BASE RATING = 18 MW" (white, 14 px, light weight) · "ISLAND MODE LIMIT = 16.2 MW" (orange `#cc3d00`, 18 px, bold) · "≈ 90% OF ISO RATING" (white, 13 px).
+  - **Two annotation callout boxes** (side by side, below the meter, each ~460 px wide):
+    - *Left callout — "ISO Base Rating"* (navy left border 3 px, light background): Heading "ISO BASE RATING — THE STARTING POINT". Body: "The nameplate number: output at 15°C, sea level, 60% RH, no losses. Every derate calculation begins here."
+    - *Right callout — "Island Mode Ceiling"* (orange `#cc3d00` left border 3 px, light background): Heading "ISLAND MODE CEILING — WHY THE NEEDLE STOPS HERE". Body: "Two stacked derates — temperature correction + island mode control margin — bring the usable output below the nameplate. This section explains both."
+  - **Section roadmap strip** (full width, bottom, navy background): Header "THIS SECTION COVERS:". Five inline pills reading left to right: `ISO Base Rating` · `Temperature Derate` · `Island Mode Derate` · `Incremental Reserve Margin (IRM)` · `Alternator MVA Sizing`. Each pill white text on navy, separated by a right-pointing orange chevron `›`.
 - **VO Script**: "Section two. Now that we understand why island mode is different, we can discuss how that difference translates into specific power limits. This section covers the island mode derate, how it differs from temperature derating, and the concept of incremental reserve margin — all of which directly affect how you specify and rate your packages."
 
 ---
 
 ### Screen S2-1: Two Independent Derates
 - **Production File:** `S2-1_Two_Derates.html` — Static information screen. Single-panel layout with SVG stacked bar chart. Banner: "TWO INDEPENDENT DERATES".
-- **Visuals**: Stacked bar chart showing: ISO Base Rating → minus Temperature Derate → minus Island Mode Derate = Usable Island Mode Output.
+- **Visuals** (SVG `S2-1_Two_Derates.svg`, viewBox 0 0 900 460, single-panel full-width layout):
+  - **Waterfall bar chart** (centred, 680 px wide, 260 px tall): Three vertical bars with horizontal step connectors between them, reading left to right.
+    - *Bar 1 — ISO Base Rating*: Full height (100%), navy fill (`#002060`). Label above bar: "ISO BASE RATING". Value label inside bar: "20 MW · 100%".
+    - *Bar 2 — After Temperature Derate*: 88% height, navy fill. Label above bar: "AFTER TEMP. DERATE". Value inside: "17.6 MW · 88%". Right-side descending step bracket in orange (`#cc3d00`) spanning the 12% drop; bracket label: "Temp. Derate  −2.4 MW (−12%)".
+    - *Bar 3 — Usable Island Mode Output*: 75% height, navy fill. Label above bar: "ISLAND MODE LIMIT". Value inside: "15.0 MW · 75%". Right-side descending step bracket in orange spanning the 15% drop; bracket label: "Island Mode Derate  −2.6 MW (−15%)". Top edge of bar highlighted with a green rule and small label "Operating ceiling — do not exceed".
+    - *Dashed ceiling line*: full-width horizontal dashed line at 100% height, labelled "ISO Base Rating = 20 MW" at right margin.
+    - *Y-axis*: labelled "Output (MW)" with tick marks at 0, 5, 10, 15, 17.6, 20.
+  - **Two annotation callout boxes** (side by side, below chart, each ~400 px wide):
+    - *Left — Derate 1: Temperature* (amber `#e8a000` left border, 3 px): Heading "Derate 1 — Temperature (Ambient Correction)". Body: "Applies in ALL operating modes. Driven by site conditions — ambient temperature, altitude, relative humidity."
+    - *Right — Derate 2: Island Mode* (orange `#cc3d00` left border, 3 px): Heading "Derate 2 — Island Mode (Stability and Control)". Body: "Applies ONLY in island mode. A control margin — not a thermal limit. Stacks on top of the temperature derate."
+  - **Key Concept bar** (full width, bottom): "These two derates are independent and cumulative. Size the package using the usable island mode output — not the ISO nameplate rating. Both must be applied before any load analysis is performed."
 - **On-Screen Text**:
   - **Derate 1 — Temperature (Ambient Correction)**: Power reduction due to reduced air density at elevated temperatures. Applies in all operating modes.
   - **Derate 2 — Island Mode (Stability and Control)**: Additional power reduction imposed by control requirements. Applies only in island mode.
   - These two derates are **independent and cumulative**.
-- **VO Script**: "Customers and suppliers sometimes confuse two distinct derations that apply to island mode packages. The first is the temperature derate — as ambient temperature rises above ISO conditions, air density falls, mass flow decreases, and thermal output drops. This applies equally in grid-connected and island mode operation. `[PAUSE]` The second is the island mode derate itself — an additional reduction applied on top of any temperature effects. A turbine rated at twenty megawatts at ISO conditions in grid-parallel may produce seventeen megawatts at forty degrees Celsius, and then only fifteen megawatts of that can be used continuously in island mode. You need to communicate both effects clearly to your customers."
+- **VO Script**: "Customers and suppliers sometimes confuse two distinct derations that apply to island mode packages. The first is the temperature derate — as ambient temperature rises above ISO conditions, air density falls, mass flow decreases, and thermal output drops. This applies equally in grid-connected and island mode operation. `[PAUSE]` The second is the island mode derate itself — an additional reduction applied on top of any temperature effects. A turbine rated at twenty megawatts at ISO conditions in grid-parallel may produce seventeen point six megawatts at forty degrees Celsius, and then only fifteen megawatts of that can be used continuously in island mode. You need to communicate both effects clearly to your customers."
 
 ---
 
 ### Screen S2-2: The ISO Base Rating — What the Nameplate Number Means
 - **Production File:** `S2-2_ISO_Rating.html` — Static information screen. Two-panel layout. Banner: "THE ISO BASE RATING — WHAT THE NAMEPLATE NUMBER MEANS".
-- **Visuals**:
+- **Visuals** (SVG `S2-2_ISO_Rating.svg`, viewBox 0 0 900 480, two-panel layout — left panel 420 px wide, right panel flex remainder):
   - **Left panel — ISO Reference Conditions card** (420 px wide): Clean reference block titled "ISO 3977-2 Standard Reference Conditions". Four rows, each with a small icon and label:
     - 🌡 Ambient temperature: **15°C** (288.15 K / 59°F)
     - 📊 Ambient pressure: **101.325 kPa** (sea level, 0 m elevation)
@@ -420,7 +442,15 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ### Screen S2-3: The Island Mode Derate — What It Is and What It Is Not
 - **Production File:** `S2-3_Island_Mode_Derate.html` — Static information screen. Two-panel layout. Banner: "THE ISLAND MODE DERATE — WHAT IT IS AND WHAT IT IS NOT".
-- **Visuals**: Side-by-side — a temperature gauge (thermal limit) vs. a control margin diagram (stability limit). Big "X" over the thermal gauge meaning "this is NOT the cause."
+- **Visuals** (SVG `S2-3_Island_Mode_Derate.svg`, viewBox 0 0 900 480, two-panel layout — left panel 420 px wide, right panel flex remainder):
+  - **Left panel — "NOT THIS" card** (420 px wide, red-tinted background `#fff0ee`, 2 px red border): Panel heading "THERMAL LIMIT?" in red. Centre element: a tall thermometer SVG icon (mercury column, tick marks at 60/80/100%) with a large red diagonal cross (×) overlaid at 60 px stroke, navy. Below the icon: label "THERMAL LIMIT — NOT THE CAUSE" in red bold. Explanatory note beneath: "The turbine's combustion system and rotating hardware have the same thermal capability in both modes."
+  - **Right panel — "THIS IS IT" card** (flex remainder, green-tinted background `#f0fff4`, 2 px green border `#2d7a2d`): Panel heading "CONTROL MARGIN — THE REAL REASON" in dark green. Five stacked callout rows, each with a small icon and label (navy text, amber `#e8a000` left rule):
+    1. ⚡ **Transient frequency response headroom** — governor needs room to ramp before UFLS activates
+    2. 🔥 **DLE combustion stability** — lean flame requires headroom to survive sudden fuel demand changes
+    3. ⚙ **Reactive power reservation** — alternator must be able to respond to reactive surges
+    4. 🔄 **Safe load rejection without overspeed** — clearing headroom allows a clean full-load trip
+    5. 📉 **UFLS activation margin** — UFLS Stage 1 must not be at or above the normal operating point
+  - **Key Concept bar** (full width, bottom): "The island mode derate is a control margin — not a thermal limit. The turbine is thermally capable of running at full ISO output. The derate exists because stable, protected island mode operation requires headroom for five independent control and protection functions."
 - **On-Screen Text**:
   - The island mode derate is **NOT** a thermal limit
   - The turbine's combustion system and rotating hardware have the same thermal capability in both modes
@@ -436,7 +466,19 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ### Screen S2-4: Industry Standard — 18 MW Class Turbine Example
 - **Production File:** `S2-4_Industry_Standard.html` — Static information screen. Single-panel layout. Banner: "INDUSTRY STANDARD — 18 MW CLASS TURBINE EXAMPLE".
-- **Visuals**: Gas turbine generator package graphic with island mode operating limits labeled.
+- **Visuals** (SVG `S2-4_Industry_Standard.svg`, viewBox 0 0 900 500, single-panel full-width layout):
+  - **Top zone — GTG package illustration** (centred, 860 px wide, ~140 px tall): Simplified side-view of a gas turbine generator package — gas turbine casing (compressor inlet, combustion section, turbine exhaust) connected via a shaft coupling to an alternator body. Header label centred above: "18 MW CLASS GTG PACKAGE — ISO BASE RATING = 18 MW". Navy fill (`#002060`), white line-art detail.
+  - **Middle zone — Operating limits band diagram** (centred, 820 px wide, ~180 px tall): Full-width horizontal bar representing 0–100% of ISO Base Rating. Divided into three colour-coded zones:
+    - *Green zone (0–90%)*: labelled "CONTINUOUS ISLAND MODE OPERATING CEILING" with value callout "≤ 90% · 16.2 MW max continuous"
+    - *Amber zone (90–95%)*: labelled "SHORT-TERM TRANSIENT ONLY — must not be sustained"
+    - *Red zone (95–100%)*: labelled "DO NOT EXCEED IN ISLAND MODE"
+    - *Dashed ceiling line* at 90% with a downward-pointing label "Operating ceiling"; dashed 100% line labelled "ISO Base Rating"
+    - *Step load arrows*: Two orange (`#cc3d00`) double-headed annotations beside the bar:
+      - Right-facing bracket: "+25% max step load increase (4.5 MW)" with arrowhead pointing up from the 90% ceiling
+      - Left-facing bracket: "−15% max controlled step decrease (2.7 MW)" pointing down
+    - *Load hold annotation* (text box, amber border): "After any step increase: hold N minutes = N MW before the next step"
+  - **Supplier Documentation Note callout** (full width, amber `#e8a000` left border 4 px, light amber background `#fffbf0`): Heading "OEM REQUIREMENT — MODE TRANSITION". Quoted text in italic: *"Generator load must be immediately shed to below turbine full load, otherwise the turbine may shutdown due to overload."* Source line: "— Supplier documentation, island mode operating requirements". Below quote: plain text note "Load shedding must be armed and ready before any islanding event."
+  - **Key Concept bar** (full width, bottom): "All limits shown are OEM-documented requirements — not conservative guidelines. The load management scheme and UFLS must be designed to keep steady-state load below 90% and individual step events within ±25%. Mode-transition load shedding must fire before overload can occur."
 - **On-Screen Text**:
   - ISO Base Rating: ~18 MW (at 15°C, sea level)
   - **Recommended island mode maximum: ≤ 90% ≈ 16.2 MW continuous**
@@ -450,7 +492,23 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ### Screen S2-5: Incremental Reserve Margin (IRM)
 - **Production File:** `S2-5_IRM.html` — Static information screen with animated timeline. Single-panel layout. Banner: "INCREMENTAL RESERVE MARGIN (IRM)".
-- **Visuals**: Timeline animation showing a load step event. Meter shows: pre-step load → immediate IRM response (1–2 sec) → continued ramp → thermal limit reached (10–30 sec). Frequency trace shows initial dip, recovery.
+- **Visuals** (SVG `S2-5_IRM.svg`, viewBox 0 0 900 500, single-panel full-width layout):
+  - **Top zone — IRM vs. Spinning Reserve comparison** (full width, ~140 px tall): Two side-by-side definition panels separated by a vertical divider.
+    - *Left panel — Spinning Reserve* (navy left border 3 px): Heading "SPINNING RESERVE". Icon: clock face with a slow arc. Body: "Total power available above current load as the turbine ramps to maximum — available over **minutes** (5–30 min). Limited by thermal capacity and fuel system ramp rate."
+    - *Right panel — Incremental Reserve Margin (IRM)* (orange `#cc3d00` left border 3 px): Heading "INCREMENTAL RESERVE MARGIN (IRM)". Icon: lightning bolt. Body: "Power available within **1–2 seconds** — limited by governor response speed, fuel system dynamic headroom, and DLE combustion stability. This is what protects against a motor start or large block energization."
+  - **Centre zone — Animated load step timeline** (full width, ~200 px tall): Horizontal time axis (0–30 sec) with a vertical load axis (MW). Two traces:
+    - *Load trace* (red stepped line): starts at 16.2 MW (90% of 18 MW), steps up instantly by 2.7 MW to 18.9 MW at t=0. Label at step: "+2.7 MW STEP LOAD".
+    - *Turbine output trace* (navy line): starts at 16.2 MW, rises steeply from t=0 to t=2 s (IRM response — governor opens fuel valve), then continues rising more gradually from t=2 to t=10 s (thermal ramp), reaching 18.9 MW at ~t=10 s where it levels off.
+    - *IRM bracket*: double-headed orange arrow from t=0 to t=2 s at the top of the output trace, labelled "IRM RESPONSE WINDOW (0–2 s)" in orange.
+    - *Thermal ramp bracket*: grey dashed bracket from t=2 to t=10 s, labelled "Continued ramp — governor/fuel system" in grey.
+    - *Frequency trace* (green dashed, secondary axis right): starts at 60.0 Hz, dips to ~59.2 Hz at t=0.5 s, recovers to 60.0 Hz by t=8 s. Label at dip: "⚠ 59.2 Hz — UFLS Stage 1 threshold nearby".
+    - *Vertical reference line* at t=2 s, labelled "IRM window ends".
+  - **Bottom zone — IRM shrinks as load rises** (full width, ~120 px tall): Horizontal stacked-bar diagram showing three operating scenarios side by side. Each bar = 18 MW total capacity:
+    - *Scenario A — 90% load (16.2 MW)*: navy fill to 90%; green headroom cap from 90%→100% labelled "IRM = 1.8 MW (10%)". Status badge: ✔ ADEQUATE.
+    - *Scenario B — 95% load (17.1 MW)*: navy fill to 95%; amber headroom cap from 95%→100% labelled "IRM = 0.9 MW (5%)". Status badge: ⚠ MARGINAL.
+    - *Scenario C — 100% load (18 MW)*: navy fill to 100%; red "NO HEADROOM" cap. Status badge: ⛔ TRIP RISK.
+    - X-axis label: "Turbine Output (MW)". Right margin: dashed line at 100% labelled "ISO Base Rating = 18 MW".
+  - **Key Concept bar** (full width, bottom): "IRM is the reserve that actually saves the system during a sudden load event. Spinning reserve is available over minutes — IRM is available in seconds. Operating at the 90% island mode ceiling preserves a usable IRM of 10–15%. Every percent above the ceiling reduces the IRM and increases the trip risk."
 - **On-Screen Text**:
   - **Spinning Reserve**: Power available over *minutes* (turbine ramps to max)
   - **Incremental Reserve Margin (IRM)**: Power available in *1–2 seconds* — limited by governor response, fuel system, and combustion stability
@@ -464,7 +522,18 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ### Screen S2-6: Worked Example — Data Center Load Step
 - **Production File:** `S2-6_Worked_Example.html` — Static information screen with step-by-step animation. Single-panel layout. Banner: "WORKED EXAMPLE — DATA CENTER LOAD STEP".
-- **Visuals**: Step-by-step animated calculation walkthrough.
+- **Visuals** (SVG `S2-6_Worked_Example.svg`, viewBox 0 0 900 520, single-panel full-width layout):
+  - **Top zone — Scenario header bar** (full width, ~60 px tall, navy background): Two column layout. Left: "18 MW CLASS GTG — ISO BASE RATING = 18 MW" in white, 14 px. Right: "BASE LOAD: [toggled by phase]" with a live value callout badge — Phase 1: "16.2 MW (90%)" green badge; Phase 2: "17.1 MW (95%)" amber badge.
+  - **Centre-left — Step-by-step calculation panel** (430 px wide, ~280 px tall): Vertical sequence of four calculation rows, each revealed in turn by the ▶ NEXT STEP button. Each row has a step number badge (navy circle), a label, and a result value:
+    - *Step 1 — Load Step Event*: "Cooling system comes online — +1.8 MW step load (10% of ISO rating)". Arrow icon pointing up. Value callout: "+1.8 MW".
+    - *Step 2 — IRM Check*: "IRM available = ISO Rating × 15% = 18 MW × 15%". Equation line rendered as `18 × 0.15 = 2.7 MW`. Comparison line: "Step demand: 1.8 MW — IRM available: 2.7 MW". Phase 1 result badge: ✔ "IRM SUFFICIENT — 2.7 MW > 1.8 MW" (green). Phase 2 result badge: ✗ "IRM INSUFFICIENT — 0.9 MW < 1.8 MW" (red).
+    - *Step 3 — Frequency Response*: Micro-chart (100 px wide, 60 px tall) showing frequency trace — dips from 60.0 Hz to 59.2 Hz at t=0, then: Phase 1: recovers to 60.0 Hz by t=8 s (label "GOVERNOR RECOVERS ✔"); Phase 2: continues falling below 59.0 Hz (label "UFLS STAGE 1 ACTIVATES ✗").
+    - *Step 4 — Outcome*: Phase 1: "Frequency recovers within 5–10 seconds. Cooling system online. No load shed." — green status icon. Phase 2: "Frequency decay — UFLS sheds non-critical cooling loads to protect IT load. Cooling event escalates." — red status icon.
+  - **Centre-right — IRM comparison panel** (flex remainder, ~280 px tall): Two stacked scenario cards, vertically centred.
+    - *Scenario A card* (green border 2 px, light green background `#f0fff4`): Heading "SCENARIO A — OPERATING AT 90% LIMIT". Three rows: Base load = 16.2 MW · IRM = 2.7 MW (15%) · Step = 1.8 MW. Outcome badge: ✔ "FREQUENCY RECOVERS — system stable". Stacked-bar graphic: navy 90% bar + green 10% headroom cap, step arrow showing 1.8 MW within the cap.
+    - *Scenario B card* (red border 2 px, light red background `#fff0ee`): Heading "SCENARIO B — OPERATING AT 95% LIMIT". Three rows: Base load = 17.1 MW · IRM = 0.9 MW (5%) · Step = 1.8 MW. Outcome badge: ✗ "IRM DEFICIT = 0.9 MW — UFLS activates". Stacked-bar graphic: navy 95% bar + amber 5% headroom cap with red "DEFICIT" arrow overshooting the cap.
+  - **Bottom — Phase advance control and Key Concept bar** (full width): ▶ NEXT STEP button (navy, white text) on the left; step counter "Step X of 4" beside it. Scenario toggle (radio buttons: ◉ Scenario A — 90% · ○ Scenario B — 95%) on the right.
+  - **Key Concept bar** (full width, pinned bottom): "This worked example demonstrates why the 90% island mode ceiling exists. At 90%, IRM of 2.7 MW comfortably absorbs a 1.8 MW data center cooling step. At 95%, the 0.9 MW IRM is insufficient — the same event triggers UFLS and forces non-critical load disconnection. The only variable that changed is the base load operating point."
 - **On-Screen Text**:
   - Scenario: 18 MW turbine at ISO, operating at 90% island mode limit → 16.2 MW base load
   - Data center event: 1.8 MW cooling system comes online (10% step)
@@ -478,7 +547,36 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ### Screen S2-7: Alternator Ratings — MVA vs. MW
 - **Production File:** `S2-7_Alternator_Ratings.html` — Static information screen. Two-panel layout with SVG capability curve. Banner: "ALTERNATOR RATINGS — MVA vs. MW".
-- **Visuals**: Capability curve showing apparent power (MVA) ring, with real power (MW) and reactive power (MVAR) axes. Shaded region of safe operation.
+- **Visuals** (SVG `S2-7_Alternator_Ratings.svg`, viewBox 0 0 900 500, two-panel layout — left panel 480 px wide, right panel flex remainder):
+  - **Left panel — P-Q Capability Curve** (480 px wide, SVG viewBox 0 0 480 440): Upper-semicircle capability diagram. Origin at (240, 390). Scale: 9 px per MW/MVAR.
+    - *MVA arc*: 21 MVA upper semicircle (r = 189 px, navy stroke 3 px, no fill). Label at arc top: "21 MVA ALTERNATOR RATING". This is the sizing target (115–120% of 18 MW turbine).
+    - *Comparison arc*: 18 MVA dashed semicircle (r = 162 px, grey stroke 1.5 px, stroke-dasharray 6 3). Label: "18 MVA — undersized for island mode" in grey italic.
+    - *Real power axis (vertical)*: upward from origin; tick marks at P = 5, 10, 15, 18, 19, 20, 21 MW; label "Real Power P (MW)" rotated 90° beside axis.
+    - *Reactive power axis (horizontal)*: Q = −12 MVAR (leading, left) to +12 MVAR (lagging, right); tick marks every 3 MVAR; label "Reactive Power Q (MVAR)" below axis; "LAGGING →" annotation right-side, "← LEADING" annotation left-side.
+    - *Safe operating region* (shaded green, 25% opacity): polygon from P-axis at P=16.2 MW, right along the Q+ direction to the 21 MVA arc intersection, CCW along the arc to Q=−5 MVAR (leading), back to P-axis. Labelled "SAFE OPERATING REGION" in dark green, 11 px.
+    - *Reactive headroom band* (shaded amber, 20% opacity): arc segment between the 18 MVA ring and 21 MVA ring, on the lagging (right) side. Labelled "REACTIVE HEADROOM — lost if undersized" in amber, 10 px.
+    - *Island mode operating point* (blue filled dot, r=7 px, navy ring r=11 px): positioned at P=16.2 MW, Q=+6 MVAR (0.94 lagging PF). Label beside dot: "Typical island operating point · 16.2 MW / 6 MVAR · PF = 0.94 lag".
+    - *S-vector* (navy arrow from origin to operating point): labelled "S = 17.3 MVA" mid-vector with φ arc at origin and "cos φ = 0.94" label.
+    - *OEL limit line* (dashed red, horizontal at Q=+10 MVAR): label "OEL limit — field current maximum" in red, 10 px.
+    - *Phase banner* (top of SVG, navy background, white text, 30 px tall): "ALTERNATOR CAPABILITY — 21 MVA ISLAND MODE SIZING".
+  - **Right panel — Sizing rationale and specification table** (flex remainder):
+    - *Sizing rule callout* (orange `#cc3d00` left border 3 px, light background): Heading "ISLAND MODE SIZING RULE". Body: "Size the alternator at **115–120% of the turbine's MW rating**. A same-size MVA = MW match leaves no reactive headroom — the OEL will activate under normal data center reactive loading."
+    - *Worked sizing example box* (navy background, white text, ~130 px tall): Three calculation rows:
+      - Row 1: "Turbine ISO Rating = **18 MW**"
+      - Row 2: "Sizing factor = **× 1.18** (118% — midpoint of 115–120%)"
+      - Row 3: "Required alternator rating = **21.2 MVA → specify ≥ 21 MVA**"
+      - Below: "Standard frame: **21 MVA**" with a green ✔ badge.
+    - *Specification table* (light border, alternating row shading, 5 rows):
+
+    | Parameter | Undersized (18 MVA) | Correctly Sized (21 MVA) |
+    |---|---|---|
+    | Real power at PF 0.90 lag | 16.2 MW | 18.9 MW |
+    | Reactive headroom at 16.2 MW | 7.5 MVAR | 13.4 MVAR |
+    | Risk of OEL activation | HIGH | LOW |
+    | Island mode suitability | ✗ NOT RECOMMENDED | ✔ SUITABLE |
+
+    - *Power factor target callout* (amber `#e8a000` left border 3 px): "Target operating power factor in island mode: **0.90–0.95 lagging**. Design reactive compensation (capacitor banks) to keep the alternator from operating deeper into the lagging half of the capability curve than necessary."
+  - **Key Concept bar** (full width, bottom): "The alternator must be sized for MVA — not MW. In island mode it supplies all reactive power for the data center. An 18 MW turbine paired with an 18 MVA alternator has no reactive headroom. Specify ≥ 21 MVA. The P-Q curve on this screen shows why: every MVAR of reactive load consumes MVA capacity that would otherwise be available for real power."
 - **On-Screen Text**:
   - Turbine output is specified in **MW** (real power)
   - The alternator is rated in **MVA** (apparent power)
