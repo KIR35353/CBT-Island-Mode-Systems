@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 433" width="900" height="433"
+     font-family="'Segoe UI', Arial, Helvetica, sans-serif">
+
+  <!--
+    S2-2_ISO_Rating.svg — 900×480 px
+    Left panel (x=0–440):   ISO 3977 reference conditions card + GTG icon
+    Right panel (x=450–900): Why It Matters callouts + site comparison table
+    Key Concept bar: y=425–480
+  -->
+
+  <!-- Background -->
+  <rect width="900" height="480" fill="#f4f6f9"/>
+
+  <!-- ══════════════════════════════════════════════
+       LEFT PANEL — ISO Reference Conditions
+       ══════════════════════════════════════════════ -->
+  <rect x="0" y="0" width="440" height="370" fill="#eef2f9"/>
+  <rect x="0" y="0" width="4"   height="370" fill="#002060"/>
+
+  <!-- Panel title -->
+  <text x="22" y="28" fill="#002060" font-size="12.5" font-weight="700">ISO 3977 STANDARD REFERENCE CONDITIONS</text>
+  <text x="22" y="44" fill="#555"    font-size="10.5">Universal baseline for all gas turbine performance ratings</text>
+  <line x1="22" y1="54" x2="430" y2="54" stroke="#c5cfe0" stroke-width="1"/>
+
+  <!-- Row 1 — Temperature -->
+  <rect x="22" y="64" width="32" height="32" rx="4" fill="#002060"/>
+  <text x="38"  y="86" fill="white" font-size="13" font-weight="700" text-anchor="middle">°C</text>
+  <text x="62"  y="77" fill="#002060" font-size="11" font-weight="700">Ambient Temperature</text>
+  <text x="62"  y="92" fill="#333"    font-size="11">15°C  (288 K  /  59°F)</text>
+
+  <!-- Row 2 — Pressure -->
+  <rect x="22" y="121" width="32" height="32" rx="4" fill="#002060"/>
+  <text x="38"  y="142" fill="white" font-size="9.5" font-weight="700" text-anchor="middle">kPa</text>
+  <text x="62"  y="134" fill="#002060" font-size="11" font-weight="700">Ambient Pressure</text>
+  <text x="62"  y="149" fill="#333"    font-size="11">101.325 kPa  (sea level, 0 m elevation)</text>
+
+  <!-- Row 3 — Humidity -->
+  <rect x="22" y="178" width="32" height="32" rx="4" fill="#002060"/>
+  <text x="38"  y="199" fill="white" font-size="13" font-weight="700" text-anchor="middle">%</text>
+  <text x="62"  y="191" fill="#002060" font-size="11" font-weight="700">Relative Humidity</text>
+  <text x="62"  y="206" fill="#333"    font-size="11">60%</text>
+
+  <!-- Row 4 — Losses -->
+  <rect x="22" y="235" width="32" height="32" rx="4" fill="#002060"/>
+  <text x="38"  y="253" fill="white" font-size="9" font-weight="700" text-anchor="middle">NIL</text>
+  <text x="62"  y="248" fill="#002060" font-size="11" font-weight="700">Inlet / Exhaust / Mechanical Losses</text>
+  <text x="62"  y="263" fill="#333"    font-size="11">None — output measured at generator terminals</text>
+
+  <!-- Row 5 — Reference Fuel -->
+  <rect x="22" y="292" width="32" height="32" rx="4" fill="#002060"/>
+  <text x="38"  y="313" fill="white" font-size="8.5" font-weight="700" text-anchor="middle">LHV</text>
+  <text x="62"  y="305" fill="#002060" font-size="11" font-weight="700">Reference Fuel</text>
+  <text x="62"  y="320" fill="#333"    font-size="11">Natural gas, LHV ≈ 50 MJ/kg, Wobbe Index 48–52 MJ/m³</text>
+  <text x="62"  y="334" fill="#888"    font-size="9.5" font-style="italic">Leaner or variable gas shifts this baseline — additional output penalty applies.</text>
+
+  <!-- Reference note -->
+  <text x="22" y="357" fill="#888" font-size="10" font-style="italic">per ISO 3977-2:2023</text>
+  <line x1="22" y1="367" x2="430" y2="367" stroke="#c5cfe0" stroke-width="1"/>
+
+  <!-- ══ PANEL DIVIDER ══ -->
+  <line x1="445" y1="8" x2="445" y2="370" stroke="#c5cfe0" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- ══════════════════════════════════════════════
+       RIGHT PANEL — Why It Matters
+       ══════════════════════════════════════════════ -->
+  <text x="460" y="28" fill="#002060" font-size="12.5" font-weight="700">WHY IT MATTERS</text>
+  <line x1="460" y1="38" x2="888" y2="38" stroke="#c5cfe0" stroke-width="1"/>
+
+  <!-- Callout 1 — Universal baseline -->
+  <rect x="460" y="46"  width="428" height="56" rx="4" fill="white" stroke="#dde3ea" stroke-width="1"/>
+  <rect x="460" y="46"  width="3"   height="56" rx="1" fill="#002060"/>
+  <text x="472" y="64"  fill="#002060" font-size="11" font-weight="700">UNIVERSAL BASELINE</text>
+  <text x="472" y="80"  fill="#555"    font-size="10.5">All gas turbine suppliers use the same reference conditions.</text>
+  <text x="472" y="94"  fill="#555"    font-size="10.5">Ratings from any manufacturer can be compared on equal terms.</text>
+
+  <!-- Callout 2 — Not a real site -->
+  <rect x="460" y="112" width="428" height="56" rx="4" fill="white" stroke="#dde3ea" stroke-width="1"/>
+  <rect x="460" y="112" width="3"   height="56" rx="1" fill="#e8a000"/>
+  <text x="472" y="130" fill="#002060" font-size="11" font-weight="700">NOT A REAL SITE</text>
+  <text x="472" y="146" fill="#555"    font-size="10.5">No installation matches ISO conditions exactly.</text>
+  <text x="472" y="160" fill="#555"    font-size="10.5">Temperature and altitude corrections are always required.</text>
+
+  <!-- Callout 3 — Starting point -->
+  <rect x="460" y="178" width="428" height="56" rx="4" fill="white" stroke="#dde3ea" stroke-width="1"/>
+  <rect x="460" y="178" width="3"   height="56" rx="1" fill="#cc3d00"/>
+  <text x="472" y="196" fill="#002060" font-size="11" font-weight="700">STARTING POINT, NOT END POINT</text>
+  <text x="472" y="212" fill="#555"    font-size="10.5">The ISO rating is where the derating calculation begins —</text>
+  <text x="472" y="226" fill="#555"    font-size="10.5">never where it ends.</text>
+
+  <!-- ── Site conditions comparison table ── -->
+  <text x="460" y="256" fill="#002060" font-size="11" font-weight="700">SITE CONDITIONS COMPARISON</text>
+
+  <!-- Header row -->
+  <rect x="460" y="262" width="428" height="22" rx="2" fill="#002060"/>
+  <text x="468" y="277" fill="white" font-size="9.5" font-weight="600">Condition</text>
+  <text x="622" y="277" fill="white" font-size="9.5" font-weight="600">ISO Reference</text>
+  <text x="762" y="277" fill="white" font-size="9.5" font-weight="600">Typical Site Condition</text>
+
+  <!-- Data row 1 -->
+  <rect x="460" y="284" width="428" height="21" fill="#f0f4fa"/>
+  <text x="468" y="299" fill="#333"    font-size="9.5">Ambient temperature</text>
+  <text x="622" y="299" fill="#333"    font-size="9.5">15°C</text>
+  <text x="762" y="299" fill="#cc3d00" font-size="9.5" font-weight="600">−10–45°C</text>
+
+  <!-- Data row 2 -->
+  <rect x="460" y="305" width="428" height="21" fill="white"/>
+  <text x="468" y="320" fill="#333"    font-size="9.5">Altitude</text>
+  <text x="622" y="320" fill="#333"    font-size="9.5">Sea level (0 m)</text>
+  <text x="762" y="320" fill="#cc3d00" font-size="9.5" font-weight="600">0–1,500 m</text>
+
+  <!-- Data row 3 -->
+  <rect x="460" y="326" width="428" height="21" fill="#f0f4fa"/>
+  <text x="468" y="341" fill="#333"    font-size="9.5">Relative humidity</text>
+  <text x="622" y="341" fill="#333"    font-size="9.5">60%</text>
+  <text x="762" y="341" fill="#555"    font-size="9.5">20–80%</text>
+
+  <!-- Data row 4 -->
+  <rect x="460" y="347" width="428" height="21" fill="white"/>
+  <text x="468" y="362" fill="#333"    font-size="9.5">Example output</text>
+  <text x="622" y="362" fill="#00a651" font-size="9.5" font-weight="600">18 MW</text>
+  <text x="762" y="362" fill="#cc3d00" font-size="9.5" font-weight="600">~14–16 MW</text>
+
+  <!-- Table outer border -->
+  <rect x="460" y="262" width="428" height="106" rx="2" fill="none" stroke="#c5cfe0" stroke-width="1"/>
+  <!-- Column dividers -->
+  <line x1="614" y1="262" x2="614" y2="368" stroke="#c5cfe0" stroke-width="1"/>
+  <line x1="754" y1="262" x2="754" y2="368" stroke="#c5cfe0" stroke-width="1"/>
+
+  <!-- ══════════════════════════════════════════════
+       KEY CONCEPT BAR  y=378–433
+       ══════════════════════════════════════════════ -->
+  <rect x="0" y="378" width="900" height="55" fill="#002060"/>
+  <text x="16" y="396" fill="#e8a000" font-size="10"   font-weight="700" letter-spacing="0.5">KEY CONCEPT</text>
+  <text x="16" y="412" fill="white"   font-size="10.5">The ISO Base Rating is a standard reference point — not a guarantee of field performance.</text>
+  <text x="16" y="426" fill="white"   font-size="10.5">Every installation requires site-specific correction factors before the turbine can be sized.</text>
+
+</svg>

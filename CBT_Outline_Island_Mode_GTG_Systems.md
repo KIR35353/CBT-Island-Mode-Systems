@@ -368,18 +368,27 @@ Which of the following is the primary reason rapid frequency excursions occur in
 ### Section Intro: S2-0
 - **Production File:** `S2-0_Section_Intro.html` — Static introduction screen with animated SVG power meter. Banner: "POWER RATINGS, DERATING, AND RESERVE MARGIN".
 - **Visuals** (SVG `S2-0_Section_Intro.svg`, viewBox 0 0 1040 510, single-panel full-width layout):
-  *Production file: `S2-0_Section_Intro.svg` — 1040×510 px static SVG. Centre-weighted layout: large analogue power output meter dominates the upper portion; annotation layer below.*
-  - **Power output meter** (centred, radius 200 px, arc from 210° to −30°, total 240° sweep): Half-arc analogue meter face, navy background (`#002060`). Scale 0–100% of ISO Base Rating; major tick marks at 0, 25, 50, 75, 90, 100%; minor ticks every 5%. Three colour zones on the arc:
-    - *Green zone (0–90%)*: safe continuous island mode operating range.
-    - *Amber zone (90–95%)*: short-term transient region — do not sustain.
-    - *Red zone (95–100%)*: overload / do not exceed in island mode.
-  - **Meter needle**: pivots at arc centre; initial resting position at 100% (full ISO output). Animated: sweeps from 100% down to 88% (island mode operating ceiling) over 1.8 s with CSS `transition: transform 1.8s ease-out`. Needle colour navy; pivot dot white.
-  - **Ceiling marker**: horizontal orange dashed line (`#cc3d00`, stroke-dasharray 8 4) at the 90% arc position. Label beside the line: "ISLAND MODE CEILING — 90% MAX CONTINUOUS" in orange, 13 px, font-weight 600.
-  - **Centre label cluster** (below needle pivot): Three stacked text lines — "ISO BASE RATING = 18 MW" (white, 14 px, light weight) · "ISLAND MODE LIMIT = 16.2 MW" (orange `#cc3d00`, 18 px, bold) · "≈ 90% OF ISO RATING" (white, 13 px).
-  - **Two annotation callout boxes** (side by side, below the meter, each ~460 px wide):
-    - *Left callout — "ISO Base Rating"* (navy left border 3 px, light background): Heading "ISO BASE RATING — THE STARTING POINT". Body: "The nameplate number: output at 15°C, sea level, 60% RH, no losses. Every derate calculation begins here."
-    - *Right callout — "Island Mode Ceiling"* (orange `#cc3d00` left border 3 px, light background): Heading "ISLAND MODE CEILING — WHY THE NEEDLE STOPS HERE". Body: "Two stacked derates — temperature correction + island mode control margin — bring the usable output below the nameplate. This section explains both."
-  - **Section roadmap strip** (full width, bottom, navy background): Header "THIS SECTION COVERS:". Five inline pills reading left to right: `ISO Base Rating` · `Temperature Derate` · `Island Mode Derate` · `Incremental Reserve Margin (IRM)` · `Alternator MVA Sizing`. Each pill white text on navy, separated by a right-pointing orange chevron `›`.
+  *Production file: `S2-0_Section_Intro.svg` — 1040×510 px static SVG. Centre-weighted layout: large analogue power output meter dominates the upper portion; annotation callout boxes and section roadmap strip below.*
+  - **Power output meter** (centred at cx=520, cy=280, r=200, face fill `#002060`): Full 240° sweep from 8 o'clock (0%, 150°) to 4 o'clock (100%, 30°), clockwise. Scale formula: `angle_svg = 150 + pct × 2.4°`. Three colour zones as arc strokes (r=178, stroke-width=22):
+    - *Green zone (0–75%)*: arc 150°→330°, stroke `#00a651`.
+    - *Amber zone (75–88%)*: arc 330°→1.2°, stroke **white** with a navy CCW arrow arc centered at 345.6°.
+    - *Red zone (88–100%)*: arc 1.2°→30°, stroke **white** with a navy CCW arrow arc centered at 15.6°.
+  - **Arrow arcs**: Two concentric arcs (r=178, stroke-width=1.5, stroke `#002060`) within the white derate bands, each with a filled navy triangular arrowhead (`marker-end`), sweeping CCW ≈ 18° to indicate "derate reduces output":
+    - Amber band arrow: 354.6° → 336.6° CCW.
+    - Red band arrow: 23.6° → 7.6° CCW.
+  - **Tick marks**: 11 uniform ticks every 10% (0–100%), r=154 inner → r=168 outer, stroke white, stroke-width=2.
+  - **Tick labels**: White text at r=136, font-size 9.5 px, every 10% (0%–100%). Anchor `end` for left arc (0°–40%), `middle` for top (50%), `start` for right arc (60%–100%).
+  - **Needle**: white line from pivot (520,280) to r=152 tip; SMIL `<animateTransform>` sweeps from 30° (100% / ISO base) to 327.6° (74% operating point in green zone), dur=1.8 s, begin=0.5 s, ease-out spline. Pivot: white circle r=7, navy fill circle r=3.5.
+  - **Radial labels** (no dashed lines; text placed just outside r=200 circle edge, ~7 px gap, matching position of each marker):
+    - Green `#00a651` at 330° (75%): "ISLAND LIMIT — 75%" / "(13.5 MW after both derates)"
+    - Navy `#002060` at 1.2° (88%): "TEMPERATURE DERATE — EXAMPLE 88% AT 33°C" / "(15.8 MW after −12% derate)"
+    - Navy `#002060` at 30° (100%): "ISO BASE RATING — 100%" / "18 MW"
+  - **Outer ring**: `#1a3a7a` stroke, stroke-width=3.
+  - **Gauge centre**: Empty — no text labels inside the gauge face.
+  - **Two annotation callout boxes** (side by side, below the meter, y=392, each 460 px wide, height=72 px, white fill, `#dde3ea` border):
+    - *Left — ISO Base Rating* (navy `#002060` left accent bar, 3 px wide): Heading "ISO BASE RATING — THE STARTING POINT". Body (3 lines): "Rated output under ISO 3977 standard conditions —" / "a common reference point for like-for-like comparisons" / "across manufacturers, sites, and ambient environments."
+    - *Right — Island Mode Ceiling* (orange `#cc3d00` left accent bar, 3 px wide): Heading "ISLAND MODE CEILING — WHY THE NEEDLE STOPS HERE". Body (3 lines): "Two stacked derates — temperature −12% then island mode −15% —" / "reduce usable output to 75% of ISO nameplate rating." / "This section explains both derates and how they combine."
+  - **Section roadmap strip** (full width, y=464–510, navy background `#002060`): Header "THIS SECTION COVERS:" (white, 10 px). Five inline pill buttons (dark navy `#1a3a7a`, rx=10): `ISO Base Rating` · `Temperature Derate` · `Island Mode Derate` · `Incremental Reserve Margin (IRM)` · `Alternator MVA Sizing`, separated by orange `#cc3d00` chevrons `›`.
 - **VO Script**: "Section two. Now that we understand why island mode is different, we can discuss how that difference translates into specific power limits. This section covers the island mode derate, how it differs from temperature derating, and the concept of incremental reserve margin — all of which directly affect how you specify and rate your packages."
 
 ---
@@ -387,11 +396,11 @@ Which of the following is the primary reason rapid frequency excursions occur in
 ### Screen S2-1: Two Independent Derates
 - **Production File:** `S2-1_Two_Derates.html` — Static information screen. Single-panel layout with SVG stacked bar chart. Banner: "TWO INDEPENDENT DERATES".
 - **Visuals** (SVG `S2-1_Two_Derates.svg`, viewBox 0 0 900 460, single-panel full-width layout):
-  - **Waterfall bar chart** (centred, 680 px wide, 260 px tall): Three vertical bars with horizontal step connectors between them, reading left to right.
-    - *Bar 1 — ISO Base Rating*: Full height (100%), navy fill (`#002060`). Label above bar: "ISO BASE RATING". Value label inside bar: "20 MW · 100%".
-    - *Bar 2 — After Temperature Derate*: 88% height, navy fill. Label above bar: "AFTER TEMP. DERATE". Value inside: "17.6 MW · 88%". Right-side descending step bracket in orange (`#cc3d00`) spanning the 12% drop; bracket label: "Temp. Derate  −2.4 MW (−12%)".
-    - *Bar 3 — Usable Island Mode Output*: 75% height, navy fill. Label above bar: "ISLAND MODE LIMIT". Value inside: "15.0 MW · 75%". Right-side descending step bracket in orange spanning the 15% drop; bracket label: "Island Mode Derate  −2.6 MW (−15%)". Top edge of bar highlighted with a green rule and small label "Operating ceiling — do not exceed".
-    - *Dashed ceiling line*: full-width horizontal dashed line at 100% height, labelled "ISO Base Rating = 20 MW" at right margin.
+  - **Waterfall bar chart** (centred, 680 px wide, 260 px tall): Three vertical bars with horizontal step connectors between them, reading left to right. No labels above bars.
+    - *Bar 1 — ISO Base Rating*: Full height (100%), navy fill (`#002060`). No above-bar label. Value labels inside bar: "20 MW" (white, 14 px) · "100%" (muted blue-grey, 11 px).
+    - *Bar 2 — After Temperature Derate*: 88% height, navy fill. No above-bar label. Value inside: "17.6 MW · 88%". Right-side descending step bracket in orange (`#cc3d00`) spanning the 12% drop; bracket label: "Temp. Derate −2.4 MW (−12%)".
+    - *Bar 3 — Usable Island Mode Output*: 75% height, navy fill. No above-bar label. Value inside: "15.0 MW · 75%". Green top-edge rule (4 px, `#00a651`). Right-side descending step bracket in orange spanning the 15% drop; bracket label: "Island Mode Derate −2.6 MW (−15%)".
+    - *Dashed ceiling line*: full-width horizontal dashed line at 100% height, labelled "ISO Base Rating" (no MW value) at right margin.
     - *Y-axis*: labelled "Output (MW)" with tick marks at 0, 5, 10, 15, 17.6, 20.
   - **Two annotation callout boxes** (side by side, below chart, each ~400 px wide):
     - *Left — Derate 1: Temperature* (amber `#e8a000` left border, 3 px): Heading "Derate 1 — Temperature (Ambient Correction)". Body: "Applies in ALL operating modes. Driven by site conditions — ambient temperature, altitude, relative humidity."

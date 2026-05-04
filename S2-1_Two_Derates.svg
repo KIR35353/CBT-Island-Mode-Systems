@@ -48,15 +48,13 @@
   <!-- ── Dashed ceiling line at 100% (y=30) ── -->
   <line x1="115" y1="30" x2="795" y2="30"
         stroke="#aaa" stroke-width="1" stroke-dasharray="6 4"/>
-  <text x="800" y="34" fill="#555" font-size="10" text-anchor="start">ISO Base Rating = 20 MW</text>
+  <text x="800" y="34" fill="#555" font-size="10" text-anchor="start">ISO Base Rating</text>
 
   <!-- ═══════════════════════════════
        BAR 1 — ISO Base Rating
        x=120–258, y=30–290, h=260
        ═══════════════════════════════ -->
   <rect x="120" y="30" width="138" height="260" fill="#002060" rx="2"/>
-  <!-- Label above -->
-  <text x="189" y="22" fill="#002060" font-size="11" font-weight="700" text-anchor="middle">ISO BASE RATING</text>
   <!-- Value inside -->
   <text x="189" y="155" fill="white" font-size="14" font-weight="700" text-anchor="middle">20 MW</text>
   <text x="189" y="173" fill="#a0b4d0" font-size="11" text-anchor="middle">100%</text>
@@ -80,8 +78,6 @@
        x=331–469, y=61–290, h=229
        ═══════════════════════════════ -->
   <rect x="331" y="61" width="138" height="229" fill="#002060" rx="2"/>
-  <!-- Label above -->
-  <text x="400" y="53" fill="#002060" font-size="11" font-weight="700" text-anchor="middle">AFTER TEMP. DERATE</text>
   <!-- Value inside -->
   <text x="400" y="170" fill="white" font-size="14" font-weight="700" text-anchor="middle">17.6 MW</text>
   <text x="400" y="188" fill="#a0b4d0" font-size="11" text-anchor="middle">88%</text>
@@ -103,10 +99,6 @@
   <rect x="542" y="95" width="138" height="195" fill="#002060" rx="2"/>
   <!-- Green top-edge rule -->
   <rect x="542" y="95" width="138" height="4" fill="#00a651" rx="1"/>
-  <!-- "Operating ceiling" label -->
-  <text x="681" y="100" fill="#00a651" font-size="10" font-weight="600">Operating ceiling — do not exceed</text>
-  <!-- Label above -->
-  <text x="611" y="87" fill="#002060" font-size="11" font-weight="700" text-anchor="middle">ISLAND MODE LIMIT</text>
   <!-- Value inside -->
   <text x="611" y="185" fill="white" font-size="14" font-weight="700" text-anchor="middle">15.0 MW</text>
   <text x="611" y="203" fill="#a0b4d0" font-size="11" text-anchor="middle">75%</text>
