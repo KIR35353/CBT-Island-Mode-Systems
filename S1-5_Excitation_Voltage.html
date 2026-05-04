@@ -426,6 +426,7 @@ function setMode(mode) {
     utilPanelIsland.setAttribute('visibility', 'visible');
     utilArrowGroup.setAttribute('visibility', 'hidden');
     gridShareRow.setAttribute('visibility', 'hidden');
+    if (window.parent !== window) window.parent.postMessage({ type: 'islandMode' }, '*');
   }
 
   setOpacity(gtgBadge, 0); setOpacity(utilBadge, 0);

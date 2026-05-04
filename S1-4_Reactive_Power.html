@@ -836,6 +836,7 @@ function setMode(mode) {
   } else {
     islandIdx = 1;
     applyPhase(phases[islandIdx]);
+    if (window.parent !== window) window.parent.postMessage({ type: 'islandMode' }, '*');
   }
   updateControls();
 }

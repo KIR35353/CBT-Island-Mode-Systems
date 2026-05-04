@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Section 1 &middot; Grid-Connected vs. Island Mode | Island Mode GTG Systems</title>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   KIRBY CORPORATION BRAND PALETTE
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --k-navy:        #002060;
+  --k-navy-mid:    #1a3a6e;
+  --k-navy-light:  #274d8a;
+  --k-blue:        #1d5fa8;
+  --k-steel:       #3d7fbd;
+  --k-steel-lt:    #80b4dc;
+  --k-orange:      #cc3d00;
+  --k-orange-lt:   #e06828;
+  --k-orange-glow: rgba(204,61,0,0.28);
+  --k-white:       #ffffff;
+  --k-offwhite:    #f3f6fb;
+  --k-mid:         #dce7f5;
+  --k-text-dark:   #0d1d33;
+  --k-muted:       #6a7d94;
+  --k-border:      rgba(255,255,255,0.13);
+  --r:             10px;
+  --t:             0.38s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--k-navy);
+}
+
+body {
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  color: var(--k-white);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   HEADER
+───────────────────────────────────────────────────────────── */
+header {
+  flex-shrink: 0;
+  background: #001245;
+  border-bottom: 3px solid var(--k-orange);
+  padding: 9px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hdr-left { display: flex; align-items: center; gap: 14px; }
+
+.hdr-logo { height: 36px; opacity: 0.93; }
+
+.hdr-titles { line-height: 1.3; }
+
+.hdr-id {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--k-orange-lt);
+}
+
+.hdr-course {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--k-white);
+}
+
+/* Progress dots */
+.hdr-right { display: flex; align-items: center; gap: 12px; }
+
+.dots { display: flex; gap: 9px; }
+
+.dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--k-steel);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--t), border-color var(--t), transform 0.2s;
+}
+.dot:hover { border-color: var(--k-steel-lt); }
+.dot.visited { background: var(--k-steel); border-color: var(--k-steel-lt); }
+.dot.active  { background: var(--k-orange); border-color: var(--k-orange-lt); transform: scale(1.3); }
+
+.dot-counter {
+  font-size: 11px;
+  color: var(--k-muted);
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   STAGE
+───────────────────────────────────────────────────────────── */
+.stage {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  padding: 20px 44px 14px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  overflow-y: auto;
+}
+.screen.active  { display: flex; }
+.screen.visible { opacity: 1; }
+
+.scrn-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--k-orange-lt);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.scrn-h1 {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--k-white);
+}
+
+.rule {
+  width: 64px; height: 3px;
+  background: var(--k-orange);
+  border-radius: 2px;
+  margin-top: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCREEN 1 — S1-0 SECTION INTRO
+───────────────────────────────────────────────────────────── */
+#s-s1-0 {
+  background: linear-gradient(160deg, #001a4a 0%, var(--k-navy) 100%);
+  padding: 14px 28px 10px;
+}
+
+.s10-img-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.s10-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PLACEHOLDER SCREENS (Phases 2–4)
+───────────────────────────────────────────────────────────── */
+.ph-screen {
+  background: linear-gradient(160deg, #001a4a 0%, var(--k-navy) 100%);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 18px;
+}
+
+.ph-icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: rgba(61,127,189,0.12);
+  border: 2px solid var(--k-steel);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--k-steel-lt);
+  flex-shrink: 0;
+}
+
+.ph-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--k-white);
+  max-width: 600px;
+  line-height: 1.3;
+}
+
+.ph-sub {
+  font-size: 13px;
+  color: var(--k-muted);
+  max-width: 500px;
+  line-height: 1.65;
+}
+
+.ph-badge {
+  background: rgba(61,127,189,0.10);
+  border: 1px solid var(--k-steel);
+  border-radius: 20px;
+  padding: 6px 20px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--k-steel-lt);
+  letter-spacing: 0.6px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   IFRAME SCREENS (Phase 2)
+───────────────────────────────────────────────────────────── */
+.iframe-screen {
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--k-navy);
+  overflow: auto;
+}
+
+.iframe-screen iframe {
+  display: block;
+  border: none;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SUMMARY TABLE SCREEN (Phase 3)
+───────────────────────────────────────────────────────────── */
+.tbl-screen {
+  background: linear-gradient(160deg, #001a4a 0%, var(--k-navy) 100%);
+}
+
+.tbl-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.diff-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.diff-table th {
+  padding: 10px 18px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.diff-table th:first-child {
+  width: 24%;
+  color: var(--k-muted);
+  background: rgba(0,0,0,0.25);
+}
+
+.diff-table th.col-grid {
+  background: rgba(29,95,168,0.22);
+  color: var(--k-steel-lt);
+  width: 38%;
+}
+
+.diff-table th.col-island {
+  background: rgba(204,61,0,0.18);
+  color: var(--k-orange-lt);
+  width: 38%;
+}
+
+.diff-table td {
+  padding: 11px 18px;
+  vertical-align: top;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  line-height: 1.45;
+}
+
+.diff-table td:first-child {
+  color: var(--k-steel-lt);
+  font-weight: 600;
+  font-size: 12px;
+  background: rgba(0,0,0,0.14);
+}
+
+.diff-table td.cell-grid {
+  color: var(--k-offwhite);
+  background: rgba(29,95,168,0.08);
+}
+
+.diff-table td.cell-island {
+  color: var(--k-offwhite);
+  background: rgba(204,61,0,0.07);
+}
+
+.diff-table tr:hover td { filter: brightness(1.08); }
+
+.tag-ok {
+  display: inline-block;
+  background: rgba(29,95,168,0.2);
+  color: var(--k-steel-lt);
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tag-warn {
+  display: inline-block;
+  background: rgba(204,61,0,0.2);
+  color: var(--k-orange-lt);
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tbl-footnote {
+  font-size: 12px;
+  color: var(--k-muted);
+  margin-top: 14px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   QUIZ SCREEN (Phase 4)
+───────────────────────────────────────────────────────────── */
+.quiz-screen {
+  background: linear-gradient(160deg, #001a4a 0%, var(--k-navy) 100%);
+}
+
+.quiz-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 12px;
+}
+
+.quiz-progress {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.qp-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--k-steel);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  color: var(--k-muted);
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.qp-dot.active  { border-color: var(--k-orange);  color: var(--k-orange-lt); background: rgba(204,61,0,0.12); }
+.qp-dot.correct { border-color: #22a06b; color: #22a06b; background: rgba(34,160,107,0.12); }
+.qp-dot.wrong   { border-color: #e03131; color: #e03131; background: rgba(224,49,49,0.12); }
+
+.q-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.q-card.active { display: flex; }
+
+.q-number {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--k-orange-lt);
+  margin-bottom: 4px;
+}
+
+.q-stem {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--k-white);
+  line-height: 1.5;
+}
+
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+
+.q-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--k-offwhite);
+  user-select: none;
+}
+
+.q-opt:hover:not(.locked) { background: rgba(61,127,189,0.12); border-color: var(--k-steel); }
+.q-opt.selected { background: rgba(61,127,189,0.15); border-color: var(--k-steel-lt); }
+.q-opt.correct  { background: rgba(34,160,107,0.14); border-color: #22a06b; color: #a8f4cf; }
+.q-opt.wrong    { background: rgba(224,49,49,0.12);  border-color: #e03131; color: #ffa8a8; }
+.q-opt.locked   { cursor: default; }
+
+.q-opt-key {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.q-feedback {
+  display: none;
+  padding: 10px 14px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.q-feedback.show        { display: block; }
+.q-feedback.fb-correct  { background: rgba(34,160,107,0.12); border: 1px solid #22a06b; color: #a8f4cf; }
+.q-feedback.fb-wrong    { background: rgba(224,49,49,0.10);  border: 1px solid #e03131; color: #ffa8a8; }
+.q-feedback.fb-retry    { background: rgba(204,61,0,0.10);   border: 1px solid var(--k-orange); color: var(--k-orange-lt); }
+
+.q-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+.btn-check {
+  background: var(--k-orange);
+  color: var(--k-white);
+  border: none;
+  border-radius: 7px;
+  padding: 7px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-check:hover:not(:disabled) { background: var(--k-orange-lt); }
+.btn-check:disabled { opacity: 0.35; cursor: default; }
+
+.btn-qnext {
+  background: rgba(61,127,189,0.15);
+  color: var(--k-steel-lt);
+  border: 1px solid var(--k-steel);
+  border-radius: 7px;
+  padding: 7px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: none;
+  transition: background 0.2s;
+}
+
+.btn-qnext:hover { background: rgba(61,127,189,0.25); }
+.btn-qnext.show  { display: inline-block; }
+
+.score-panel {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  padding: 20px;
+  flex: 1;
+}
+
+.score-panel.show { display: flex; }
+
+.score-big {
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.score-big.pass { color: #22a06b; }
+.score-big.fail { color: #e03131; }
+
+.score-label {
+  font-size: 14px;
+  color: var(--k-muted);
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.btn-review {
+  background: rgba(255,255,255,0.07);
+  color: var(--k-steel-lt);
+  border: 1px solid var(--k-steel);
+  border-radius: 7px;
+  padding: 8px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-review:hover { background: rgba(255,255,255,0.14); }
+
+/* ─────────────────────────────────────────────────────────────
+   VO BAR
+───────────────────────────────────────────────────────────── */
+.vo-bar {
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.38);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 9px 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 54px;
+}
+
+.vo-mic {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--k-navy-mid);
+  border: 2px solid var(--k-steel);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.25s, background 0.25s;
+}
+.vo-mic svg { width: 17px; height: 17px; fill: var(--k-steel-lt); transition: fill 0.25s; }
+
+.vo-bar.live .vo-mic { background: var(--k-orange-glow); border-color: var(--k-orange-lt); }
+.vo-bar.live .vo-mic svg { fill: var(--k-orange-lt); }
+
+.vo-text { flex: 1; overflow: hidden; }
+.vo-label-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--k-muted); margin-bottom: 2px;
+}
+.vo-caption {
+  font-size: 12px; color: var(--k-muted);
+  line-height: 1.45; font-style: italic;
+  transition: color 0.25s;
+}
+.vo-bar.live .vo-caption { color: var(--k-white); }
+
+.wave { display: flex; gap: 2px; align-items: center; height: 18px; opacity: 0; transition: opacity 0.25s; }
+.vo-bar.live .wave { opacity: 1; }
+.wave span {
+  display: block; width: 3px; border-radius: 2px;
+  background: var(--k-orange-lt);
+  animation: wv 0.75s ease-in-out infinite;
+}
+.wave span:nth-child(1) { height: 5px;  animation-delay: 0s;    }
+.wave span:nth-child(2) { height: 13px; animation-delay: 0.15s; }
+.wave span:nth-child(3) { height: 8px;  animation-delay: 0.05s; }
+.wave span:nth-child(4) { height: 16px; animation-delay: 0.2s;  }
+.wave span:nth-child(5) { height: 6px;  animation-delay: 0.1s;  }
+@keyframes wv {
+  0%,100% { transform: scaleY(1); }
+  50%      { transform: scaleY(0.3); }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FOOTER NAV
+───────────────────────────────────────────────────────────── */
+footer {
+  flex-shrink: 0;
+  background: #001245;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn {
+  border: none;
+  border-radius: 7px;
+  padding: 7px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+.btn:disabled { opacity: 0.32; cursor: default; }
+
+.btn-back {
+  background: rgba(255,255,255,0.07);
+  color: var(--k-steel-lt);
+}
+.btn-back:hover:not(:disabled) { background: rgba(255,255,255,0.14); }
+
+.btn-next {
+  background: var(--k-orange);
+  color: var(--k-white);
+}
+.btn-next:hover:not(:disabled) { background: var(--k-orange-lt); }
+
+.btn-replay {
+  background: transparent;
+  color: var(--k-muted);
+  font-size: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 7px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-replay:hover { color: var(--k-white); border-color: var(--k-steel); }
+
+.btn-pause {
+  flex-shrink: 0;
+  background: transparent;
+  color: var(--k-steel-lt);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 7px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.btn-pause:hover:not(:disabled) { color: var(--k-white); border-color: var(--k-steel); }
+.btn-pause:disabled { opacity: 0.35; cursor: default; }
+.btn-pause.paused { color: var(--k-orange-lt); border-color: var(--k-orange-lt); }
+
+.ftr-centre { font-size: 11px; color: var(--k-muted); }
+
+/* ─────────────────────────────────────────────────────────────
+   AUDIO GATE OVERLAY
+   Shown on first load; a click provides the required browser
+   user-gesture to unlock speechSynthesis.
+───────────────────────────────────────────────────────────── */
+.audio-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: rgba(0, 18, 69, 0.88);
+  backdrop-filter: blur(3px);
+  transition: opacity 0.4s ease;
+}
+.audio-gate.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.audio-gate-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--k-steel-lt);
+}
+.audio-gate-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--k-white);
+  text-align: center;
+  max-width: 560px;
+  line-height: 1.4;
+}
+.audio-gate-btn {
+  margin-top: 8px;
+  padding: 13px 36px;
+  background: var(--k-orange);
+  color: var(--k-white);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--r);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+.audio-gate-btn:hover { background: var(--k-orange-lt); }
+</style>
+</head>
+<body>
+
+<!-- ═══ AUDIO GATE ══════════════════════════════════════════ -->
+<div class="audio-gate" id="audioGate" role="dialog" aria-modal="true"
+     aria-label="Click to begin Section 1">
+  <div class="audio-gate-label">Section 1 of 6</div>
+  <div class="audio-gate-title">Grid-Connected vs. Island Mode &mdash; Fundamental Differences</div>
+  <button class="audio-gate-btn" id="audioGateBtn">
+    &#9654;&nbsp; Begin Section 1
+  </button>
+</div>
+
+<!-- ═══ HEADER ══════════════════════════════════════════════ -->
+<header>
+  <div class="hdr-left">
+    <img src="kirbyflag_imagefile.png" alt="Kirby Corporation" class="hdr-logo">
+    <div class="hdr-titles">
+      <div class="hdr-id">KIR-GTG-001 &nbsp;&middot;&nbsp; Section 1 of 6</div>
+      <div class="hdr-course">Island Mode Operation: Design Principles for GTG Packaging Engineers</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="dots" id="dots" role="tablist" aria-label="Section 1 screens"></div>
+    <span class="dot-counter" id="dotCounter">Screen 1 of 7</span>
+  </div>
+</header>
+
+<!-- ═══ STAGE ═══════════════════════════════════════════════ -->
+<div class="stage">
+
+  <!-- ── SCREEN 1: S1-0 — SECTION INTRO ─────────────────── -->
+  <div class="screen active" id="s-s1-0"
+       role="tabpanel" aria-label="S1-0 Section Intro">
+
+    <span class="scrn-eyebrow">Section 1 &middot; Screen 1 of 7 &middot; Introduction</span>
+    <div>
+      <div class="scrn-h1">Grid-Connected vs. Island Mode — Fundamental Differences</div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="s10-img-wrap">
+      <img src="S1-0_Section_Intro.svg"
+           alt="Split-screen diagram showing grid-connected operation (left, blue panel) versus island mode operation (right, orange panel). A VS badge separates the panels. Each side shows a plus-five megawatt load step with power-flow arrows. Callout bars below each panel list the key differences. A full-width band at the bottom introduces two lenses: Lens 1 real power and frequency covering screens S1-1 through S1-3, and Lens 2 reactive power and voltage covering screens S1-4 and S1-5.">
+    </div>
+
+  </div><!-- /screen 1 -->
+
+
+  <!-- ── SCREEN 2: S1-1/2 — STEP LOAD EVENT ─────────────── -->
+  <div class="screen iframe-screen" id="s-s1-12"
+       role="tabpanel" aria-label="S1-1/2 Step Load Event">
+    <iframe src="S1-1_2_Step_Load_Event.html"
+            width="1040" height="550"
+            sandbox="allow-scripts allow-same-origin"
+            frameborder="0" scrolling="no"
+            title="Real Power — A Step Load's Impact on the Turbine and Frequency"></iframe>
+  </div>
+
+
+  <!-- ── SCREEN 3: S1-3 — SWING EQUATION ────────────────── -->
+  <div class="screen iframe-screen" id="s-s1-3"
+       role="tabpanel" aria-label="S1-3 The Swing Equation">
+    <iframe src="S1-3_Swing_Equation.html"
+            width="1040" height="510"
+            sandbox="allow-scripts allow-same-origin"
+            frameborder="0" scrolling="no"
+            title="The Swing Equation — Frequency Is Not Free"></iframe>
+  </div>
+
+
+  <!-- ── SCREEN 4: S1-4 — REACTIVE POWER ────────────────── -->
+  <div class="screen iframe-screen" id="s-s1-4"
+       role="tabpanel" aria-label="S1-4 Reactive Power — The Hidden Constraint">
+    <iframe src="S1-4_Reactive_Power.html"
+            width="1040" height="548"
+            sandbox="allow-scripts allow-same-origin"
+            frameborder="0" scrolling="no"
+            title="The Alternator and Reactive Power — The Hidden Constraint"></iframe>
+  </div>
+
+
+  <!-- ── SCREEN 5: S1-5 — EXCITATION / VOLTAGE ──────────── -->
+  <div class="screen iframe-screen" id="s-s1-5"
+       role="tabpanel" aria-label="S1-5 Voltage and Reactive Power — Reacting to Transients">
+    <iframe src="S1-5_Excitation_Voltage.html"
+            width="1040" height="550"
+            sandbox="allow-scripts allow-same-origin"
+            frameborder="0" scrolling="no"
+            title="Voltage and Reactive Power — Reacting to Transients"></iframe>
+  </div>
+
+
+  <!-- ── SCREEN 6: S1-6 — SUMMARY TABLE ─────────────────── -->
+  <div class="screen tbl-screen" id="s-s1-6"
+       role="tabpanel" aria-label="S1-6 Summary — Why Island Mode Is Different">
+
+    <span class="scrn-eyebrow">Section 1 &middot; Screen 6 of 7 &middot; Summary</span>
+    <div>
+      <div class="scrn-h1">Why Island Mode Is Different</div>
+      <div class="rule"></div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th class="col-grid">&#9632;&nbsp; Grid-Parallel Operation</th>
+            <th class="col-island">&#9650;&nbsp; Island Mode Operation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Frequency reference</td>
+            <td class="cell-grid">Utility grid (infinite bus) <span class="tag-ok">Stable</span></td>
+            <td class="cell-island">GTG governor(s) only <span class="tag-warn">No external reference</span></td>
+          </tr>
+          <tr>
+            <td>Reactive power source</td>
+            <td class="cell-grid">Utility grid + local alternator</td>
+            <td class="cell-island">On-site alternator(s) only <span class="tag-warn">Full reactive burden</span></td>
+          </tr>
+          <tr>
+            <td>Load transient buffering</td>
+            <td class="cell-grid">Shared across grid &mdash; transient absorbed instantly <span class="tag-ok">Buffered</span></td>
+            <td class="cell-island">Entire impact on GTG(s) &mdash; governor must respond alone <span class="tag-warn">Unbuffered</span></td>
+          </tr>
+          <tr>
+            <td>Required headroom</td>
+            <td class="cell-grid">Minimal &mdash; grid absorbs any imbalance</td>
+            <td class="cell-island"><span class="tag-warn">10&ndash;15% of rated output</span> reserved for IRM</td>
+          </tr>
+          <tr>
+            <td>Governor response speed</td>
+            <td class="cell-grid">5&ndash;10 seconds adequate &mdash; grid holds frequency <span class="tag-ok">Droop mode</span></td>
+            <td class="cell-island"><span class="tag-warn">Must respond within 1&ndash;2 seconds</span> &mdash; isochronous required</td>
+          </tr>
+          <tr>
+            <td>DLE combustion risk</td>
+            <td class="cell-grid"><span class="tag-ok">Low</span> &mdash; load transients are small and infrequent</td>
+            <td class="cell-island"><span class="tag-warn">High during transients</span> &mdash; lean blowout risk on rapid load changes</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="tbl-footnote">Island mode is not grid-parallel operation without a grid connection &mdash; it is a fundamentally different
+      operating regime requiring specific design decisions in the package, the controls, and the protection systems.</p>
+    </div>
+
+  </div><!-- /screen 6 -->
+
+
+  <!-- ── SCREEN 7: SECTION QUIZ 1 ───────────────────────── -->
+  <div class="screen quiz-screen" id="s-quiz1"
+       role="tabpanel" aria-label="Section Quiz 1">
+
+    <span class="scrn-eyebrow">Section 1 &middot; Screen 7 of 7 &middot; Section Quiz</span>
+    <div>
+      <div class="scrn-h1">Section Quiz 1 &mdash; 4 Questions</div>
+      <div class="rule"></div>
+    </div>
+
+    <!-- Quiz progress dots -->
+    <div class="quiz-progress" id="qProgress" aria-label="Quiz progress">
+      <div class="qp-dot active" id="qpd-0">1</div>
+      <div class="qp-dot" id="qpd-1">2</div>
+      <div class="qp-dot" id="qpd-2">3</div>
+      <div class="qp-dot" id="qpd-3">4</div>
+    </div>
+
+    <div class="quiz-body" id="quizBody">
+
+      <!-- Q1 -->
+      <div class="q-card active" id="qcard-0">
+        <div>
+          <div class="q-number">Question 1 of 4</div>
+          <div class="q-stem">In grid-parallel operation, a generator is largely buffered from load transients because:</div>
+        </div>
+        <div class="q-options" id="qopts-0">
+          <div class="q-opt" data-q="0" data-val="A"><span class="q-opt-key">A</span><span>Its governor is faster than in island mode</span></div>
+          <div class="q-opt" data-q="0" data-val="B"><span class="q-opt-key">B</span><span>The utility grid acts as an infinite bus, absorbing power swings</span></div>
+          <div class="q-opt" data-q="0" data-val="C"><span class="q-opt-key">C</span><span>The alternator has a higher MVA rating</span></div>
+          <div class="q-opt" data-q="0" data-val="D"><span class="q-opt-key">D</span><span>DLE combustion is not required in grid-parallel mode</span></div>
+        </div>
+        <div class="q-feedback" id="qfb-0"></div>
+        <div class="q-actions">
+          <button class="btn-check" id="qchk-0" disabled>Check Answer</button>
+          <button class="btn-qnext" id="qnxt-0">Next Question &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-card" id="qcard-1">
+        <div>
+          <div class="q-number">Question 2 of 4</div>
+          <div class="q-stem">In island mode, a motor start draws an 8 MVAR reactive surge. The alternator&rsquo;s AVR detects a terminal voltage dip to 0.89 per unit and increases reactive output from 2 MVAR to 13 MVAR. What must happen if the AVR cannot respond fast enough?</div>
+        </div>
+        <div class="q-options" id="qopts-1">
+          <div class="q-opt" data-q="1" data-val="A"><span class="q-opt-key">A</span><span>The turbine governor increases fuel flow to compensate for the reactive deficit</span></div>
+          <div class="q-opt" data-q="1" data-val="B"><span class="q-opt-key">B</span><span>Under-voltage protection activates and begins shedding loads</span></div>
+          <div class="q-opt" data-q="1" data-val="C"><span class="q-opt-key">C</span><span>The alternator automatically switches from lagging to leading power factor</span></div>
+          <div class="q-opt" data-q="1" data-val="D"><span class="q-opt-key">D</span><span>The frequency meter drops below 59 Hz and UFLS Stage 1 activates</span></div>
+        </div>
+        <div class="q-feedback" id="qfb-1"></div>
+        <div class="q-actions">
+          <button class="btn-check" id="qchk-1" disabled>Check Answer</button>
+          <button class="btn-qnext" id="qnxt-1">Next Question &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-card" id="qcard-2">
+        <div>
+          <div class="q-number">Question 3 of 4</div>
+          <div class="q-stem">A 20 MVA alternator is supplying 8 MVAR of reactive power. Using S&sup2;&nbsp;=&nbsp;P&sup2;&nbsp;+&nbsp;Q&sup2;, what is the maximum real power it can deliver?</div>
+        </div>
+        <div class="q-options" id="qopts-2">
+          <div class="q-opt" data-q="2" data-val="A"><span class="q-opt-key">A</span><span>20.0 MW</span></div>
+          <div class="q-opt" data-q="2" data-val="B"><span class="q-opt-key">B</span><span>12.0 MW</span></div>
+          <div class="q-opt" data-q="2" data-val="C"><span class="q-opt-key">C</span><span>18.3 MW</span></div>
+          <div class="q-opt" data-q="2" data-val="D"><span class="q-opt-key">D</span><span>16.0 MW</span></div>
+        </div>
+        <div class="q-feedback" id="qfb-2"></div>
+        <div class="q-actions">
+          <button class="btn-check" id="qchk-2" disabled>Check Answer</button>
+          <button class="btn-qnext" id="qnxt-2">Next Question &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q-card" id="qcard-3">
+        <div>
+          <div class="q-number">Question 4 of 4</div>
+          <div class="q-stem">Which of the following is the primary reason rapid frequency excursions occur in island mode?</div>
+        </div>
+        <div class="q-options" id="qopts-3">
+          <div class="q-opt" data-q="3" data-val="A"><span class="q-opt-key">A</span><span>The alternator has insufficient MVA rating</span></div>
+          <div class="q-opt" data-q="3" data-val="B"><span class="q-opt-key">B</span><span>Gas turbines have low inertia constants (3&ndash;6 seconds), so power imbalances cause fast speed changes</span></div>
+          <div class="q-opt" data-q="3" data-val="C"><span class="q-opt-key">C</span><span>DLE combustion cannot respond quickly enough</span></div>
+          <div class="q-opt" data-q="3" data-val="D"><span class="q-opt-key">D</span><span>Turbine governors cannot be configured for isochronous operation without modification</span></div>
+        </div>
+        <div class="q-feedback" id="qfb-3"></div>
+        <div class="q-actions">
+          <button class="btn-check" id="qchk-3" disabled>Check Answer</button>
+          <button class="btn-qnext" id="qnxt-3">View Results &rarr;</button>
+        </div>
+      </div>
+
+    </div><!-- /quiz-body -->
+
+    <!-- Score panel (hidden until quiz complete) -->
+    <div class="score-panel" id="scorePanel">
+      <div class="score-big" id="scoreBig"></div>
+      <div class="score-label" id="scoreLabel"></div>
+      <button class="btn-review" id="btnReviewSect">&#8635; Review Section 1</button>
+    </div>
+
+  </div><!-- /screen 7 -->
+
+</div><!-- /stage -->
+
+
+<!-- ═══ VO BAR ══════════════════════════════════════════════ -->
+<div class="vo-bar" id="voBar">
+  <div class="vo-mic" id="voMic">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4zm-1.5 14.93A8.001 8.001 0 0120 10.5a.75.75 0 011.5 0 8 8 0 01-7.25 7.95V21h2.5a.75.75 0 010 1.5h-6.5a.75.75 0 010-1.5H12.75v-2.57A8.001 8.001 0 014 10.5a.75.75 0 011.5 0 6.5 6.5 0 005 6.34V18a2 2 0 002 0v-1.07z"/>
+    </svg>
+  </div>
+  <div class="vo-text">
+    <div class="vo-label-tag">Narration &nbsp;&middot;&nbsp; Google UK English Female</div>
+    <div class="vo-caption" id="voCaption">Press Space or click Replay VO to start narration for this screen.</div>
+  </div>
+  <div class="wave" id="wave" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <button class="btn-pause" id="btnPause" aria-label="Pause narration" disabled>&#9646;&#9646; Pause</button>
+</div>
+
+
+<!-- ═══ FOOTER NAV ═══════════════════════════════════════════ -->
+<footer>
+  <button class="btn btn-back" id="btnBack" disabled>&#8592; Back</button>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button class="btn-replay" id="btnReplay" aria-label="Replay narration">&#8635; Replay VO</button>
+    <span class="ftr-centre" id="ftrLabel">Section 1 &nbsp;&middot;&nbsp; Grid-Connected vs. Island Mode &nbsp;&middot;&nbsp; 7 minutes</span>
+  </div>
+  <button class="btn btn-next" id="btnNext">Next &#8594;</button>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────────────────────
+   SCREEN DEFINITIONS
+   Each entry: id (matches DOM), label (for dots tooltip),
+   vo (narration text played on entry).
+───────────────────────────────────────────────────────────── */
+const SCREENS = [
+  {
+    id: 's-s1-0',
+    label: 'Section Intro',
+    vo: "Section one. Before we discuss limits and protection systems, we need to establish " +
+        "a clear picture of what changes when a generator goes from grid-connected to island " +
+        "mode — and why those changes matter. " +
+        "We will examine the step-load event from two perspectives. " +
+        "The first perspective is real power and frequency — how turbine thermal capacity " +
+        "and rotational inertia limit the machine's ability to absorb a sudden load increase. " +
+        "The second perspective is reactive power and terminal voltage — how the alternator's " +
+        "reactive capability and the speed of the automatic voltage regulator determine " +
+        "whether voltage survives the same event. Both responses happen simultaneously when " +
+        "a large motor starts, and either one can independently cause the system to trip."
+  },
+  {
+    id: 's-s1-12',
+    label: 'Real Power — Step Load Event',
+    vo: "When a generator operates connected to a large utility grid, the grid functions like " +
+        "an infinite reservoir of voltage and frequency stability. " +
+        "The screen is now showing grid-connected operation. " +
+        "Click the Run button beside the motor load to add the six megawatt step load and watch what happens. " +
+        "If load suddenly changes, the grid absorbs the transient — the generator output does not change at all. " +
+        "The utility supply surges instantly to cover the difference. " +
+        "Frequency stays locked at sixty hertz. " +
+        "Click Stop to return to steady state, then switch to Island Mode using the button at the top " +
+        "and click Run again to compare.",
+    vo2: "In island mode, those buffers disappear. There is no infinite bus. " +
+         "The gas turbine is the only power source. " +
+         "Click Run to add the same six megawatt motor load. " +
+         "The same motor load that barely registered in grid-connected mode now causes an immediate frequency droop. " +
+         "The turbine governor must respond entirely on its own to restore the balance. " +
+         "Click Stop to disconnect the motor load and reset to steady state."
+  },
+  {
+    id: 's-s1-3',
+    label: 'The Swing Equation',
+    vo: "Frequency stability is governed by Newton's second law applied to rotating machinery. " +
+        "If electrical load exceeds mechanical input power, the rotor decelerates and frequency drops. " +
+        "Gas turbines have relatively low inertia constants — typically three to six seconds — " +
+        "meaning frequency can change rapidly. " +
+        "A ten percent load step can cause a one to two hertz frequency excursion within the first second " +
+        "if the governor does not respond adequately. " +
+        "Click the Run button on the one-line diagram to connect Motor Three and observe the rotor slow down, " +
+        "the frequency meter dip, and the governor recover. " +
+        "Click Stop to disconnect the motor and watch frequency overshoot slightly before the governor " +
+        "settles back to sixty hertz. " +
+        "This is the central challenge of island mode operation."
+  },
+  {
+    id: 's-s1-4',
+    label: 'Reactive Power — The Hidden Constraint',
+    vo: "The second critical difference involves reactive power. " +
+        "The centre of this screen shows a P-Q capability diagram — the circular boundary is " +
+        "the alternator's twenty megavolt-ampere thermal limit. " +
+        "The operating point is the dot on the diagram, and the green shaded region above it " +
+        "is the available real-power headroom. " +
+        "The screen starts in grid-connected mode. " +
+        "On the grid, reactive demands are met by the grid itself — the operating point sits " +
+        "freely inside the MVA circle and the full headroom is available. " +
+        "Now switch to Island Mode using the button at the top.",
+    vo2: "The alternator must now supply all reactive power needed by the data center loads. " +
+         "Use the up arrow button on the left to increase the reactive load and watch the maximum " +
+         "real power available move along the MVA arc. " +
+         "Because the alternator has a fixed apparent power rating, every megavar spent on reactive " +
+         "load directly reduces the megawatts available for real work. " +
+         "At eight megavars the headroom is almost gone. " +
+         "At fifteen megavars the alternator hits its thermal limit — the operating point is forced " +
+         "down the arc and real power output falls to thirteen point two megawatts, " +
+         "even though the turbine is thermally capable of more. " +
+         "This is not a minor constraint. " +
+         "Use the down arrow to reduce reactive load and watch the headroom recover."
+  },
+  {
+    id: 's-s1-5',
+    label: 'Voltage and Reactive Power — Transients',
+    vo: "We have seen how a step load event in island mode drives an immediate frequency droop — " +
+        "and how the turbine governor must respond to restore it. " +
+        "But the same event simultaneously drives a voltage dip. " +
+        "When a large motor starts, it draws a surge of reactive current. " +
+        "That reactive surge forces the terminal voltage down. " +
+        "The screen starts in grid-connected operation. " +
+        "Click the Run button beside the motor load to add the eight megavar reactive surge and observe the response. " +
+        "In grid-parallel operation, the grid absorbs the reactive surge instantly — " +
+        "the alternator output barely changes and terminal voltage holds steady at one point zero zero per unit. " +
+        "Click Stop to return to steady state, then switch to Island Mode using the button at the top " +
+        "and click Run again to compare.",
+    vo2: "In island mode, the automatic voltage regulator is the only thing standing between " +
+         "the load and a complete voltage collapse. " +
+         "Click Run to add the same reactive surge. " +
+         "Terminal voltage immediately dips to zero point eight nine per unit — " +
+         "watch the AVR detect the drop and boost the alternator field current to arrest it, " +
+         "climbing from two megavars to thirteen megavars and restoring voltage to one point zero zero per unit. " +
+         "The AVR must respond within a few hundred milliseconds. " +
+         "If it cannot, under-voltage protection will start shedding loads. " +
+         "Click Stop to reset to steady state. " +
+         "This is why island mode packages require fast-response static exciters and carefully tuned " +
+         "AVR gain settings — requirements that are often overlooked when a package is specified " +
+         "for grid-parallel service and then redeployed in island mode."
+  },
+  {
+    id: 's-s1-6',
+    label: 'Summary — Why Island Mode Is Different',
+    vo: "This table summarizes the key differences. " +
+        "The critical takeaway is that island mode is not simply grid-parallel operation " +
+        "without a grid connection — it is a fundamentally different operating regime " +
+        "that demands specific design decisions in the package, in the controls, " +
+        "and in the protection systems."
+  },
+  {
+    id: 's-quiz1',
+    label: 'Section Quiz 1',
+    vo: "You have reached the end of Section one. " +
+        "Complete the four-question quiz to check your understanding. " +
+        "The questions cover the infinite bus concept, AVR response and under-voltage " +
+        "protection, the reactive power constraint calculation using S squared equals " +
+        "P squared plus Q squared, and the role of low inertia constants in rapid " +
+        "frequency excursions. " +
+        "When you are ready, proceed to Section two: Power Ratings, Derating, " +
+        "and Reserve Margin."
+  }
+];
+
+/* ─────────────────────────────────────────────────────────────
+   STATE
+───────────────────────────────────────────────────────────── */
+let cur          = 0;
+let hasGestured  = false;  // true once user has clicked — required to unlock speechSynthesis
+let voPaused     = false;  // true while narration is paused
+let curVoText    = '';     // text of the utterance currently speaking or last paused
+let voiceUK      = null;
+const synth      = window.speechSynthesis;
+
+/* ─────────────────────────────────────────────────────────────
+   VOICE LOADING — prefer Google UK English Female
+───────────────────────────────────────────────────────────── */
+function loadVoice() {
+  const v = synth.getVoices();
+  voiceUK =
+    v.find(x => x.name === 'Google UK English Female') ||
+    v.find(x => x.lang === 'en-GB' && /female/i.test(x.name)) ||
+    v.find(x => x.lang === 'en-GB') ||
+    v.find(x => /en.gb/i.test(x.lang)) ||
+    v.find(x => x.lang.startsWith('en'));
+}
+loadVoice();
+if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = loadVoice;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SPEAK
+───────────────────────────────────────────────────────────── */
+function speakOne(text) {
+  synth.cancel();
+  curVoText = text;
+  voPaused = false;
+  updatePauseBtn();
+  const u = new SpeechSynthesisUtterance(text);
+  if (voiceUK) u.voice = voiceUK;
+  u.lang   = 'en-GB';
+  u.rate   = 0.93;
+  u.pitch  = 1.0;
+  u.volume = 1.0;
+  u.onstart = () => setLive(true, text);
+  u.onend   = () => setLive(false);
+  u.onerror = () => setLive(false);
+  synth.speak(u);
+}
+
+function setLive(on, text) {
+  const bar = document.getElementById('voBar');
+  const cap = document.getElementById('voCaption');
+  if (on) {
+    bar.classList.add('live');
+    cap.textContent = text || '\u2026';
+  } else {
+    bar.classList.remove('live');
+    voPaused = false;
+  }
+  updatePauseBtn();
+}
+
+function updatePauseBtn() {
+  const btn = document.getElementById('btnPause');
+  if (!btn) return;
+  if (voPaused) {
+    btn.textContent = '\u25b6 Resume';
+    btn.classList.add('paused');
+    btn.disabled = false;
+  } else if (synth.speaking) {
+    btn.textContent = '\u23f8 Pause';
+    btn.classList.remove('paused');
+    btn.disabled = false;
+  } else {
+    btn.textContent = '\u23f8 Pause';
+    btn.classList.remove('paused');
+    btn.disabled = true;
+  }
+}
+
+function pauseResume() {
+  if (voPaused) {
+    speakOne(curVoText);  // cancel + restart — more reliable than synth.resume() in Chrome
+  } else if (synth.speaking) {
+    synth.pause();
+    voPaused = true;
+    document.getElementById('voBar').classList.remove('live');
+    updatePauseBtn();
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────────────────────────────── */
+function goTo(idx, autoSpeak) {
+  if (idx < 0 || idx >= SCREENS.length) return;
+
+  /* fade out current */
+  const oldEl = document.getElementById(SCREENS[cur].id);
+  oldEl.classList.remove('visible');
+  setTimeout(() => { oldEl.classList.remove('active'); }, 360);
+
+  cur = idx;
+
+  /* fade in new */
+  const newEl = document.getElementById(SCREENS[cur].id);
+  newEl.classList.add('active');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => { newEl.classList.add('visible'); });
+  });
+
+  updateDots();
+  updateNav();
+
+  synth.cancel();
+  if (autoSpeak !== false && hasGestured) {
+    setTimeout(() => speakOne(SCREENS[cur].vo), 400);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NAV BAR UPDATE
+───────────────────────────────────────────────────────────── */
+function updateNav() {
+  document.getElementById('btnBack').disabled = (cur === 0);
+
+  const nextBtn = document.getElementById('btnNext');
+  if (cur === SCREENS.length - 1) {
+    nextBtn.textContent = 'Section 2 \u25b8';
+    nextBtn.disabled    = true;   /* enable when S2_Section2.html exists */
+  } else {
+    nextBtn.textContent = 'Next \u2192';
+    nextBtn.disabled    = false;
+  }
+
+  document.getElementById('dotCounter').textContent =
+    'Screen ' + (cur + 1) + ' of ' + SCREENS.length;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   DOTS
+───────────────────────────────────────────────────────────── */
+function buildDots() {
+  const container = document.getElementById('dots');
+  SCREENS.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'dot' + (i === 0 ? ' active' : '');
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-label', 'Screen ' + (i + 1) + ': ' + s.label);
+    btn.title = s.label;
+    btn.addEventListener('click', () => goTo(i));
+    container.appendChild(btn);
+  });
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.remove('active', 'visited');
+    if      (i === cur) d.classList.add('active');
+    else if (i < cur)   d.classList.add('visited');
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   IFRAME MESSAGE — resume VO after student clicks Island Mode
+───────────────────────────────────────────────────────────── */
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'islandMode') {
+    var scr = SCREENS[cur];
+    if (scr && scr.vo2) speakOne(scr.vo2);
+  }
+});
+
+/* ─────────────────────────────────────────────────────────────
+   KEYBOARD
+───────────────────────────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    if (cur < SCREENS.length - 1) goTo(cur + 1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    if (cur > 0) goTo(cur - 1);
+  } else if (e.key === ' ') {
+    e.preventDefault();
+    speakOne(SCREENS[cur].vo);
+  }
+});
+
+/* ─────────────────────────────────────────────────────────────
+   BUTTON WIRING
+───────────────────────────────────────────────────────────── */
+document.getElementById('btnBack').addEventListener('click',
+  () => { if (cur > 0) goTo(cur - 1); });
+
+document.getElementById('btnNext').addEventListener('click',
+  () => { if (cur < SCREENS.length - 1) goTo(cur + 1); });
+
+document.getElementById('btnReplay').addEventListener('click', () => {
+  hasGestured = true;
+  speakOne(SCREENS[cur].vo);
+});
+
+document.getElementById('btnPause').addEventListener('click', pauseResume);
+
+/* ─────────────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────────────── */
+buildDots();
+updateNav();
+
+/* Make screen 1 visible on first paint */
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    document.getElementById(SCREENS[0].id).classList.add('visible');
+  });
+});
+
+/* Audio gate — dismiss on click, then speak screen 0 VO */
+document.getElementById('audioGateBtn').addEventListener('click', () => {
+  hasGestured = true;
+  const gate = document.getElementById('audioGate');
+  gate.classList.add('hidden');
+  gate.addEventListener('transitionend', () => gate.remove(), { once: true });
+  speakOne(SCREENS[0].vo);
+});
+
+/* ─────────────────────────────────────────────────────────────
+   QUIZ LOGIC
+───────────────────────────────────────────────────────────── */
+const QUIZ = [
+  {
+    correct: 'B',
+    feedback: {
+      correct: '\u2713 Correct. The utility grid acts as an infinite bus — it absorbs any power swing instantly. The generator operates at a steady setpoint regardless of how load changes on the distribution bus.',
+      wrong:   '\u2717 Not quite. In grid-connected operation, the utility grid absorbs all load transients. The generator output does not change at all during a load event.',
+      retry:   'Incorrect — try again.'
+    }
+  },
+  {
+    correct: 'B',
+    feedback: {
+      correct: '\u2713 Correct. In island mode the AVR is the only source of voltage support. If it cannot arrest the voltage dip within a few hundred milliseconds, under-voltage protection will shed loads to prevent equipment damage.',
+      wrong:   '\u2717 Not quite. The turbine governor controls real power and frequency — not reactive power or voltage. If the AVR fails to respond, under-voltage protection sheds loads.',
+      retry:   'Incorrect — try again.'
+    }
+  },
+  {
+    correct: 'C',
+    feedback: {
+      correct: '\u2713 Correct. P = \u221a(S\u00b2 \u2212 Q\u00b2) = \u221a(20\u00b2 \u2212 8\u00b2) = \u221a(400 \u2212 64) = \u221a336 \u2248 18.3 MW.',
+      wrong:   '\u2717 Not quite. Using S\u00b2 = P\u00b2 + Q\u00b2: P = \u221a(20\u00b2 \u2212 8\u00b2) = \u221a(400 \u2212 64) = \u221a336 \u2248 18.3 MW. Every MVAR of reactive load reduces available MW.',
+      retry:   'Incorrect — try again.'
+    }
+  },
+  {
+    correct: 'B',
+    feedback: {
+      correct: '\u2713 Correct. Gas turbines have low inertia constants — typically 3 to 6 seconds — meaning the stored rotational energy is small relative to rated power. Any power imbalance causes a rapid frequency change.',
+      wrong:   '\u2717 Not quite. The primary reason is the low inertia constant of gas turbines (3\u20136 seconds). With little stored rotational energy, any power imbalance translates directly into a rapid frequency change.',
+      retry:   'Incorrect — try again.'
+    }
+  }
+];
+
+let qState = {
+  cur:      0,
+  scores:   [null, null, null, null],
+  attempts: [0, 0, 0, 0],
+  selected: [null, null, null, null]
+};
+
+function quizInit() {
+  /* Wire option clicks */
+  document.querySelectorAll('.q-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const q = parseInt(opt.dataset.q);
+      if (qState.scores[q] !== null || qState.attempts[q] >= 2) return;
+      document.querySelectorAll('[data-q="' + q + '"]').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      qState.selected[q] = opt.dataset.val;
+      document.getElementById('qchk-' + q).disabled = false;
+    });
+  });
+
+  /* Wire check buttons */
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('qchk-' + i).addEventListener('click', () => checkAnswer(i));
+    document.getElementById('qnxt-' + i).addEventListener('click', () => advanceQuiz(i));
+  }
+
+  /* Wire review button */
+  document.getElementById('btnReviewSect').addEventListener('click', () => {
+    resetQuiz();
+    goTo(0);
+  });
+}
+
+function checkAnswer(q) {
+  const sel  = qState.selected[q];
+  if (!sel) return;
+  const data = QUIZ[q];
+  qState.attempts[q]++;
+  const opts = document.querySelectorAll('[data-q="' + q + '"]');
+  const fb   = document.getElementById('qfb-' + q);
+  const chk  = document.getElementById('qchk-' + q);
+  const nxt  = document.getElementById('qnxt-' + q);
+
+  if (sel === data.correct) {
+    qState.scores[q] = 1;
+    opts.forEach(o => {
+      o.classList.add('locked');
+      if (o.dataset.val === data.correct) o.classList.add('correct');
+    });
+    fb.textContent = data.feedback.correct;
+    fb.className   = 'q-feedback show fb-correct';
+    chk.disabled   = true;
+    nxt.classList.add('show');
+    updateQDot(q, 'correct');
+  } else if (qState.attempts[q] >= 2) {
+    qState.scores[q] = 0;
+    opts.forEach(o => {
+      o.classList.add('locked');
+      if (o.dataset.val === sel)          o.classList.add('wrong');
+      if (o.dataset.val === data.correct) o.classList.add('correct');
+    });
+    fb.textContent = data.feedback.wrong;
+    fb.className   = 'q-feedback show fb-wrong';
+    chk.disabled   = true;
+    nxt.classList.add('show');
+    updateQDot(q, 'wrong');
+  } else {
+    /* First wrong attempt — allow retry */
+    opts.forEach(o => o.classList.remove('selected'));
+    qState.selected[q] = null;
+    fb.textContent     = data.feedback.retry;
+    fb.className       = 'q-feedback show fb-retry';
+    chk.disabled       = true;
+  }
+}
+
+function advanceQuiz(q) {
+  if (q < 3) {
+    document.getElementById('qcard-' + q).classList.remove('active');
+    document.getElementById('qpd-'   + q).classList.remove('active');
+    const next = q + 1;
+    document.getElementById('qcard-' + next).classList.add('active');
+    document.getElementById('qpd-'   + next).classList.add('active');
+    qState.cur = next;
+  } else {
+    document.getElementById('qcard-3').classList.remove('active');
+    document.getElementById('quizBody').style.display = 'none';
+    document.getElementById('qProgress').style.display = 'none';
+    showScore();
+  }
+}
+
+function updateQDot(q, state) {
+  const dot = document.getElementById('qpd-' + q);
+  dot.classList.remove('active');
+  dot.classList.add(state);
+}
+
+function showScore() {
+  const correct = qState.scores.filter(s => s === 1).length;
+  const panel   = document.getElementById('scorePanel');
+  const big     = document.getElementById('scoreBig');
+  const lbl     = document.getElementById('scoreLabel');
+  big.textContent = correct + ' / 4';
+  big.className   = 'score-big ' + (correct >= 3 ? 'pass' : 'fail');
+  lbl.textContent = correct >= 3
+    ? 'Well done \u2014 proceed to Section 2 when you are ready.'
+    : 'Review the section material and try the quiz again.';
+  panel.classList.add('show');
+}
+
+function resetQuiz() {
+  qState = { cur: 0, scores: [null,null,null,null], attempts: [0,0,0,0], selected: [null,null,null,null] };
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('qcard-' + i).classList.remove('active');
+    document.querySelectorAll('[data-q="' + i + '"]').forEach(o => {
+      o.classList.remove('selected','correct','wrong','locked');
+    });
+    const fb = document.getElementById('qfb-' + i);
+    fb.textContent = '';
+    fb.className   = 'q-feedback';
+    document.getElementById('qchk-' + i).disabled = true;
+    document.getElementById('qnxt-' + i).classList.remove('show');
+    document.getElementById('qpd-'  + i).className = 'qp-dot';
+  }
+  document.getElementById('qcard-0').classList.add('active');
+  document.getElementById('qpd-0').classList.add('active');
+  document.getElementById('scorePanel').classList.remove('show');
+  document.getElementById('quizBody').style.display  = '';
+  document.getElementById('qProgress').style.display = '';
+}
+
+quizInit();
+</script>
+
+</body>
+</html>

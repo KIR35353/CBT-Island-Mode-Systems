@@ -159,6 +159,7 @@ Total instruction: ~45 min | Total with exam: ~53 min
 **Estimated Duration: 7 minutes | Screens: ~6 | Followed by Section Quiz 1**
 
 ### Section Intro: S1-0
+- **Production File:** [`S1_Section1.html`](S1_Section1.html) — Section 1 wrapper (Screen 1 of 7). Section introduction; SVG asset: `S1-0_Section_Intro.svg`.
 - **Visuals**: ![S1-0: Section 1 Intro](S1-0_Section_Intro.svg)
   *Production file: `S1-0_Section_Intro.svg` — 1040×510 px static SVG. Split-screen: left panel (blue, "GRID-CONNECTED OPERATION") shows the GTG connected to a utility grid with an infinite-bus pill; right panel (orange/red, "ISLAND MODE OPERATION") shows the same GTG alone on an island bus with an open-circuit indicator and "utility disconnected" label. A centred "VS" badge sits between the two panels. Both sides show a +5 MW load step block with a dashed drop line and L-shaped power-flow arrow pointing into the load step.*
   - *Below each panel: a side-specific callout bar with three bullet lines:*
@@ -168,7 +169,7 @@ Total instruction: ~45 min | Total with exam: ~53 min
     - *Header: "Both scenarios are examined through two independent lenses — each one can independently cause a trip:"*
     - ***Lens 1 — Real Power & Frequency**: turbine thermal capacity, rotational inertia, governor response rate, swing equation (Screens S1-1 · S1-2 · S1-3)*
     - ***Lens 2 — Reactive Power & Voltage**: alternator reactive capability, AVR excitation speed, terminal voltage survival (Screens S1-4 · S1-5)*
-- **VO Script**: "Section one. Before we discuss limits and protection systems, we need to establish a clear picture of what changes when a generator goes from grid-connected to island mode — and why those changes matter to you as a packaging engineer. `[PAUSE]` We will examine the step-load event from two perspectives. The first perspective is real power and frequency — how turbine thermal capacity and rotational inertia limit the machine's ability to absorb a sudden load increase. The second perspective is reactive power and terminal voltage — how the alternator's reactive capability and the speed of the automatic voltage regulator determine whether voltage survives the same event. Both responses happen simultaneously when a large motor starts, and either one can independently cause the system to trip."
+- **VO Script**: "Section one. Before we discuss limits and protection systems, we need to establish a clear picture of what changes when a generator goes from grid-connected to island mode — and why those changes matter. `[PAUSE]` We will examine the step-load event from two perspectives. The first perspective is real power and frequency — how turbine thermal capacity and rotational inertia limit the machine's ability to absorb a sudden load increase. The second perspective is reactive power and terminal voltage — how the alternator's reactive capability and the speed of the automatic voltage regulator determine whether voltage survives the same event. Both responses happen simultaneously when a large motor starts, and either one can independently cause the system to trip."
 
 ---
 
@@ -201,7 +202,7 @@ Total instruction: ~45 min | Total with exam: ~53 min
 - **On-Screen Text (Island Mode — settled)**:
   - GTG output ramped to **16.0 MW** — absorbed the entire surge alone
   - Frequency restored to **60.0 Hz**
-- **VO Script (Grid-Connected)**: "When a generator operates connected to a large utility grid, the grid functions like an infinite reservoir of voltage and frequency stability. `[PAUSE]` The screen is now showing grid-connected operation. Click the Run button beside the motor load to add the six megawatt step load and watch what happens. `[PAUSE]` If load suddenly changes, the grid absorbs the transient — the GTG output does not change at all. The utility supply surges instantly to cover the difference. Frequency stays locked at sixty hertz. `[PAUSE]` Click Stop to return to steady state, then switch to Island Mode using the button at the top and click Run again to compare."
+- **VO Script (Grid-Connected)**: "When a generator operates connected to a large utility grid, the grid functions like an infinite reservoir of voltage and frequency stability. `[PAUSE]` The screen is now showing grid-connected operation. Click the Run button beside the motor load to add the six megawatt step load and watch what happens. `[PAUSE]` If load suddenly changes, the grid absorbs the transient — the generator output does not change at all. The utility supply surges instantly to cover the difference. Frequency stays locked at sixty hertz. `[PAUSE]` Click Stop to return to steady state, then switch to Island Mode using the button at the top and click Run again to compare."
 - **VO Script (Island Mode)**: "In island mode, those buffers disappear. There is no infinite bus. The gas turbine is the only power source. `[PAUSE]` Click Run to add the same six megawatt motor load. `[PAUSE]` The same motor load that barely registered in grid-connected mode now causes an immediate frequency droop. The turbine governor must respond entirely on its own to restore the balance. `[PAUSE]` Click Stop to disconnect the motor load and reset to steady state."
 
 ---
@@ -309,6 +310,7 @@ Total instruction: ~45 min | Total with exam: ~53 min
 ---
 
 ### Screen S1-6: Summary — Why Island Mode Is Different
+- **Production File:** [`S1_Section1.html`](S1_Section1.html) — Section 1 wrapper (Screen 6 of 7). Static comparison table; no iframe.
 - **Visuals**: Clean comparison table.
 - **On-Screen Text**:
 
@@ -361,15 +363,17 @@ Which of the following is the primary reason rapid frequency excursions occur in
 ---
 
 ## Section 2: Power Ratings, Derating, and Reserve Margin
-**Estimated Duration: 7 minutes | Screens: ~6 | Followed by Section Quiz 2**
+**Estimated Duration: 8 minutes | Screens: ~7 | Followed by Section Quiz 2**
 
 ### Section Intro: S2-0
+- **Production File:** `S2-0_Section_Intro.html` — Static introduction screen. Single-panel layout with animated SVG power meter. Banner: "POWER RATINGS, DERATING, AND RESERVE MARGIN".
 - **Visuals**: A power output meter showing a turbine's rated capacity, with a "ceiling" marker dropping from 100% to 85–90%.
 - **VO Script**: "Section two. Now that we understand why island mode is different, we can discuss how that difference translates into specific power limits. This section covers the island mode derate, how it differs from temperature derating, and the concept of incremental reserve margin — all of which directly affect how you specify and rate your packages."
 
 ---
 
 ### Screen S2-1: Two Independent Derates
+- **Production File:** `S2-1_Two_Derates.html` — Static information screen. Single-panel layout with SVG stacked bar chart. Banner: "TWO INDEPENDENT DERATES".
 - **Visuals**: Stacked bar chart showing: ISO Base Rating → minus Temperature Derate → minus Island Mode Derate = Usable Island Mode Output.
 - **On-Screen Text**:
   - **Derate 1 — Temperature (Ambient Correction)**: Power reduction due to reduced air density at elevated temperatures. Applies in all operating modes.
@@ -379,7 +383,43 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ---
 
-### Screen S2-2: The Island Mode Derate — What It Is and What It Is Not
+### Screen S2-2: The ISO Base Rating — What the Nameplate Number Means
+- **Production File:** `S2-2_ISO_Rating.html` — Static information screen. Two-panel layout. Banner: "THE ISO BASE RATING — WHAT THE NAMEPLATE NUMBER MEANS".
+- **Visuals**:
+  - **Left panel — ISO Reference Conditions card** (420 px wide): Clean reference block titled "ISO 3977-2 Standard Reference Conditions". Four rows, each with a small icon and label:
+    - 🌡 Ambient temperature: **15°C** (288.15 K / 59°F)
+    - 📊 Ambient pressure: **101.325 kPa** (sea level, 0 m elevation)
+    - 💧 Relative humidity: **60%**
+    - ⚙ Losses: **none** — no inlet filter loss, no exhaust back-pressure; power measured at generator terminals
+    - Small reference note at bottom: *per ISO 3977-2:2023*
+    - Below the conditions block: a single turbine-generator icon labelled "ISO Base Rating = 18 MW" with a tag line: "Output under these conditions only".
+  - **Right panel — Why It Matters** (flex remainder): Three callout rows with icons:
+    1. *Universal baseline* — All gas turbine suppliers use the same reference conditions, so ratings from KHI, GE, Siemens, or any other manufacturer can be compared on equal terms.
+    2. *Not a real site* — No installation site matches ISO conditions exactly. Temperature and altitude corrections are always required.
+    3. *Starting point, not end point* — The ISO rating is where the derating calculation begins.
+  - Below the three rows: a two-column comparison table (light border, alternating row shading):
+
+  | Condition | ISO Reference | Typical Hot-Climate Site |
+  |---|---|---|
+  | Ambient temperature | 15°C | 35–45°C |
+  | Altitude | Sea level | 0–1 500 m |
+  | Relative humidity | 60% | 20–80% |
+  | Rated output | 18 MW | ~14–16 MW |
+
+  - **Key Concept bar** (full width, bottom): "The ISO Base Rating is a standard reference point — not a guarantee of field performance. Every installation requires site-specific correction factors before the turbine can be sized."
+- **On-Screen Text**:
+  - **ISO 3977-2** defines standard reference conditions for all gas turbine performance ratings
+  - Ambient temperature: **15°C** (288 K / 59°F)
+  - Ambient pressure: **101.325 kPa** at sea level
+  - Relative humidity: **60%** — no inlet or exhaust losses; output at generator terminals
+  - When a supplier quotes "18 MW ISO": this is the output **only under these exact conditions**
+  - Real installations differ — temperature and altitude corrections always apply
+- **VO Script**: "Before we discuss derating, we need to establish what the ISO rating actually means. The number on the nameplate — eighteen megawatts, or whatever figure the supplier quotes — refers to the turbine's output under a very specific set of standard reference conditions defined by I-S-O three nine seven seven, Part two. `[PAUSE]` Those conditions are: an ambient temperature of fifteen degrees Celsius, an ambient pressure of one hundred and one point three kilopascals at sea level, and a relative humidity of sixty percent, with no inlet filter losses and no exhaust back-pressure. The power output is measured at the generator terminals. `[PAUSE]` These conditions were chosen to provide a universal baseline so that ratings from different suppliers can be compared on equal terms. They are not a design target — they are a reference point. Your actual installation will almost certainly be at a higher temperature, possibly at altitude, and with real inlet and exhaust losses. `[PAUSE]` This is why the ISO rating is the starting point of the calculation, not the final answer."
+
+---
+
+### Screen S2-3: The Island Mode Derate — What It Is and What It Is Not
+- **Production File:** `S2-3_Island_Mode_Derate.html` — Static information screen. Two-panel layout. Banner: "THE ISLAND MODE DERATE — WHAT IT IS AND WHAT IT IS NOT".
 - **Visuals**: Side-by-side — a temperature gauge (thermal limit) vs. a control margin diagram (stability limit). Big "X" over the thermal gauge meaning "this is NOT the cause."
 - **On-Screen Text**:
   - The island mode derate is **NOT** a thermal limit
@@ -394,7 +434,8 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ---
 
-### Screen S2-3: Industry Standard — 18 MW Class Turbine Example
+### Screen S2-4: Industry Standard — 18 MW Class Turbine Example
+- **Production File:** `S2-4_Industry_Standard.html` — Static information screen. Single-panel layout. Banner: "INDUSTRY STANDARD — 18 MW CLASS TURBINE EXAMPLE".
 - **Visuals**: Gas turbine generator package graphic with island mode operating limits labeled.
 - **On-Screen Text**:
   - ISO Base Rating: ~18 MW (at 15°C, sea level)
@@ -407,7 +448,8 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ---
 
-### Screen S2-4: Incremental Reserve Margin (IRM)
+### Screen S2-5: Incremental Reserve Margin (IRM)
+- **Production File:** `S2-5_IRM.html` — Static information screen with animated timeline. Single-panel layout. Banner: "INCREMENTAL RESERVE MARGIN (IRM)".
 - **Visuals**: Timeline animation showing a load step event. Meter shows: pre-step load → immediate IRM response (1–2 sec) → continued ramp → thermal limit reached (10–30 sec). Frequency trace shows initial dip, recovery.
 - **On-Screen Text**:
   - **Spinning Reserve**: Power available over *minutes* (turbine ramps to max)
@@ -420,7 +462,8 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ---
 
-### Screen S2-5: Worked Example — Data Center Load Step
+### Screen S2-6: Worked Example — Data Center Load Step
+- **Production File:** `S2-6_Worked_Example.html` — Static information screen with step-by-step animation. Single-panel layout. Banner: "WORKED EXAMPLE — DATA CENTER LOAD STEP".
 - **Visuals**: Step-by-step animated calculation walkthrough.
 - **On-Screen Text**:
   - Scenario: 18 MW turbine at ISO, operating at 90% island mode limit → 16.2 MW base load
@@ -433,7 +476,8 @@ Which of the following is the primary reason rapid frequency excursions occur in
 
 ---
 
-### Screen S2-6: Alternator Ratings — MVA vs. MW
+### Screen S2-7: Alternator Ratings — MVA vs. MW
+- **Production File:** `S2-7_Alternator_Ratings.html` — Static information screen. Two-panel layout with SVG capability curve. Banner: "ALTERNATOR RATINGS — MVA vs. MW".
 - **Visuals**: Capability curve showing apparent power (MVA) ring, with real power (MW) and reactive power (MVAR) axes. Shaded region of safe operation.
 - **On-Screen Text**:
   - Turbine output is specified in **MW** (real power)
@@ -482,12 +526,14 @@ For an island mode package with an 18 MW turbine, what is the minimum recommende
 **Estimated Duration: 8 minutes | Screens: ~7 | Followed by Section Quiz 3**
 
 ### Section Intro: S3-0
+- **Production File:** `S3-0_Section_Intro.html` — Static introduction screen. SVG control-loop schematic. Banner: "GOVERNOR AND EXCITATION CONTROL SYSTEMS".
 - **Visuals**: Schematic showing three control loops: turbine governor (speed/fuel), alternator AVR (voltage/excitation), and load-sharing communication link between parallel units.
 - **VO Script**: "Section three. The control system is where island mode design becomes most visible to customers — and where most specification disputes with suppliers arise. In this section, we cover governor control modes, automatic voltage regulation, and the coordination required between turbine and generator control systems in a multi-unit data center installation."
 
 ---
 
 ### Screen S3-1: Governor Control Modes — Droop vs. Isochronous
+- **Production File:** `S3-1_Governor_Modes.html` — Static information screen. Two-panel layout with animated SVG frequency-vs-load graphs. Banner: "GOVERNOR CONTROL MODES — DROOP vs. ISOCHRONOUS".
 - **Visuals**: Two animated frequency-vs-load graphs side by side. Left shows droop (sloping line). Right shows isochronous (flat line).
 - **On-Screen Text**:
   - **Droop Mode (Grid-Parallel)**:
@@ -504,6 +550,7 @@ For an island mode package with an 18 MW turbine, what is the minimum recommende
 ---
 
 ### Screen S3-2: Multi-Unit Isochronous Load Sharing
+- **Production File:** `S3-2_Isochronous_Load_Sharing.html` — Static information screen. Single-panel layout with SVG communication diagram. Banner: "MULTI-UNIT ISOCHRONOUS LOAD SHARING".
 - **Visuals**: Diagram showing three parallel GTGs connected via a communication link. Load sharing arrows show proportional distribution.
 - **On-Screen Text**:
   - Multiple turbine units in isochronous mode without coordination = instability (each fights to hold frequency alone)
@@ -517,6 +564,7 @@ For an island mode package with an 18 MW turbine, what is the minimum recommende
 ---
 
 ### Screen S3-3: Control Mode Transition — Grid Loss Event
+- **Production File:** `S3-3_Mode_Transition.html` — Static information screen with animated sequence. Single-panel layout. Banner: "CONTROL MODE TRANSITION — GRID LOSS EVENT".
 - **Visuals**: Animated sequence: normal operation (droop mode, grid connected) → grid fault → grid disconnect → transition to isochronous mode → stable island operation.
 - **On-Screen Text**:
   - When the utility connection to the data center opens, turbine governors must detect the event and switch modes
@@ -525,11 +573,12 @@ For an island mode package with an 18 MW turbine, what is the minimum recommende
     - **If base load too high**: governor saturates (fuel valve fully open), frequency collapses
     - **If transition is uncoordinated**: multiple units hunt or oscillate
     - **If load shedding does not occur fast enough**: overload trip
-- **VO Script**: "Mode transition from grid-connected to island mode is one of the highest-risk moments in the operating life of a GTG package. The automation — whether provided by the turbine supplier, a third party, or integrated into the plant control system — must detect the grid separation, command the appropriate governor mode change, and if necessary, initiate load shedding, all within a very short window. `[PAUSE]` The design team must ensure that the turbine can accept the required mode-switch signal, that the control system is designed to send it, and that the load shedding scheme is fast enough to keep the turbine from seeing an overload it cannot handle."
+- **VO Script**: "Mode transition from grid-connected to island mode is one of the highest-risk moments in the operating life of a generator package. The automation — whether provided by the turbine supplier, a third party, or integrated into the plant control system — must detect the grid separation, command the appropriate governor mode change, and if necessary, initiate load shedding, all within a very short window. `[PAUSE]` The design team must ensure that the turbine can accept the required mode-switch signal, that the control system is designed to send it, and that the load shedding scheme is fast enough to keep the turbine from seeing an overload it cannot handle."
 
 ---
 
 ### Screen S3-4: Alternator AVR and Excitation Control
+- **Production File:** `S3-4_AVR_Excitation.html` — Static information screen. Single-panel layout with SVG block diagram. Banner: "ALTERNATOR AVR AND EXCITATION CONTROL".
 - **Visuals**: Block diagram showing the alternator with: rotor field winding, AVR, terminal voltage measurement, and excitation current feedback. OEL and UEL shown as limit blocks.
 - **On-Screen Text**:
   - **Automatic Voltage Regulator (AVR)**: Maintains alternator terminal voltage at setpoint
@@ -544,17 +593,19 @@ For an island mode package with an 18 MW turbine, what is the minimum recommende
 ---
 
 ### Screen S3-5: Reactive Droop and VAR Sharing (Multi-Unit)
+- **Production File:** `S3-5_Reactive_Droop.html` — Static information screen. Two-panel comparison layout. Banner: "REACTIVE DROOP AND VAR SHARING".
 - **Visuals**: Two alternator diagrams side by side. Without reactive droop: one alternator saturates at OEL limit while the other is lightly loaded. With reactive droop: load shared proportionally.
 - **On-Screen Text**:
   - Without reactive (voltage) droop: reactive load concentrates on the unit with lowest AVR setpoint — can trigger OEL trip
   - With reactive droop (2–4%): as reactive output increases, terminal voltage decreases slightly, causing loads to draw from all units proportionally
   - Multi-unit data center: **all alternators must have matching reactive droop settings**
   - Coordinate droop settings: turbine governor (frequency) + alternator AVR (voltage) must be tuned together
-- **VO Script**: "Reactive droop in the alternator AVR serves the same function that speed droop serves in the turbine governor — it allows multiple machines to share a common quantity proportionally without fighting each other. `[PAUSE]` In a data center with, for example, four paralleled GTG packages, all four alternator AVRs must be set to the same reactive droop percentage. If they are mismatched, reactive load will concentrate on one unit, push that unit into its over-excitation limiter, and potentially cause a trip. Confirm these settings as part of the integrated commissioning plan."
+- **VO Script**: "Reactive droop in the alternator AVR serves the same function that speed droop serves in the turbine governor — it allows multiple machines to share a common quantity proportionally without fighting each other. `[PAUSE]` In a data center with, for example, four paralleled generator packages, all four alternator AVRs must be set to the same reactive droop percentage. If they are mismatched, reactive load will concentrate on one unit, push that unit into its over-excitation limiter, and potentially cause a trip. Confirm these settings as part of the integrated commissioning plan."
 
 ---
 
 ### Screen S3-6: Turbine–Alternator Interface Requirements
+- **Production File:** `S3-6_Turbine_Alternator_Interface.html` — Static information screen. Single-panel layout with SVG signal-flow diagram. Banner: "TURBINE–ALTERNATOR INTERFACE REQUIREMENTS".
 - **Visuals**: Interface block diagram showing signal flows between turbine control, alternator excitation system, and the plant control system.
 - **On-Screen Text**:
   - As the packaging engineer, **you own this interface**
@@ -605,12 +656,14 @@ During grid-connected operation, a data center's GTG packages are running at 85%
 **Estimated Duration: 7 minutes | Screens: ~6 | Followed by Section Quiz 4**
 
 ### Section Intro: S4-0
+- **Production File:** `S4-0_Section_Intro.html` — Static introduction screen. SVG relay panel graphic. Banner: "PROTECTION STRATEGIES — UFLS, ROCOF, AND EXCITATION LIMITING".
 - **Visuals**: Protection relay panel graphic with relay types labeled: 81 (underfrequency), 81R (ROCOF), 40 (loss of excitation), 24 (overexcitation).
 - **VO Script**: "Section four. Protection systems are the safety net that keeps the island mode power system operating when events exceed design margins. In this section, we cover underfrequency load shedding, rate-of-change-of-frequency protection, and excitation limiting — and explain how these systems must be coordinated with the turbine governor and alternator characteristics."
 
 ---
 
 ### Screen S4-1: Underfrequency Load Shedding (UFLS) — Purpose
+- **Production File:** `S4-1_UFLS_Purpose.html` — Static information screen. Single-panel layout with animated SVG frequency timeline. Banner: "UNDERFREQUENCY LOAD SHEDDING — PURPOSE".
 - **Visuals**: Frequency timeline showing: normal (60 Hz) → generation loss event → frequency decay curve → UFLS stages activating → frequency recovers.
 - **On-Screen Text**:
   - **Purpose**: Prevent total system collapse (blackout) when generation cannot meet load
@@ -622,6 +675,7 @@ During grid-connected operation, a data center's GTG packages are running at 85%
 ---
 
 ### Screen S4-2: UFLS — Typical Scheme for a 60 Hz Data Center
+- **Production File:** `S4-2_UFLS_Scheme.html` — Static information screen. Single-panel layout with SVG frequency graph and stage table. Banner: "UFLS — TYPICAL SCHEME FOR A 60 Hz DATA CENTER".
 - **Visuals**: Frequency vs. time graph with stage thresholds marked. Each stage triggers a load block disconnection.
 - **On-Screen Text**:
 
@@ -638,6 +692,7 @@ During grid-connected operation, a data center's GTG packages are running at 85%
 ---
 
 ### Screen S4-3: UFLS Coordination with Turbine Governor Response
+- **Production File:** `S4-3_UFLS_Coordination.html` — Static information screen. Single-panel layout with overlaid SVG graph. Banner: "UFLS COORDINATION WITH TURBINE GOVERNOR RESPONSE".
 - **Visuals**: Overlaid graph: frequency decay curve vs. turbine governor fuel ramp response vs. UFLS stage activation points.
 - **On-Screen Text**:
   - Turbine governors typically require 5–10 seconds to fully respond to a frequency deviation
@@ -651,6 +706,7 @@ During grid-connected operation, a data center's GTG packages are running at 85%
 ---
 
 ### Screen S4-4: Rate-of-Change-of-Frequency (ROCOF) Protection
+- **Production File:** `S4-4_ROCOF.html` — Static information screen. Two-panel layout with SVG frequency traces. Banner: "RATE-OF-CHANGE-OF-FREQUENCY (ROCOF) PROTECTION".
 - **Visuals**: Two frequency trace comparisons — gradual load increase (slow df/dt) vs. sudden generator trip (steep df/dt). ROCOF threshold line shown.
 - **On-Screen Text**:
   - **ROCOF relay (81R)**: Measures rate of frequency change (df/dt) in Hz per second
@@ -666,6 +722,7 @@ During grid-connected operation, a data center's GTG packages are running at 85%
 ---
 
 ### Screen S4-5: Over-Excitation and Under-Excitation Limiting
+- **Production File:** `S4-5_OEL_UEL.html` — Static information screen. Single-panel layout with SVG capability curve. Banner: "OVER-EXCITATION AND UNDER-EXCITATION LIMITING".
 - **Visuals**: Generator capability curve with OEL and UEL limits marked. Operating point shown moving toward each limit with annotations.
 - **On-Screen Text**:
   - **Over-Excitation Limiter (OEL)** — Relay designation: 24/OEL
@@ -683,6 +740,7 @@ During grid-connected operation, a data center's GTG packages are running at 85%
 ---
 
 ### Screen S4-6: Protection Coordination Summary
+- **Production File:** `S4-6_Protection_Summary.html` — Static information screen. Single-panel layout with SVG protection hierarchy diagram. Banner: "PROTECTION COORDINATION SUMMARY".
 - **Visuals**: Protection hierarchy diagram showing the sequence: ROCOF detection → UFLS activation → governor response → OEL/UEL limiting → last-resort turbine trip.
 - **On-Screen Text**:
   - Protection layers from fastest to slowest:
@@ -732,12 +790,14 @@ Which protection function activates when the alternator is supplying excessive r
 **Estimated Duration: 6 minutes | Screens: ~6 | Followed by Section Quiz 5**
 
 ### Section Intro: S5-0
+- **Production File:** `S5-0_Section_Intro.html` — Static introduction screen with animated combustor cross-section SVG. Banner: "COMBUSTION SYSTEM CONSTRAINTS AND DLE".
 - **Visuals**: Cross-section animation of a gas turbine combustor, showing premixed fuel-air flow.
 - **VO Script**: "Section five. The combustion system is often overlooked in load shedding and control discussions, but it is one of the most important constraints on island mode operation. This section explains how Dry Low Emissions combustion technology works, why it creates step-load limits, and what packaging engineers need to specify to protect against flameout."
 
 ---
 
 ### Screen S5-1: DLE Combustion — How It Works
+- **Production File:** `S5-1_DLE_How_It_Works.html` — Static information screen with animated SVG combustor diagram. Two-panel layout. Banner: "DLE COMBUSTION — HOW IT WORKS".
 - **Visuals**: Animated combustor cross-section showing: premixed fuel-air inlet, lean flame zone, NOx formation vs. temperature graph (bell curve showing how DLE avoids the NOx-forming temperature range).
 - **On-Screen Text**:
   - **Dry Low Emissions (DLE)** combustion is the standard technology for NOx ≤ 15–25 ppm without water injection
@@ -750,6 +810,7 @@ Which protection function activates when the alternator is supplying excessive r
 ---
 
 ### Screen S5-2: DLE in Island Mode — The Stability Envelope
+- **Production File:** `S5-2_DLE_Stability_Envelope.html` — Static information screen. Single-panel layout with SVG stability zone graph. Banner: "DLE IN ISLAND MODE — THE STABILITY ENVELOPE".
 - **Visuals**: Graph showing DLE stable operating zone as a band between lean blowout (too little fuel) and rich instability (too much fuel). Arrows show what happens during rapid load steps in each direction.
 - **On-Screen Text**:
   - DLE combustion operates within a **narrow stability envelope**
@@ -761,6 +822,7 @@ Which protection function activates when the alternator is supplying excessive r
 ---
 
 ### Screen S5-3: Step Load Limits and Combustion Mode Switching
+- **Production File:** `S5-3_Step_Load_Limits.html` — Static information screen. Single-panel layout with SVG threshold diagram. Banner: "STEP LOAD LIMITS AND COMBUSTION MODE SWITCHING".
 - **Visuals**: Step-load magnitude diagram showing thresholds for: DLE stable zone, automatic mode switch to diffusion, and flameout risk.
 - **On-Screen Text**:
   - **Industry-standard step load limit: +25% of rated capacity** to maintain DLE stability
@@ -777,6 +839,7 @@ Which protection function activates when the alternator is supplying excessive r
 ---
 
 ### Screen S5-4: DLE Load Hold Requirement (OEM Specific)
+- **Production File:** `S5-4_DLE_Load_Hold.html` — Static information screen. Single-panel layout with SVG timeline graphic. Banner: "DLE LOAD HOLD REQUIREMENT (OEM SPECIFIC)".
 - **Visuals**: Timeline showing a load step event followed by a mandatory hold period before additional loading.
 - **On-Screen Text**:
   - Representative requirement: **Hold load for N minutes after an N MW step increase**
@@ -789,6 +852,7 @@ Which protection function activates when the alternator is supplying excessive r
 ---
 
 ### Screen S5-5: Protecting the Combustor — What to Specify
+- **Production File:** `S5-5_Combustor_Specification.html` — Static information screen. Single-panel checklist layout. Banner: "PROTECTING THE COMBUSTOR — WHAT TO SPECIFY".
 - **Visuals**: Checklist graphic with five items, each with a turbine supplier or plant control system callout.
 - **On-Screen Text**:
   - ✅ **Fuel staging schedule**: Verify the turbine supplier has optimized fuel staging for the anticipated load profile
@@ -827,12 +891,14 @@ Below approximately what load percentage does a DLE gas turbine typically shift 
 **Estimated Duration: 5 minutes | Screens: ~5 | Followed by Section Quiz 6**
 
 ### Section Intro: S6-0
+- **Production File:** `S6-0_Section_Intro.html` — Static introduction screen. SVG overhead-view schematic of a four-unit parallel data center power room. Banner: "MULTI-UNIT PARALLEL OPERATION IN DATA CENTERS".
 - **Visuals**: Overhead view schematic of a data center power room with four GTG packages in parallel, showing the bus arrangement and load blocks downstream.
-- **VO Script**: "Section six. Data center power systems based on paralleled GTGs present unique coordination challenges that go beyond what we have discussed for single-unit operation. This section addresses N-1 design philosophy, aggregate loading limits, and the key differences between coordinating turbine and alternator systems in a multi-unit configuration versus single-unit applications."
+- **VO Script**: "Section six. Data center power systems based on paralleled generators present unique coordination challenges that go beyond what we have discussed for single-unit operation. This section addresses N-1 design philosophy, aggregate loading limits, and the key differences between coordinating turbine and alternator systems in a multi-unit configuration versus single-unit applications."
 
 ---
 
 ### Screen S6-1: N-1 Design Philosophy
+- **Production File:** `S6-1_N1_Design.html` — Static information screen. Single-panel layout with SVG four-unit parallel diagram. Banner: "N-1 DESIGN PHILOSOPHY".
 - **Visuals**: Four-unit paralleled diagram. One unit shown as tripped (grayed out). Remaining three units absorb the load.
 - **On-Screen Text**:
   - **N-1 requirement**: The system must sustain operation if any single generating unit trips
@@ -843,11 +909,12 @@ Below approximately what load percentage does a DLE gas turbine typically shift 
     - Total island mode capacity: 4 × 16.2 MW = 64.8 MW
     - N-1 capacity (3 units): 3 × 16.2 MW = 48.6 MW
     - Maximum critical load: ≤ 48.6 MW (to survive any single unit trip)
-- **VO Script**: "Data center owners require N-1 redundancy — the facility must continue to operate if any single generator trips. This requirement drives the number of paralleled GTG units. With four eighteen megawatt class turbine units each limited to sixteen point two megawatts in island mode, the maximum critical IT load that satisfies N-1 is forty-eight point six megawatts. Exceeding this means a single unit trip will overload the remaining three units and trigger UFLS — possibly cascading to a blackout. This calculation must be part of the system sizing documentation."
+- **VO Script**: "Data center owners require N-1 redundancy — the facility must continue to operate if any single generator trips. This requirement drives the number of paralleled generator units. With four eighteen megawatt class turbine units each limited to sixteen point two megawatts in island mode, the maximum critical IT load that satisfies N-1 is forty-eight point six megawatts. Exceeding this means a single unit trip will overload the remaining three units and trigger UFLS — possibly cascading to a blackout. This calculation must be part of the system sizing documentation."
 
 ---
 
 ### Screen S6-2: Load Distribution and IRM in Multi-Unit Systems
+- **Production File:** `S6-2_Load_Distribution_IRM.html` — Static information screen. Single-panel layout with SVG bar chart. Banner: "LOAD DISTRIBUTION AND IRM IN MULTI-UNIT SYSTEMS".
 - **Visuals**: Bar chart showing load distribution across four units at 75% of island mode limit each, with IRM headroom visible above each bar.
 - **On-Screen Text**:
   - Multi-unit advantage: With four units, each can operate at a lower percentage of individual rating — preserving more IRM per unit
@@ -859,6 +926,7 @@ Below approximately what load percentage does a DLE gas turbine typically shift 
 ---
 
 ### Screen S6-3: Isochronous Load Sharing Coordination (Multi-Unit)
+- **Production File:** `S6-3_Isochronous_Coordination.html` — Static information screen. Single-panel layout with SVG network diagram. Banner: "ISOCHRONOUS LOAD SHARING COORDINATION (MULTI-UNIT)".
 - **Visuals**: Communication network diagram connecting four turbine governor controllers with a load-sharing bus.
 - **On-Screen Text**:
   - All units in isochronous load sharing: frequency regulation shared proportionally
@@ -871,6 +939,7 @@ Below approximately what load percentage does a DLE gas turbine typically shift 
 ---
 
 ### Screen S6-4: Turbine and Alternator Units in Parallel — Matched Settings
+- **Production File:** `S6-4_Parallel_Settings.html` — Static information screen. Single-panel layout with settings comparison table. Banner: "TURBINE AND ALTERNATOR UNITS IN PARALLEL — MATCHED SETTINGS".
 - **Visuals**: Table showing matched parameter requirements for four parallel units.
 - **On-Screen Text**:
   - For stable multi-unit parallel operation:
@@ -891,6 +960,7 @@ Below approximately what load percentage does a DLE gas turbine typically shift 
 ---
 
 ### Screen S6-5: Communicating Multi-Unit Constraints to the Customer
+- **Production File:** `S6-5_Customer_Communication.html` — Static information screen. Two-panel layout (what to tell / what to ask). Banner: "COMMUNICATING MULTI-UNIT CONSTRAINTS TO THE CUSTOMER".
 - **Visuals**: Simple customer communication template graphic — key messages in bullet form, appropriate for a project meeting or design review.
 - **On-Screen Text**:
   - **What your customer needs to understand**:
@@ -936,6 +1006,7 @@ Which of the following is NOT a valid reason for mismatched alternator AVR react
 **Estimated Duration: 2 minutes | Screens: ~2**
 
 ### Screen SUM-1: Key Takeaways
+- **Production File:** `SUM-1_Key_Takeaways.html` — Static summary screen. Six-card grid layout, one card per course section. Banner: "KEY TAKEAWAYS".
 - **Visuals**: Six numbered cards, one per section, each with a one-sentence summary.
 - **On-Screen Text**:
   1. **Island mode is fundamentally different** from grid-parallel operation — no external voltage, frequency, or reactive power support.
@@ -949,6 +1020,7 @@ Which of the following is NOT a valid reason for mismatched alternator AVR react
 ---
 
 ### Screen SUM-2: Best Practices — Your Action Checklist
+- **Production File:** `SUM-2_Best_Practices.html` — Static checklist screen. Print-optimised layout with three phase sections (Specification, Design, Commissioning). Bookmarkable/downloadable job aid. Banner: "BEST PRACTICES — YOUR ACTION CHECKLIST".
 - **Visuals**: Printable checklist layout (this screen should be bookmarkable or downloadable as a job aid).
 - **On-Screen Text**:
   - **Specification Phase**:
@@ -968,7 +1040,7 @@ Which of the following is NOT a valid reason for mismatched alternator AVR react
     - [ ] Simulate unit trip: verify UFLS activates, remaining units recover, no cascade
     - [ ] Simulate load-sharing communication failure: confirm droop fallback
     - [ ] Verify matching settings across all turbine governors and alternator AVRs
-- **VO Script**: "This checklist captures the minimum set of actions for a well-designed island mode GTG package for a data center application. Use it as a starting point for your project checklist. The detailed requirements for each item are addressed in the course material and in supplier technical documentation for your specific units."
+- **VO Script**: "This checklist captures the minimum set of actions for a well-designed island mode generator package for a data center application. Use it as a starting point for your project checklist. The detailed requirements for each item are addressed in the course material and in supplier technical documentation for your specific units."
 
 ---
 

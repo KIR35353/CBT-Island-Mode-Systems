@@ -530,6 +530,22 @@ footer {
 }
 .btn-replay:hover { color: var(--k-white); border-color: var(--k-steel); }
 
+.btn-pause {
+  flex-shrink: 0;
+  background: transparent;
+  color: var(--k-steel-lt);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 7px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.btn-pause:hover:not(:disabled) { color: var(--k-white); border-color: var(--k-steel); }
+.btn-pause:disabled { opacity: 0.35; cursor: default; }
+.btn-pause.paused { color: var(--k-orange-lt); border-color: var(--k-orange-lt); }
+
 .ftr-centre { font-size: 11px; color: var(--k-muted); }
 </style>
 </head>
@@ -725,6 +741,7 @@ footer {
   <div class="wave" id="wave" aria-hidden="true">
     <span></span><span></span><span></span><span></span><span></span>
   </div>
+  <button class="btn-pause" id="btnPause" aria-label="Pause narration" disabled>&#9646;&#9646; Pause</button>
 </div>
 
 <!-- ═══ FOOTER NAV ════════════════════════════════════════════ -->
@@ -819,8 +836,11 @@ const SCREENS = [
 let cur        = 0;
 let voiceUK    = null;
 let speaking   = false;
+let voPaused   = false;   // true while narration is paused
 let voSeqIdx   = 0;       // INT-4 sequence pointer
 let voSeqAbort = false;   // flag to stop a running sequence
+let curVoText  = '';     // text of utterance currently speaking or last paused
+let curVoOnEnd = null;   // onEnd callback for the current utterance
 let hasGestured = false;  // true once user has interacted (needed to unlock speechSynthesis)
 
 const synth = window.speechSynthesis;
@@ -846,6 +866,9 @@ if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !=
    LOW-LEVEL SPEAK
 ─────────────────────────────────────────────────────────── */
 function speakOne(text, onEnd) {
+  synth.cancel();
+  curVoText  = text;
+  curVoOnEnd = onEnd || null;
   const u = new SpeechSynthesisUtterance(text);
   if (voiceUK) u.voice = voiceUK;
   u.lang   = 'en-GB';
@@ -867,6 +890,37 @@ function setLive(on, text) {
     cap.textContent = text || '…';
   } else {
     bar.classList.remove('live');
+    voPaused = false;
+  }
+  updatePauseBtn();
+}
+
+function updatePauseBtn() {
+  const btn = document.getElementById('btnPause');
+  if (!btn) return;
+  if (voPaused) {
+    btn.textContent = '▶ Resume';
+    btn.classList.add('paused');
+    btn.disabled = false;
+  } else if (synth.speaking) {
+    btn.textContent = '⏸ Pause';
+    btn.classList.remove('paused');
+    btn.disabled = false;
+  } else {
+    btn.textContent = '⏸ Pause';
+    btn.classList.remove('paused');
+    btn.disabled = true;
+  }
+}
+
+function pauseResume() {
+  if (voPaused) {
+    speakOne(curVoText, curVoOnEnd);  // cancel + restart — more reliable than synth.resume() in Chrome
+  } else if (synth.speaking) {
+    synth.pause();
+    voPaused = true;
+    document.getElementById('voBar').classList.remove('live');
+    updatePauseBtn();
   }
 }
 
@@ -877,6 +931,8 @@ function playVO(screenIdx, isReplay) {
   voSeqAbort = true;           // abort any running sequence
   synth.cancel();
   speaking = false;
+  voPaused = false;
+  updatePauseBtn();
 
   const scr = SCREENS[screenIdx];
 
@@ -997,8 +1053,12 @@ function refreshNav() {
     if (i === cur) { d.classList.add('active'); d.setAttribute('aria-selected', 'true'); }
   });
   document.getElementById('btnBack').disabled = (cur === 0);
-  document.getElementById('btnNext').disabled = (cur === SCREENS.length - 1);
-  document.getElementById('btnNext').textContent = cur === 0 ? 'Begin Course ►' : (cur === SCREENS.length - 1 ? 'Finish' : 'Next →');
+  const isLast = (cur === SCREENS.length - 1);
+  const nextBtn = document.getElementById('btnNext');
+  nextBtn.disabled = false;
+  if (cur === 0)       { nextBtn.textContent = 'Begin Course ►'; }
+  else if (isLast)     { nextBtn.textContent = 'Section 1 ▸'; }
+  else                 { nextBtn.textContent = 'Next →'; }
   document.getElementById('dotCounter').textContent = 'Screen ' + (cur + 1) + ' of ' + SCREENS.length;
   document.getElementById('ftrLabel').textContent = 'Introduction \u00b7 Screen ' + (cur + 1) + ' of ' + SCREENS.length;
 }
@@ -1007,7 +1067,11 @@ function refreshNav() {
    BUTTON WIRING
 ─────────────────────────────────────────────────────────── */
 document.getElementById('btnNext').addEventListener('click', () => {
-  if (cur < SCREENS.length - 1) goTo(cur + 1);
+  if (cur < SCREENS.length - 1) {
+    goTo(cur + 1);
+  } else {
+    window.location.href = 'S1_Section1.html';
+  }
 });
 document.getElementById('btnBack').addEventListener('click', () => {
   if (cur > 0) goTo(cur - 1);
@@ -1015,6 +1079,8 @@ document.getElementById('btnBack').addEventListener('click', () => {
 document.getElementById('btnReplay').addEventListener('click', () => {
   playVO(cur, true);
 });
+
+document.getElementById('btnPause').addEventListener('click', pauseResume);
 
 /* Keyboard: Arrow keys navigate, Space replays */
 document.addEventListener('keydown', e => {
